@@ -1,0 +1,190 @@
+
+    <!--Top Logo Container-->
+    <div class="container-fluid  logo-container">
+        <header class="lh-1 py-2 mx-5">
+            <div class="row flex-nowrap justify-content-between align-items-center">
+                <div class="col-4 pt-1">
+
+                </div>
+                <div class="col-4 text-center d-flex justify-content-center align-items-center">
+                    <img src="../static/images/P-logo-trans.svg" class="top-logo" alt="">
+                    <h1 class="mb-0 ms-0 logo-text">arherssia </h1>
+                    <h1 class="mb-0 ms-2 logo-text care"> Care</h1>
+
+                </div>
+
+                <div class="col-4 d-flex justify-content-end align-items-center search-subscribe-container">
+                    <a class="link-secondary nav-link" href="#" aria-label="Search"></a>
+
+                </div>
+
+            </div>
+        </header>
+    </div>
+
+    <!-- Header/Nav -->
+    <div class="sticky-header-container sticky-top">
+        <div class="container-fluid sticky-top  header-container" id="header-nav">
+            <div
+                class="d-flex flex-wrap align-items-center justify-content-center  py-3 mb-0 border-bottom navigation-header-login">
+                <div class="col-md-0 mb-2 mb-md-0">
+                    <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none nav-link">
+                        <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
+                            <use xlink:href="#bootstrap"></use>
+                        </svg>
+                    </a>
+                </div>
+
+                <ul class="nav col-12 col-md-12 mb-2 justify-content-center mb-md-0">
+                    <li><a href="{{url_for('go_home')}}" class="nav-link px-2 link-secondary">Home</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Our Services
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('personal_care') }}">Personal Care</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('livein') }}">Live-in Care</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('respite') }}">Respite-to-Care</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('practicalsupport') }}">Practical Support</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{{ url_for('complex') }}">Complex Care</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('palliative') }}">Palliative Care</a></li>
+                        </ul>
+
+
+                    </li>
+                    <li><a href="{{url_for('contact_us')}}" class="nav-link px-2">Contact Us</a></li>
+                    <li><a href="{{url_for('get_jobs')}}" class="nav-link px-2">Join Us</a></li>
+                    <li><a href="{{url_for('get_about')}}" class="nav-link px-2">About Us</a></li>
+                    <li>
+                        <a href="mailto:tanaka.mush@gmail.com" class="nav-link px-2">
+                            <svg width="44px" height="44px" viewBox="-51.2 -51.2 614.40 614.40" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                fill="#0F1035">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0">
+                                    <rect x="-51.2" y="-51.2" width="614.40" height="614.40" rx="307.2" fill="#7FC7D9"
+                                        strokewidth="0"></rect>
+                                </g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <title>mail-filled</title>
+                                    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <g id="mail-filled-white" fill="#0F1035"
+                                            transform="translate(42.686667, 85.339333)">
+                                            <path
+                                                d="M3.55271368e-14,28.7 L213.333914,220.70134 L426.667,28.701 L426.667248,341.333608 L0.00058094128,341.333608 L3.55271368e-14,28.7 Z M394.776,1.42108547e-14 L213.333914,163.285608 L31.89,1.42108547e-14 L394.776,1.42108547e-14 Z"
+                                                id="Combined-Shape"> </path>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+
+                            contact@example.com
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="tel:+447478881797" class="nav-link px-2">
+                            <svg fill="#0F1035" width="44px" height="44px" viewBox="-2.4 -2.4 28.80 28.80"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0">
+                                    <rect x="-2.4" y="-2.4" width="28.80" height="28.80" rx="14.4" fill="#7ed0ec"
+                                        strokewidth="0"></rect>
+                                </g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <g data-name="Layer 2">
+                                        <g data-name="phone-call">
+                                            <rect width="24" height="24" opacity="0"></rect>
+                                            <path d="M13 8a3 3 0 0 1 3 3 1 1 0 0 0 2 0 5 5 0 0 0-5-5 1 1 0 0 0 0 2z">
+                                            </path>
+                                            <path d="M13 4a7 7 0 0 1 7 7 1 1 0 0 0 2 0 9 9 0 0 0-9-9 1 1 0 0 0 0 2z">
+                                            </path>
+                                            <path
+                                                d="M21.75 15.91a1 1 0 0 0-.72-.65l-6-1.37a1 1 0 0 0-.92.26c-.14.13-.15.14-.8 1.38a9.91 9.91 0 0 1-4.87-4.89C9.71 10 9.72 10 9.85 9.85a1 1 0 0 0 .26-.92L8.74 3a1 1 0 0 0-.65-.72 3.79 3.79 0 0 0-.72-.18A3.94 3.94 0 0 0 6.6 2 4.6 4.6 0 0 0 2 6.6 15.42 15.42 0 0 0 17.4 22a4.6 4.6 0 0 0 4.6-4.6 4.77 4.77 0 0 0-.06-.76 4.34 4.34 0 0 0-.19-.73z">
+                                            </path>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+
+                            +1 5589 55488 55
+                        </a>
+                    </li>
+
+
+
+                </ul>
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+    <!--Header with on small devices-->
+    <div class="sticky-header-container sticky-top">
+        <div class="container-fluid sticky-top header-container" id="header-nav-small">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <a href="/" class="navbar-brand d-flex link-body-emphasis text-decoration-none nav-link">
+                        <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
+                            <use xlink:href="#bootstrap"></use>
+                        </svg>
+                    </a>
+                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                        aria-labelledby="offcanvasNavbarLabel">
+                        <div class="offcanvas-header">
+
+                            <img src="../static/images/P-logo-trans.svg" class="top-logo" alt="">
+                            <h1 class="mb-0 ms-0 logo-text">arherssia </h1>
+                            <h1 class="mb-0 ms-2 logo-text care"> Care</h1>
+
+
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                                <li><a href="{{url_for('go_home')}}" class="nav-link px-2 link-secondary">Home</a></li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        Our Services
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{{ url_for('personal_care') }}">Personal
+                                                Care</a></li>
+                                        <li><a class="dropdown-item" href="{{ url_for('livein') }}">Live-in Care</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="{{ url_for('respite') }}">Respite-to-Care</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="{{ url_for('practicalsupport') }}">Practical
+                                                Support</a></li>
+                                        <li><a class="dropdown-item" href="{{ url_for('complex') }}">Complex Care</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="{{ url_for('palliative') }}">Palliative
+                                                Care</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="{{url_for('contact_us')}}" class="nav-link px-2">Contact Us</a></li>
+                                <li><a href="{{url_for('get_jobs')}}" class="nav-link px-2">Join Us</a></li>
+
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>

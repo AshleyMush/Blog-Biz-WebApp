@@ -15,15 +15,11 @@ class Services(db.Model):
     """
     __tablename__ = "services"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), nullable=False)
+    service_name = db.Column(db.String(250), nullable=False)
     homepage_img_url = db.Column(db.String(250), nullable=False)
-    homepage_subheading = db.Column(db.String(250), nullable=False)
     homepage_content = db.Column(db.Text, nullable=False)  # Rich text content
-
-    banner_heading = db.Column(db.String(250), nullable=False)
+    servicepage_img_url = db.Column(db.String(250), nullable=False)
     banner_subheading = db.Column(db.String(250), nullable=False)
-    banner_content = db.Column(db.Text, nullable=False)  # Rich text content
-
     body_content = db.Column(db.Text, nullable=False)  # Rich text content
 
     def to_dict(self):
@@ -72,7 +68,7 @@ class Contacts(db.Model, UserMixin):
     __tablename__ = "contacts"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(250), unique=True, nullable=False)
-    location = db.Column(db.String(250), unique=True, nullable=False)
+    location = db.Column(db.Text, nullable=False)
     phone_number = db.Column(db.String(250), unique=True, nullable=False)
     facebook_url = db.Column(db.String(250), nullable=True)
     instagram_url = db.Column(db.String(250), nullable=True)

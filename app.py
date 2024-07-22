@@ -97,13 +97,11 @@ def home():
 def add_service():
 
     new_service = Services(
-        name=request.form.get('name'),
+        service_name=request.form.get('service_name'),
         homepage_img_url=request.form.get('homepage_img_url'),
-        homepage_subheading=request.form.get('homepage_subheading'),
         homepage_content=request.form.get('homepage_content'),
-        banner_heading=request.form.get('banner_heading'),
+        servicepage_img_url=request.form.get('servicepage_img_url'),
         banner_subheading=request.form.get('banner_subheading'),
-        banner_content=request.form.get('banner_content'),
         body_content=request.form.get('body_content')
     )
     print('🟩Adding new service to the database')
@@ -133,23 +131,41 @@ def add_faq():
     else:
         return jsonify("message: 'FAQ not added'")
 
-@app.route('/add-contact', methods=['POST'])
+
+@app.route('/add-contact-info', methods=['POST'])
 def add_contact():
-    new_contact = Contacts(
-        name=request.form.get('name'),
-        email=request.form.get('email'),
-        subject=request.form.get('subject'),
-        message=request.form.get('message')
+    email = request.form.get('email')
+    location = request.form.get('location')
+    phone_number = request.form.get('phone_number')
+    facebook_url = request.form.get('facebook_url')
+    instagram_url = request.form.get('instagram_url')
+    twitter_url = request.form.get('twitter_url')
+
+    print(f'Email: {email}')
+    print(f'Location: {location}')
+    print(f'Phone Number: {phone_number}')
+    print(f'Facebook URL: {facebook_url}')
+    print(f'Instagram URL: {instagram_url}')
+    print(f'Twitter URL: {twitter_url}')
+
+    new_contact_info = Contacts(
+        email=email,
+        location=location,
+        phone_number=phone_number,
+        facebook_url=facebook_url,
+        instagram_url=instagram_url,
+        twitter_url=twitter_url
     )
-    print('🟩Adding new contact to the database')
-    db.session.add(new_contact)
+
+    print('🟩 Adding new contact to the database')
+    db.session.add(new_contact_info)
     db.session.commit()
 
-    if new_contact:
-        return jsonify("message: 'Contact added successfully'")
+    if new_contact_info:
+        return jsonify({"message": "Contact Info added successfully"})
     else:
-        # Todo: Add a flash message to the add-contact.html and return add-contact.html
-        return jsonify("message: 'Contact not added'")
+        return jsonify({"message": "Contact not added"})
+
 
 @app.route('/add-about', methods=['POST'])
 def add_about():
@@ -183,7 +199,7 @@ def add_join_us():
     else:
         return jsonify("message: 'Join Us not added'")
 
-@app.route('/add-home', methods=['POST'])
+@app.route('/add-home-content', methods=['POST'])
 def add_home():
     new_home = HomePage(
         name=request.form.get('name'),
@@ -215,6 +231,22 @@ def add_user():
     else:
         return jsonify("message: 'User not added'")
 
+
+@app.route('/delete-service/<int:service_id>', methods=['DELETE'])
+def delete_service(service_id):
+    service_to_delete = Services.query.get_or_404(service_id)
+    print('🟥Deleting service from the database')
+    db.session.delete(service_to_delete)
+    db.session.commit()
+    return jsonify("message: 'Service deleted successfully'")
+
+@app.route('/delete-faq/<int:faq_id>', methods=['DELETE'])
+def delete_faq(faq_id):
+    faq_to_delete = FAQs.query.get_or_404(faq_id)
+    print('🟥Deleting FAQ from the database')
+    db.session.delete(faq_to_delete)
+    db.session.commit()
+    return jsonify("message: 'FAQ deleted successfully'")
 
 
 
@@ -305,11 +337,7 @@ def send_admin_email(name, subject, email, message, service='gmail'):
 
 
 
-#TODO 10: Create a route for the services page
-# @app.route("/services/<int:service_id>")
-# def get_service(service_id):
-#     service = Services.query.get(service_id)
-#     return render_template("service.html", service=service)
+
 
 
 if __name__ == "__main__":

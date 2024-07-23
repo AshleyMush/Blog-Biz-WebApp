@@ -35,10 +35,7 @@ with app.app_context():
 
 
 
-#TODO: Important, create an api for all routes and test them with postman- use jsonify to return the data.
-# TODO 1: Create a route for the home page
-#TODO 2: parse in the data from the database to the home page
-#TODO 3: Return Json data prior to rendering the template because the template is changing
+# -----------------Routes-------------------------
 
 
 
@@ -47,8 +44,10 @@ with app.app_context():
 
 @app.route("/")
 def home():
-    # db models Contacts, User, Services, FAQs, AboutUs, Home, JoinUs
-    # Models------------
+    """
+    This function returns the home page of the website
+    :return:
+    """
     contacts_data = Contacts.query.all()
     faqs_data = FAQs.query.all()
     services_data = Services.query.all()
@@ -91,8 +90,7 @@ def home():
 
     return jsonify(response)
 
-# Todo: Protect routes with login_required
-# TODO: Create an admin dash board base.html that uses if endpoint == 'the endpoint' to display the data
+
 
 #------ Service Routes -------
 @app.route('/add-service', methods=['POST'])
@@ -143,6 +141,11 @@ def get_all_services():
 
 @app.route('/patch-service/<int:service_id>', methods=['PATCH'])
 def partially_update_service(service_id):
+    """
+    This function partially updates a service in the database or completely updates it
+    :param service_id:
+    :return:
+    """
 
     service = Services.query.get_or_404(service_id)
 
@@ -164,6 +167,11 @@ def partially_update_service(service_id):
 
 @app.route('/delete-service/<int:service_id>', methods=['DELETE'])
 def delete_service(service_id):
+    """
+    This function deletes a service from the database
+    :param service_id:
+    :return:
+    """
     service_to_delete = Services.query.get_or_404(service_id)
     print('🟥Deleting service from the database')
     db.session.delete(service_to_delete)
@@ -175,6 +183,10 @@ def delete_service(service_id):
 #------ FAQ Routes -------
 @app.route('/add-faq', methods=['POST'])
 def add_faq():
+    '''
+    This function adds a new FAQ and answer to the database
+    :return:
+    '''
     new_faq = FAQs(
         question=request.form.get('question'),
         answer=request.form.get('answer')
@@ -191,7 +203,7 @@ def add_faq():
 @app.route('/get-faq/<int:faq_id>')
 def get_faq(faq_id):
     """
-    This function gets a single FAQ from the database
+    This function gets a single FAQ and answer from the database
     :param faq_id:
     :return:
     """
@@ -202,7 +214,7 @@ def get_faq(faq_id):
 @app.route('/get-all-faqs')
 def get_faqs():
     """
-    This function gets all the FAQs from the database
+    This function gets all the FAQs and answer from the database
     :return:
     """
     faqs = FAQs.query.all()
@@ -211,6 +223,11 @@ def get_faqs():
 
 @app.route('/patch-faq/<int:faq_id>', methods=['PATCH'])
 def partially_update_faq(faq_id):
+    """
+    This function partially updates a FAQ and answer in the database or completely updates it
+    :param faq_id:
+    :return:
+    """
     faq = FAQs.query.get_or_404(faq_id)
 
     if 'question' in request.form:
@@ -223,6 +240,11 @@ def partially_update_faq(faq_id):
 
 @app.route('/delete-faq/<int:faq_id>', methods=['DELETE'])
 def delete_faq(faq_id):
+    """
+    This function deletes a FAQ and answer from the database
+    :param faq_id:
+    :return:
+    """
     faq_to_delete = FAQs.query.get_or_404(faq_id)
     print('🟥Deleting FAQ from the database')
     db.session.delete(faq_to_delete)
@@ -287,6 +309,11 @@ def add_jobpage_content():
 
 @app.route('/delete-job/<int:job_id>', methods=['DELETE'])
 def delete_job(job_id):
+    """
+    This function deletes a job from the database
+    :param job_id:
+    :return:
+    """
     job_to_delete = Jobs.query.get_or_404(job_id)
     print('🟥Deleting Job from the database')
     db.session.delete(job_to_delete)
@@ -295,6 +322,11 @@ def delete_job(job_id):
 
 @app.route('/patch-job-info/<int:job_id>', methods=['PATCH'])
 def partially_update_job_info(job_id):
+    """
+    This function partially updates a job in the database or completely updates it
+    :param job_id:
+    :return:
+    """
     job = Jobs.query.get_or_404(job_id)
 
     if 'job_card_img_url' in request.form:
@@ -311,6 +343,10 @@ def partially_update_job_info(job_id):
 #------ Contact Info Routes -------
 @app.route('/add-contact-info', methods=['POST'])
 def add_contact_info():
+    """
+    This function adds contact information to the database
+    :return:
+    """
     email = request.form.get('email')
     location = request.form.get('location')
     phone_number = request.form.get('phone_number')
@@ -344,7 +380,7 @@ def add_contact_info():
         return jsonify({"message": "Contact not added"})
 
 @app.route('/get-contact-info')
-def get_contac_info():
+def get_contact_info():
     """
     This function gets all the contacts from the database
     :return:
@@ -355,6 +391,11 @@ def get_contac_info():
 
 @app.route('/patch-contact-info/<int:contact_id>', methods=['PATCH'])
 def partially_update_contact(contact_id):
+    """
+    This function partially updates a contact in the database or completely updates it
+    :param contact_id:
+    :return:
+    """
     contact = Contacts.query.get_or_404(contact_id)
 
     if 'email' in request.form:
@@ -378,6 +419,10 @@ def partially_update_contact(contact_id):
 #------ About Us Routes -------
 @app.route('/add-about-content', methods=['POST'])
 def add_about_content():
+    """
+    This function adds about page content to the database
+    :return:
+    """
     new_about_content = AboutPageContent(
         img_url=request.form.get('img_url'),
         banner_heading=request.form.get('banner_heading'),
@@ -408,6 +453,10 @@ def get_about_content():
 #------ Home Page Routes -------
 @app.route('/add-home-content', methods=['POST'])
 def add_homepage_content():
+    """
+    This function adds home page content to the database
+    :return:
+    """
     new_home = HomePage(
         name=request.form.get('name'),
         heading=request.form.get('heading'),
@@ -500,37 +549,15 @@ def search():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#TODO: Test out delete job, partial update job, completely update job. Test out patch contact info, completely update contact info, test out delete contact info
-
-#TODO: Post a job
-
-
-
-
-
-
-
-
-
-
-
-
-
 def send_confirmation_email(name, email, subject, service='gmail'):
+    """
+    This function sends a confirmation email to the user
+    :param name:
+    :param email:
+    :param subject:
+    :param service:
+    :return:
+    """
     # Email content
     email_content = render_template('user_email.html', name=name)
 
@@ -566,6 +593,15 @@ def send_confirmation_email(name, email, subject, service='gmail'):
         render_template('base.html')
 
 def send_admin_email(name, subject, email, message, service='gmail'):
+    """
+    This function sends an email to the admin
+    :param name:
+    :param subject:
+    :param email:
+    :param message:
+    :param service:
+    :return:
+    """
 
 
     email_content = render_template('admin_email.html', name=name, subject=subject, email=email,
@@ -605,7 +641,6 @@ def send_admin_email(name, subject, email, message, service='gmail'):
         flash(message='Error sending email', category='danger')
         render_template('base.html')
 
-#TODO: Make Routes for entering data into the database and test it out with postman
 
 
 

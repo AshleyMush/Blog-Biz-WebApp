@@ -16,11 +16,10 @@ class Services(db.Model):
     __tablename__ = "services"
     id = db.Column(db.Integer, primary_key=True)
     service_name = db.Column(db.String(250), nullable=False)
-    homepage_img_url = db.Column(db.String(250), nullable=False)
-    homepage_content = db.Column(db.Text, nullable=False)  # Rich text content
-    servicepage_img_url = db.Column(db.String(250), nullable=False)
+    service_img_url = db.Column(db.String(250), nullable=False)
+    homepage_description = db.Column(db.Text, nullable=False)  # Rich text content
     banner_subheading = db.Column(db.String(250), nullable=False)
-    body_content = db.Column(db.Text, nullable=False)  # Rich text content
+    service_body_content = db.Column(db.Text, nullable=False)  # Rich text content
 
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
@@ -77,26 +76,34 @@ class Contacts(db.Model, UserMixin):
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
-class AboutUs(db.Model, UserMixin):
-    __tablename__ = "about_us"
+class AboutPageContent(db.Model, UserMixin):
+    __tablename__ = "about_page"
     id = db.Column(db.Integer, primary_key=True)
     img_url = db.Column(db.String(250), nullable=False)
     banner_heading = db.Column(db.String(250), nullable=False)
     banner_subheading = db.Column(db.String(250), nullable=False)
-    banner_content = db.Column(db.Text, nullable=False)  # Rich text content
+    body_content = db.Column(db.Text, nullable=False)  # Rich text content
 
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
-class JoinUs(db.Model, UserMixin):
-    __tablename__ = "join_us"
+class Jobs(db.Model, UserMixin):
+    __tablename__ = "Jobs"
     id = db.Column(db.Integer, primary_key=True)
-    img_url = db.Column(db.String(250), nullable=False)
+    job_name = db.Column(db.String(250), nullable=False)
+    job_card_img_url = db.Column(db.String(250), nullable=False)
+
+    def to_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
+class JobPageContent(db.Model, UserMixin):
+    __tablename__ = "job_page_content"
+
+    id = db.Column(db.Integer, primary_key=True)
+    page_img_url = db.Column(db.String(250), nullable=False)
     banner_heading = db.Column(db.String(250), nullable=False)
     banner_subheading = db.Column(db.String(250), nullable=False)
-    banner_content = db.Column(db.Text, nullable=False)  # Rich text content
-    job_card_heading = db.Column(db.String(250), nullable=False)
-    job_card_img_url = db.Column(db.String(250), nullable=False)
+    page_content = db.Column(db.Text, nullable=False)  # Rich text content
 
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}

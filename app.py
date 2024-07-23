@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
 import smtplib
 from email.mime.text import MIMEText
-from models import db, Contacts, User, Services, FAQs, AboutUs, HomePage, JoinUs
+from models import db, Contacts, User, Services, FAQs, AboutPageContent, HomePage, Jobs,JobPageContent
 from forms import CallbackForm, ContactForm
 import os
 import requests
@@ -93,16 +93,21 @@ def home():
 
 # Todo: Protect routes with login_required
 # TODO: Create an admin dash board base.html that uses if endpoint == 'the endpoint' to display the data
+
+#------ Service Routes -------
 @app.route('/add-service', methods=['POST'])
 def add_service():
+    """
+    This function adds a service to the database for service homepage content and service page content
+    :return:
+    """
 
     new_service = Services(
         service_name=request.form.get('service_name'),
-        homepage_img_url=request.form.get('homepage_img_url'),
-        homepage_content=request.form.get('homepage_content'),
-        servicepage_img_url=request.form.get('servicepage_img_url'),
+        service_img_url=request.form.get('service_img_url'),
+        homepage_description =request.form.get('homepage_description'),
         banner_subheading=request.form.get('banner_subheading'),
-        body_content=request.form.get('body_content')
+        service_body_content=request.form.get('service_body_content')
     )
     print('🟩Adding new service to the database')
     db.session.add(new_service)
@@ -116,6 +121,58 @@ def add_service():
     else:
         return jsonify("message: 'Service not added'")
 
+@app.route('/get-service/<int:service_id>')
+def get_service(service_id):
+    """
+    This function gets a single service from the database
+    :param service_id:
+    :return:
+    """
+    service = Services.query.get_or_404(service_id)
+    return jsonify(service.to_dict())
+
+@app.route('/get-all-services')
+def get_all_services():
+    """
+    This function gets all the services from the database
+    :return:
+    """
+    services = Services.query.all()
+    services_dict = [service.to_dict() for service in services]
+    return jsonify(services_dict)
+
+@app.route('/patch-service/<int:service_id>', methods=['PATCH'])
+def partially_update_service(service_id):
+
+    service = Services.query.get_or_404(service_id)
+
+    if 'service_name' in request.form:
+        service.service_name = request.form.get('service_name')
+    if 'homepage_img_url' in request.form:
+        service.homepage_img_url = request.form.get('homepage_img_url')
+    if 'homepage_content' in request.form:
+        service.homepage_content = request.form.get('homepage_content')
+    if 'servicepage_img_url' in request.form:
+        service.servicepage_img_url = request.form.get('servicepage_img_url')
+    if 'banner_subheading' in request.form:
+        service.banner_subheading = request.form.get('banner_subheading')
+    if 'body_content' in request.form:
+        service.body_content = request.form.get('body_content')
+
+    db.session.commit()
+    return jsonify("message: 'Service updated successfully'")
+
+@app.route('/delete-service/<int:service_id>', methods=['DELETE'])
+def delete_service(service_id):
+    service_to_delete = Services.query.get_or_404(service_id)
+    print('🟥Deleting service from the database')
+    db.session.delete(service_to_delete)
+    db.session.commit()
+    return jsonify("message: 'Service deleted successfully'")
+
+
+
+#------ FAQ Routes -------
 @app.route('/add-faq', methods=['POST'])
 def add_faq():
     new_faq = FAQs(
@@ -131,9 +188,129 @@ def add_faq():
     else:
         return jsonify("message: 'FAQ not added'")
 
+@app.route('/get-faq/<int:faq_id>')
+def get_faq(faq_id):
+    """
+    This function gets a single FAQ from the database
+    :param faq_id:
+    :return:
+    """
+    faq = FAQs.query.get_or_404(faq_id)
+    return jsonify(faq.to_dict())
 
+
+@app.route('/get-all-faqs')
+def get_faqs():
+    """
+    This function gets all the FAQs from the database
+    :return:
+    """
+    faqs = FAQs.query.all()
+    faqs_dict = [faq.to_dict() for faq in faqs]
+    return jsonify(faqs_dict)
+
+@app.route('/patch-faq/<int:faq_id>', methods=['PATCH'])
+def partially_update_faq(faq_id):
+    faq = FAQs.query.get_or_404(faq_id)
+
+    if 'question' in request.form:
+        faq.question = request.form.get('question')
+    if 'answer' in request.form:
+        faq.answer = request.form.get('answer')
+
+    db.session.commit()
+    return jsonify("message: 'FAQ updated successfully'")
+
+@app.route('/delete-faq/<int:faq_id>', methods=['DELETE'])
+def delete_faq(faq_id):
+    faq_to_delete = FAQs.query.get_or_404(faq_id)
+    print('🟥Deleting FAQ from the database')
+    db.session.delete(faq_to_delete)
+    db.session.commit()
+    return jsonify("message: 'FAQ deleted successfully'")
+
+
+#------ Job Routes -------
+
+@app.route('/post-job', methods=['POST'])
+def add_job():
+    """
+    This function posts a job to the database
+    :return:
+    """
+    job_info = Jobs(
+        job_name=request.form.get('job_name'),
+        job_card_img_url=request.form.get('job_card_img_url')
+    )
+
+    db.session.add(job_info)
+    db.session.commit()
+
+    return jsonify("message: 'Job posted successfully'")
+
+@app.route('/get-all-jobs')
+def get_jobs():
+    """
+    This function gets all the jobs from the database
+    :return:
+    """
+    jobs = Jobs.query.all()
+    jobs_dict = [job.to_dict() for job in jobs]
+    return jsonify(jobs_dict)
+
+@app.route('/get-job/<int:job_id>')
+def get_job(job_id):
+    """
+    This function gets a single job from the database
+    :param job_id:
+    :return:
+    """
+    job = Jobs.query.get_or_404(job_id)
+    return jsonify(job.to_dict())
+
+@app.route('/add-job-content', methods=['POST'])
+def add_jobpage_content():
+    """
+    This function adds job page/ careers content to the database
+    :return:
+    """
+    new_job_content = JobPageContent(
+        page_img_url=request.form.get('img_url'),
+        banner_heading=request.form.get('banner_heading'),
+        banner_subheading=request.form.get('banner_subheading'),
+        jobpage_content=request.form.get('page_content'),
+    )
+
+    db.session.add(new_job_content)
+    db.session.commit()
+    return jsonify("message: 'Job content added successfully'")
+
+@app.route('/delete-job/<int:job_id>', methods=['DELETE'])
+def delete_job(job_id):
+    job_to_delete = Jobs.query.get_or_404(job_id)
+    print('🟥Deleting Job from the database')
+    db.session.delete(job_to_delete)
+    db.session.commit()
+    return jsonify("message: 'Job deleted successfully'")
+
+@app.route('/patch-job-info/<int:job_id>', methods=['PATCH'])
+def partially_update_job_info(job_id):
+    job = Jobs.query.get_or_404(job_id)
+
+    if 'job_card_img_url' in request.form:
+        job.img_url = request.form.get('img_url')
+
+    if 'job_name' in request.form:
+        job.job_name= request.form.get('job_name')
+
+    db.session.commit()
+    return jsonify("message: 'Job updated successfully'")
+
+
+
+#------ Contact Info Routes -------
 @app.route('/add-contact-info', methods=['POST'])
-def add_contact():
+def add_contact_info():
     email = request.form.get('email')
     location = request.form.get('location')
     phone_number = request.form.get('phone_number')
@@ -166,41 +343,71 @@ def add_contact():
     else:
         return jsonify({"message": "Contact not added"})
 
+@app.route('/get-contact-info')
+def get_contac_info():
+    """
+    This function gets all the contacts from the database
+    :return:
+    """
+    contacts = Contacts.query.all()
+    contacts_dict = [contact.to_dict() for contact in contacts]
+    return jsonify(contacts_dict)
 
-@app.route('/add-about', methods=['POST'])
-def add_about():
-    new_about = AboutUs(
+@app.route('/patch-contact-info/<int:contact_id>', methods=['PATCH'])
+def partially_update_contact(contact_id):
+    contact = Contacts.query.get_or_404(contact_id)
+
+    if 'email' in request.form:
+        contact.email = request.form.get('email')
+    if 'location' in request.form:
+        contact.location = request.form.get('location')
+    if 'phone_number' in request.form:
+        contact.phone_number = request.form.get('phone_number')
+    if 'facebook_url' in request.form:
+        contact.facebook_url = request.form.get('facebook_url')
+    if 'instagram_url' in request.form:
+        contact.instagram_url = request.form.get('instagram_url')
+    if 'twitter_url' in request.form:
+        contact.twitter_url = request.form.get('twitter_url')
+
+    db.session.commit()
+    return jsonify("message: 'Contact updated successfully'")
+
+
+
+#------ About Us Routes -------
+@app.route('/add-about-content', methods=['POST'])
+def add_about_content():
+    new_about_content = AboutPageContent(
         img_url=request.form.get('img_url'),
         banner_heading=request.form.get('banner_heading'),
-        banner_content=request.form.get('banner_content')
+        banner_subheading=request.form.get('banner_subheading'),
+        body_content=request.form.get('banner_content')
     )
     print('🟩Adding new about to the database')
-    db.session.add(new_about)
+    db.session.add(new_about_content)
     db.session.commit()
 
-    if new_about:
+    if new_about_content:
         return jsonify("message: 'About added successfully'")
     else:
         return jsonify("message: 'About not added'")
 
-@app.route('/add-join-us', methods=['POST'])
-def add_join_us():
-    new_join_us = JoinUs(
-        img_url=request.form.get('img_url'),
-        banner_heading=request.form.get('banner_heading'),
-        banner_content=request.form.get('banner_content')
-    )
-    print('🟩Adding new join us to the database')
-    db.session.add(new_join_us)
-    db.session.commit()
+@app.route('/get-about-content')
+def get_about_content():
+    """
+    This function gets all the about page content from the database
+    :return:
+    """
+    about_content = AboutPageContent.query.all()
+    about_content_dict = [about.to_dict() for about in about_content]
+    return jsonify(about_content_dict)
 
-    if new_join_us:
-        return jsonify("message: 'Join Us added successfully'")
-    else:
-        return jsonify("message: 'Join Us not added'")
 
+
+#------ Home Page Routes -------
 @app.route('/add-home-content', methods=['POST'])
-def add_home():
+def add_homepage_content():
     new_home = HomePage(
         name=request.form.get('name'),
         heading=request.form.get('heading'),
@@ -215,6 +422,37 @@ def add_home():
     else:
         return jsonify("message: 'Home not added'")
 
+@app.route('/get-home-content')
+def get_home_content():
+    """
+    This function gets all the home page content from the database
+    :return:
+    """
+    home_content = HomePage.query.all()
+    home_content_dict = [home.to_dict() for home in home_content]
+    return jsonify(home_content_dict)
+
+@app.route('/patch-home-content/<int:home_id>', methods=['PATCH'])
+def partially_update_home_content(home_id):
+    """
+    This function partially updates the home page content
+    :param home_id:
+    :return:
+    """
+    home = HomePage.query.get_or_404(home_id)
+
+    if 'name' in request.form:
+        home.name = request.form.get('name')
+    if 'heading' in request.form:
+        home.heading = request.form.get('heading')
+    if 'subheading' in request.form:
+        home.subheading = request.form.get('subheading')
+
+    db.session.commit()
+    return jsonify("message: 'Home updated successfully'")
+
+
+#------ User Routes -------
 @app.route('/add-user', methods=['POST'])
 def add_user():
     new_user = User(
@@ -232,21 +470,56 @@ def add_user():
         return jsonify("message: 'User not added'")
 
 
-@app.route('/delete-service/<int:service_id>', methods=['DELETE'])
-def delete_service(service_id):
-    service_to_delete = Services.query.get_or_404(service_id)
-    print('🟥Deleting service from the database')
-    db.session.delete(service_to_delete)
-    db.session.commit()
-    return jsonify("message: 'Service deleted successfully'")
+#------ Service Routes -------
+@app.route('/search', methods=['GET'])
+def search():
+    search_term = request.args.get('search')
+    print(f'Searching for: {search_term}')
 
-@app.route('/delete-faq/<int:faq_id>', methods=['DELETE'])
-def delete_faq(faq_id):
-    faq_to_delete = FAQs.query.get_or_404(faq_id)
-    print('🟥Deleting FAQ from the database')
-    db.session.delete(faq_to_delete)
-    db.session.commit()
-    return jsonify("message: 'FAQ deleted successfully'")
+    if search_term:
+        # Query Services
+        services_results = Services.query.filter(Services.service_name.contains(search_term)).all()
+        services_results_dict = [result.to_dict() for result in services_results]
+
+        # Query Jobs
+        jobs_results = Jobs.query.filter(Jobs.job_name.contains(search_term)).all()
+        jobs_results_dict = [result.to_dict() for result in jobs_results]
+
+        # Combine Results
+        combined_results = {
+            'services': services_results_dict,
+            'jobs': jobs_results_dict
+        }
+
+        return jsonify(combined_results)
+    else:
+        return jsonify({'services': [], 'jobs': []}), 200
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#TODO: Test out delete job, partial update job, completely update job. Test out patch contact info, completely update contact info, test out delete contact info
+
+#TODO: Post a job
+
+
+
 
 
 

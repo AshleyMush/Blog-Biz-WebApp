@@ -31,19 +31,14 @@ class ContactForm(FlaskForm):
 
 
 
-class ServicesForm(FlaskForm):
-    name = StringField('Service Name', validators=[DataRequired()])
-    homepage_img_url = StringField('Homepage Image URL', validators=[DataRequired()])
-    homepage_subheading = StringField('Homepage Subheading', validators=[DataRequired()])
-    homepage_content = CKEditorField('Homepage Briefing Content', validators=[DataRequired()])
-
-    banner_heading = StringField('Banner Heading', validators=[DataRequired()])
+class AddServicesForm(FlaskForm):
+    service_name = StringField('Service Name', validators=[DataRequired()])
+    homepage_description = StringField('Homepage Description', validators=[DataRequired()])
+    service_img_url = StringField('Service Image URL', validators=[DataRequired()])
     banner_subheading = StringField('Banner Subheading', validators=[DataRequired()])
-    banner_content = CKEditorField('Banner Content', validators=[DataRequired()])
-
-    body_content = CKEditorField('Section 1 Content', validators=[DataRequired()])
-
+    service_body_content = CKEditorField('Service Body Content', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
 
 class UserForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])

@@ -1,10 +1,10 @@
-from flask import Flask,  render_template,jsonify,   flash, request
+from flask import Flask,  render_template,jsonify,   flash, request, redirect, url_for
 from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
 import smtplib
 from email.mime.text import MIMEText
 from models import db, Contacts, User, Services, FAQs, AboutPageContent, HomePage, Jobs,JobPageContent
-from forms import CallbackForm, ContactForm
+from forms import CallbackForm, ContactForm, AddServicesForm
 import os
 import requests
 
@@ -37,7 +37,9 @@ with app.app_context():
 
 # -----------------Routes-------------------------
 
-
+@app.route('/admin')
+def admin():
+    return render_template('admin_dashboard_base.html')
 
 
 
@@ -93,31 +95,36 @@ def home():
 
 
 #------ Service Routes -------
-@app.route('/add-service', methods=['POST'])
+
+#TODO: Fix the add-service route
+@app.route('/add-service', methods=['POST', 'GET'])
 def add_service():
     """
     This function adds a service to the database for service homepage content and service page content
     :return:
     """
 
-    new_service = Services(
-        service_name=request.form.get('service_name'),
-        service_img_url=request.form.get('service_img_url'),
-        homepage_description =request.form.get('homepage_description'),
-        banner_subheading=request.form.get('banner_subheading'),
-        service_body_content=request.form.get('service_body_content')
-    )
-    print('🟩Adding new service to the database')
-    db.session.add(new_service)
-    db.session.commit()
+    add_service_form = AddServicesForm()
+    if add_service_form.validate_on_submit():
 
-    # Todo: Add a flash message to the base.html and return base.html
-
-
-    if new_service:
-        return jsonify("message: 'Service added successfully'")
+        new_service = Services(
+            service_name=add_service_form.service_name.data,
+            homepage_description=add_service_form.homepage_description.data,
+            service_img_url=add_service_form.service_img_url.data,
+            banner_subheading=add_service_form.banner_subheading.data,
+            service_body_content=add_service_form.service_body_content.data
+        )
+        db.session.add(new_service)
+        db.session.commit()
+        flash('Service added successfully', 'success')
+        return redirect(url_for('admin', add_service_form=add_service_form))
     else:
-        return jsonify("message: 'Service not added'")
+        flash('Service not added', 'danger')
+        return redirect(url_for('admin', add_service_form=add_service_form))
+
+    return render_template('admin_dashboard_base.html', add_service_form=add_service_form)
+
+
 
 @app.route('/get-service/<int:service_id>')
 def get_service(service_id):

@@ -4,7 +4,7 @@ from flask_ckeditor import CKEditor
 import smtplib
 from email.mime.text import MIMEText
 from models import db, Contacts, User, Services, FAQs, AboutPageContent, HomePage, Jobs,JobPageContent
-from forms import CallbackForm, ContactForm, AddServicesForm
+from forms import CallbackForm, ContactForm, AddServicesForm, UpdateServiceForm
 import os
 import requests
 
@@ -32,6 +32,27 @@ with app.app_context():
     db.create_all()
 
 
+
+# -----------------Dummy content-------------------------
+    default_service = Services(
+        service_name='Some Service',
+        homepage_description='Some Amazing Description',
+        service_img_url='https://img.freepik.com/free-vector/tech-support-concept-illustration_114360-20464.jpg?t=st=1722321127~exp=1722324727~hmac=ba25d25f1e193deb946413940da810f1a8bcd216ddfe3cfede58f6480eca8e5c&w=826',
+        banner_subheading='Some Catchy Phrase',
+        service_body_content='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, vestibulum ligula sit amet,'
+    )
+    db.session.add(default_service)
+    db.session.commit()
+    print('🟩Adding default service to the database')
+
+    default_faq = FAQs(
+        question='Some Question',
+        answer='Some Answer'
+    )   
+    db.session.add(default_faq)
+    db.session.commit()
+    print('🟩Adding default FAQ to the database')
+          
 
 
 
@@ -96,7 +117,6 @@ def home():
 
 #------ Service Routes -------
 
-#TODO: Fix the add-service route
 @app.route('/add-service', methods=['POST', 'GET'])
 def add_service():
     """
@@ -104,8 +124,9 @@ def add_service():
     :return:
     """
 
+
     add_service_form = AddServicesForm()
-    if add_service_form.validate_on_submit():
+    if add_service_form.validate_on_submit() and add_service_form.data:
 
         new_service = Services(
             service_name=add_service_form.service_name.data,
@@ -117,12 +138,17 @@ def add_service():
         db.session.add(new_service)
         db.session.commit()
         flash('Service added successfully', 'success')
-        return redirect(url_for('admin', add_service_form=add_service_form))
-    else:
-        flash('Service not added', 'danger')
-        return redirect(url_for('admin', add_service_form=add_service_form))
+        return redirect(url_for('add_service'))
 
-    return render_template('admin_dashboard_base.html', add_service_form=add_service_form)
+    if add_service_form.errors:
+        # If form validation fails or other errors occur, render the template with the form and flash error messages
+
+        for field, errors in add_service_form.errors.items():
+            for error in errors:
+                flash(f'Error in {field}: {error}', 'danger')
+
+    # Pass endpoint variable and form to the template
+    return render_template('admin_dashboard_base.html', add_service_form=add_service_form, endpoint='add_service')
 
 
 
@@ -146,8 +172,15 @@ def get_all_services():
     services_dict = [service.to_dict() for service in services]
     return jsonify(services_dict)
 
+#TODO: Change the route to html
 @app.route('/patch-service/<int:service_id>', methods=['PATCH'])
 def partially_update_service(service_id):
+    """
+
+    :param service_id:
+    :return:
+    """
+    form = UpdateServiceForm()
     """
     This function partially updates a service in the database or completely updates it
     :param service_id:
@@ -169,8 +202,8 @@ def partially_update_service(service_id):
     if 'body_content' in request.form:
         service.body_content = request.form.get('body_content')
 
-    db.session.commit()
-    return jsonify("message: 'Service updated successfully'")
+    flash('Service added successfully', 'success')
+    return redirect(url_for('partially_update_service', service_id=service_id)) # Redirect to the same page after updating the service'))
 
 @app.route('/delete-service/<int:service_id>', methods=['DELETE'])
 def delete_service(service_id):

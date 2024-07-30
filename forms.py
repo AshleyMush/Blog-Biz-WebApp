@@ -39,6 +39,14 @@ class AddServicesForm(FlaskForm):
     service_body_content = CKEditorField('Service Body Content', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
+class UpdateServiceForm(FlaskForm):
+    service_name = StringField('Service Name', validators=[DataRequired()])
+    homepage_description = StringField('Homepage Description', validators=[DataRequired()])
+    service_img_url = StringField('Service Image URL', validators=[DataRequired()])
+    banner_subheading = StringField('Banner Subheading', validators=[DataRequired()])
+    service_body_content = CKEditorField('Service Body Content', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
 
 class UserForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])

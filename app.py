@@ -60,7 +60,7 @@ with app.app_context():
 
 @app.route('/admin')
 def admin():
-    return render_template('admin_dashboard_base.html')
+    return render_template('blank.html')
 
 
 

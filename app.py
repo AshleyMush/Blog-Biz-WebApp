@@ -21,6 +21,8 @@ app.config['SECRET_KEY'] = os.environ.get("SECRET_APP_KEY")
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 
+#Todo: Remove and reactivate CRF token
+app.config['WTF_CSRF_ENABLED'] = False
 
 
 
@@ -34,25 +36,28 @@ with app.app_context():
 
 
 # -----------------Dummy content-------------------------
-    default_service = Services(
-        service_name='Some Service',
-        homepage_description='Some Amazing Description',
-        service_img_url='https://img.freepik.com/free-vector/tech-support-concept-illustration_114360-20464.jpg?t=st=1722321127~exp=1722324727~hmac=ba25d25f1e193deb946413940da810f1a8bcd216ddfe3cfede58f6480eca8e5c&w=826',
-        banner_subheading='Some Catchy Phrase',
-        service_body_content='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, vestibulum ligula sit amet,'
-    )
-    db.session.add(default_service)
-    db.session.commit()
-    print('🟩Adding default service to the database')
+    # Check if the default service exists
+    if not Services.query.first():
+        default_service = Services(
+            service_name='Some Service',
+            homepage_description='Some Amazing Description',
+            service_img_url='https://img.freepik.com/free-vector/tech-support-concept-illustration_114360-20464.jpg?t=st=1722321127~exp=1722324727~hmac=ba25d25f1e193deb946413940da810f1a8bcd216ddfe3cfede58f6480eca8e5c&w=826',
+            banner_subheading='Some Catchy Phrase',
+            service_body_content='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, vestibulum ligula sit amet,'
+        )
+        db.session.add(default_service)
+        db.session.commit()
+        print('🟩Adding default service to the database')
 
-    default_faq = FAQs(
-        question='Some Question',
-        answer='Some Answer'
-    )   
-    db.session.add(default_faq)
-    db.session.commit()
-    print('🟩Adding default FAQ to the database')
-          
+    # Check if the default FAQ exists
+    if not FAQs.query.first():
+        default_faq = FAQs(
+            question='Some Question',
+            answer='Some Answer'
+        )
+        db.session.add(default_faq)
+        db.session.commit()
+        print('🟩Adding default FAQ to the database')
 
 
 
@@ -60,7 +65,7 @@ with app.app_context():
 
 @app.route('/admin')
 def admin():
-    return render_template('blank.html')
+    return render_template('admin-dashboard-base.html')
 
 
 
@@ -141,8 +146,7 @@ def add_service():
         return redirect(url_for('add_service'))
 
     if add_service_form.errors:
-        # If form validation fails or other errors occur, render the template with the form and flash error messages
-
+        print(add_service_form.errors)
         for field, errors in add_service_form.errors.items():
             for error in errors:
                 flash(f'Error in {field}: {error}', 'danger')
@@ -169,8 +173,9 @@ def get_all_services():
     :return:
     """
     services = Services.query.all()
-    services_dict = [service.to_dict() for service in services]
-    return jsonify(services_dict)
+
+
+    return render_template('admin-dashboard-base.html', services=services, endpoint='get_all_services')
 
 #TODO: Change the route to html
 @app.route('/patch-service/<int:service_id>', methods=['PATCH'])
@@ -189,7 +194,7 @@ def partially_update_service(service_id):
 
     service = Services.query.get_or_404(service_id)
 
-    if 'service_name' in request.form:
+    if 'service_name' in request.form and form.validate_on_submit():
         service.service_name = request.form.get('service_name')
     if 'homepage_img_url' in request.form:
         service.homepage_img_url = request.form.get('homepage_img_url')
@@ -203,7 +208,10 @@ def partially_update_service(service_id):
         service.body_content = request.form.get('body_content')
 
     flash('Service added successfully', 'success')
-    return redirect(url_for('partially_update_service', service_id=service_id)) # Redirect to the same page after updating the service'))
+
+    #Todo : Change the return to render_template
+    #return render_template('admin-dashboard-base', service_id=service_id, endpoint='patch_service', UpdateServicesForm=form)
+    return render_template('404.html')
 
 @app.route('/delete-service/<int:service_id>', methods=['DELETE'])
 def delete_service(service_id):
@@ -216,7 +224,8 @@ def delete_service(service_id):
     print('🟥Deleting service from the database')
     db.session.delete(service_to_delete)
     db.session.commit()
-    return jsonify("message: 'Service deleted successfully'")
+    flash('Service deleted successfully', 'success')
+    return redirect(url_for('get_all_services'))
 
 
 

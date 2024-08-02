@@ -1,0 +1,45 @@
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Services List</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Service Name</th>
+                        <th>Banner Subheading</th>
+                        <th>Homepage Description</th>
+                        <th>Service Body Content</th>
+                        <th>Service Image URL</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for service in services %}
+                    <tr>
+                        <td>{{ service.id }}</td>
+                        <td>{{ service.service_name }}</td>
+                        <td>{{ service.banner_subheading }}</td>
+                        <td>{{ service.homepage_description }}</td>
+                        <td>{{ service.service_body_content }}</td>
+                        <td><img src="{{ service.service_img_url }}" alt="Service Image" style="width: 100px;"></td>
+                        <td>
+
+                            <!--TODO: Add the correct URL for the edit_service route-->
+                            <a href="{{ url_for('partially_update_service', service_id=service.id) }}">
+                                <button class="btn btn-primary">Edit Service</button>
+                            </a>
+                         <a href="{{ url_for('delete_service', service_id=service.id) }}">
+
+                                <button class="btn btn-danger">Delete Service</button>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

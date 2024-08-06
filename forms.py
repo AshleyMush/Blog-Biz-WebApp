@@ -1,10 +1,19 @@
 from flask_wtf import FlaskForm
 from flask_ckeditor import CKEditorField
 from wtforms import StringField, SubmitField, TextAreaField
-from wtforms.validators import DataRequired, URL, Email, Length, ValidationError, InputRequired
+from wtforms.validators import DataRequired, URL, Email, Length, ValidationError, InputRequired, Optional
 import re
 from flask import flash
 
+
+
+
+class HomePageInfoForm(FlaskForm):
+
+    name = StringField('Company Name', validators=[DataRequired()])
+    heading = StringField('Heading', validators=[DataRequired()])
+    subheading = StringField('Subheading', validators=[DataRequired()])
+    submit = SubmitField('Save Changes')
 
 class CallbackForm(FlaskForm):
     callback_name = StringField('Name', validators=[DataRequired(), Length(max=64)],
@@ -40,12 +49,13 @@ class AddServicesForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class UpdateServiceForm(FlaskForm):
-    service_name = StringField('Service Name', validators=[DataRequired()])
-    homepage_description = StringField('Homepage Description', validators=[DataRequired()])
-    service_img_url = StringField('Service Image URL', validators=[DataRequired()])
-    banner_subheading = StringField('Banner Subheading', validators=[DataRequired()])
-    service_body_content = CKEditorField('Service Body Content', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+    service_name = StringField('Service Name')
+    banner_subheading = StringField('Banner Subheading')
+    homepage_description = StringField('Homepage Description')
+    service_img_url = StringField('Service Image URL', validators=[URL()])
+
+    service_body_content = CKEditorField('Service Body Content')
+    submit = SubmitField('Save Changes')
 
 
 class UserForm(FlaskForm):
@@ -63,5 +73,17 @@ class AboutUsForm(FlaskForm):
     banner_heading = StringField('Banner Heading', validators=[DataRequired()])
     banner_content = CKEditorField('Banner Content', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+
+ 
+
+class ContactInfo(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    location = StringField('Location', validators=[DataRequired()])
+    phone_number = StringField('Phone Number', validators=[DataRequired()])
+    facebook_url = StringField('Facebook URL', validators=[Optional(), URL()])
+    instagram_url = StringField('Instagram URL', validators=[Optional(), URL()])
+    twitter_url = StringField('Twitter URL', validators=[Optional(), URL()])
+    submit = SubmitField('Save Changes')
 
 

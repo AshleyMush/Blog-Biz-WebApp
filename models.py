@@ -50,6 +50,7 @@ class HomePage(db.Model, UserMixin):
     name = db.Column(db.String(250), nullable=False)
     heading = db.Column(db.String(250), unique=True, nullable=False)
     subheading = db.Column(db.String(250), nullable=False)
+    img_url = db.Column(db.String(250), nullable=False)
 
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}

@@ -1,0 +1,41 @@
+{% from 'bootstrap4/form.html' import render_form %}
+
+<div class="card shadow mb-4 mt-4">
+    <div class="card-header py-3">
+
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>name</th>
+                        <th>Heading</th>
+                        <th>Subheading</th>
+                        <th>Image Url</th>
+                        
+                    </tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ home.id }}</td>
+                        <td>{{ home.name }}</td>
+                        <td>{{ home.heading }}</td>
+                        <td>{{ home.subheading }}</td>
+                        <td>{{ home.image_url }}
+
+
+
+
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{{ render_form(home_form, novalidate=True)}}

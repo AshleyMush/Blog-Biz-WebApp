@@ -46,6 +46,8 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    <!--Ckeditor-->
+                    {{ ckeditor.load() }}
 
                     {% block content %}
 
@@ -62,20 +64,67 @@
                                         {% endif %}
                                         {% endwith %}
                                         <!-- End of Flash Messages -->
-
-
-
-                    {% if endpoint == 'get_all_services' %}
+                    {% if endpoint == 'patch_home_content' %}
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Edit Page</h1>
+                    <h1 class="h3 mb-4 text-gray-800">Edit Home Page Content</h1>
 
-                    {% include 'services-list-admin.html' %}
+                        {% include 'edit-home-content.html' %}
 
                     {% endif %}
 
 
 
-                    <h1 class="h3 mb-4 text-gray-800">Edit Page</h1>
+                    <!--Add service endpoint-->
+                    {% if endpoint == 'add_service' %}
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-4 text-gray-800">Add Service</h1>
+
+                        {% include 'add-service.html' %}
+
+
+                    {% endif %}
+
+
+                    <!--Get all services endpoint-->
+                    {% if endpoint == 'get_all_services' %}
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-4 text-gray-800">Customise your services pages</h1>
+
+                        {% include 'services-list-admin.html' %}
+
+                    {% endif %}
+
+
+                    <!--Update service endpoint-->
+                    {% if endpoint == 'patch_service' %}
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-4 text-gray-800">Editing  </h1>
+
+                        {% include 'edit-service.html' %}
+
+                    
+
+                    {% endif %}
+
+                    <!--Add contact info endpoint-->
+                    {% if endpoint == 'edit_contact_info' %}
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-4 text-gray-800">Customise Contact Info</h1>
+
+                        {% include 'edit-contact-info.html' %}
+
+                    {% endif %}
+
+                    {% if endpoint == 'get_contact_info' %}
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-4 text-gray-800">Contact Info</h1>
+
+                        {% include 'contact-info.html' %}
+
+                    {% endif %}
+
+
+                    
 
                     {% endblock %}
 

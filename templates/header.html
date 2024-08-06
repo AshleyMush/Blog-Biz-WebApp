@@ -6,8 +6,11 @@
                 <div class="col-4 pt-1">
 
                 </div>
+                
+                <!--Top Logo-->
                 <div class="col-4 text-center d-flex justify-content-center align-items-center">
-                    <img src="../static/images/P-logo-trans.svg" class="top-logo" alt="">
+                    <img src="../static/images/P-Care-logo.png" class="top-logo" alt="">
+                    </a>
                     <h1 class="mb-0 ms-0 logo-text">arherssia </h1>
                     <h1 class="mb-0 ms-2 logo-text care"> Care</h1>
 
@@ -36,28 +39,29 @@
                 </div>
 
                 <ul class="nav col-12 col-md-12 mb-2 justify-content-center mb-md-0">
-                    <li><a href="{{url_for('go_home')}}" class="nav-link px-2 link-secondary">Home</a></li>
+                    <li><a href="{{url_for('home')}}" class="nav-link px-2 link-secondary">Home</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             Our Services
                         </a>
+                        <!--Services drop down-->
+                        <!--TODO add <a href=" url_for('get_service', service_id=service.id) ">-->
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('personal_care') }}">Personal Care</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('livein') }}">Live-in Care</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('respite') }}">Respite-to-Care</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('practicalsupport') }}">Practical Support</a>
-                            </li>
-                            <li><a class="dropdown-item" href="{{ url_for('complex') }}">Complex Care</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('palliative') }}">Palliative Care</a></li>
+                            {% for service in services_data %}
+                            <li><a class="dropdown-item" href="#">{{ service.service_name }}</a></li>
+                            
+                            {% endfor %}
                         </ul>
 
 
                     </li>
-                    <li><a href="{{url_for('contact_us')}}" class="nav-link px-2">Contact Us</a></li>
-                    <li><a href="{{url_for('get_jobs')}}" class="nav-link px-2">Join Us</a></li>
-                    <li><a href="{{url_for('get_about')}}" class="nav-link px-2">About Us</a></li>
+                    <li><a href="#" class="nav-link px-2">Contact Us</a></li>
+                    <li><a href="#" class="nav-link px-2">Join Us</a></li>
+                    <li><a href="#" class="nav-link px-2">About Us</a></li>
                     <li>
+
+                        <!--TODO Add email address of client-->
                         <a href="mailto:tanaka.mush@gmail.com" class="nav-link px-2">
                             <svg width="44px" height="44px" viewBox="-51.2 -51.2 614.40 614.40" version="1.1"
                                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -80,7 +84,9 @@
                                 </g>
                             </svg>
 
-                            contact@example.com
+                            {% for contact_info in  contacts_data %}
+                                {{contact_info.email}}
+                            {% endfor %}
                         </a>
                     </li>
 
@@ -109,7 +115,9 @@
                                 </g>
                             </svg>
 
-                            +1 5589 55488 55
+                            {% for contact_info in contacts_data %}
+                            {{contact_info.phone_number}}
+                            {% endfor %}
                         </a>
                     </li>
 
@@ -156,29 +164,30 @@
                         </div>
                         <div class="offcanvas-body">
                             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                                <li><a href="{{url_for('go_home')}}" class="nav-link px-2 link-secondary">Home</a></li>
+                                <li><a href="{{url_for('home')}}" class="nav-link px-2 link-secondary">Home</a></li>
                                 <li class="nav-item dropdown">
+
+
+
+
+
+
                                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         Our Services
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{{ url_for('personal_care') }}">Personal
-                                                Care</a></li>
-                                        <li><a class="dropdown-item" href="{{ url_for('livein') }}">Live-in Care</a>
-                                        </li>
-                                        <li><a class="dropdown-item" href="{{ url_for('respite') }}">Respite-to-Care</a>
-                                        </li>
-                                        <li><a class="dropdown-item" href="{{ url_for('practicalsupport') }}">Practical
-                                                Support</a></li>
-                                        <li><a class="dropdown-item" href="{{ url_for('complex') }}">Complex Care</a>
-                                        </li>
-                                        <li><a class="dropdown-item" href="{{ url_for('palliative') }}">Palliative
-                                                Care</a></li>
+                                    <!--Services drop down-->
+                                    <!--TODO add <a href=" url_for('get_service', service_id=service.id) ">-->      
+                                    {% for service in services_data %}
+                                    <li><a class="dropdown-item" href="#">{{ service.service_name }}</a></li>
+                                    
+                                    {% endfor %}
+                                        
                                     </ul>
                                 </li>
-                                <li><a href="{{url_for('contact_us')}}" class="nav-link px-2">Contact Us</a></li>
-                                <li><a href="{{url_for('get_jobs')}}" class="nav-link px-2">Join Us</a></li>
+                                <li><a href="#" class="nav-link px-2">Contact Us</a></li>
+                                <li><a href="#" class="nav-link px-2">Join Us</a></li>
 
 
                             </ul>

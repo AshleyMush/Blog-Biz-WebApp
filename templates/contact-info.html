@@ -1,0 +1,46 @@
+
+
+
+
+<div class="card shadow mb-4 mt-4">
+    <div class="card-header py-3">
+        
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Location</th>
+                        <th>Phone Number</th>
+                        <th>Facebook URL</th>
+                        <th>Instagram URL</th>
+                        <th>Twitter URL</th>
+                    </tr>        </tr>
+                </thead>
+                <tbody>
+                    {% for contact in contacts %}
+                    <tr>
+                        <td>{{ contact.id }}</td>
+                        <td>{{ contact.email }}</td>
+                        <td>{{ contact.location }}</td>
+                        <td>{{ contact.phone_number }}</td>
+                        <td>{{ contact.facebook_url }}</td>
+                        <td>{{ contact.instagram_url }}</td>
+                        <td>{{ contact.twitter_url }}</td>        <!--TODO: Add the correct URL for the edit_service route-->
+                            <a href="{{ url_for('partially_update_contact', contact_id=contact.id) }}">
+                                <button class="btn btn-primary m-1">
+                                    <i class="fas fa-fw fa-wrench"></i> Edit contact info
+                                </button>        </a>
+
+                        
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

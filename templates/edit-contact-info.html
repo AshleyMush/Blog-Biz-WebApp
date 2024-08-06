@@ -1,0 +1,43 @@
+{% from 'bootstrap4/form.html' import render_form %}
+
+<div class="card shadow mb-4 mt-4">
+    <div class="card-header py-3">
+
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Location</th>
+                        <th>Phone Number</th>
+                        <th>Facebook URL</th>
+                        <th>Instagram URL</th>
+                        <th>Twitter URL</th>
+                    </tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ contact.id }}</td>
+                        <td>{{ contact.email }}</td>
+                        <td>{{ contact.location }}</td>
+                        <td>{{ contact.phone_number }}</td>
+                        <td>{{ contact.facebook_url }}</td>
+                        <td>{{ contact.instagram_url }}</td>
+                        <td>{{ contact.twitter_url }}</td> <!--TODO: Add the correct URL for the edit_service route-->
+
+
+
+                        </td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{{ render_form(contact_info_form, novalidate=True)}}

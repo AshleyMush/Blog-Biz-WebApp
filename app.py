@@ -4,7 +4,7 @@ from flask_ckeditor import CKEditor
 import smtplib
 from email.mime.text import MIMEText
 from models import db, Contacts, User, Services, FAQs, AboutPageContent, HomePage, Jobs,JobPageContent
-from forms import CallbackForm, ContactForm, AddServicesForm, UpdateServiceForm
+from forms import CallbackForm,ContactInfo, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm
 import os
 import requests
 
@@ -36,41 +36,68 @@ with app.app_context():
 
 
 # -----------------Dummy content-------------------------
-    # Check if the default service exists
-    if not Services.query.first():
-        default_service = Services(
-            service_name='Some Service',
-            homepage_description='Some Amazing Description',
-            service_img_url='https://img.freepik.com/free-vector/tech-support-concept-illustration_114360-20464.jpg?t=st=1722321127~exp=1722324727~hmac=ba25d25f1e193deb946413940da810f1a8bcd216ddfe3cfede58f6480eca8e5c&w=826',
-            banner_subheading='Some Catchy Phrase',
-            service_body_content='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, vestibulum ligula sit amet,'
-        )
-        db.session.add(default_service)
-        db.session.commit()
-        print('🟩Adding default service to the database')
 
-    # Check if the default FAQ exists
-    if not FAQs.query.first():
-        default_faq = FAQs(
-            question='Some Question',
-            answer='Some Answer'
-        )
-        db.session.add(default_faq)
-        db.session.commit()
-        print('🟩Adding default FAQ to the database')
+# Check if the default home page content exists
+if not HomePage.query.first():
+    default_home_content = HomePage(
+        name='Ashley & Co',
+        heading='We make amazing Software',
+        subheading='We are a software development company that creates amazing software for businesses and individuals'
+        img_url='https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=1744&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+
+    )
+    db.session.add(default_home_content)
+    db.session.commit()
+    print('🟩Adding default home page content to the database')
+
+
+
+# Check if the default service exists
+if not Services.query.first():
+    default_service = Services(
+        service_name='Some Service',
+        homepage_description='Some Amazing Description',
+        service_img_url='https://img.freepik.com/free-vector/tech-support-concept-illustration_114360-20464.jpg?t=st=1722321127~exp=1722324727~hmac=ba25d25f1e193deb946413940da810f1a8bcd216ddfe3cfede58f6480eca8e5c&w=826',
+        banner_subheading='Some Catchy Phrase',
+        service_body_content='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, vestibulum ligula sit amet,'
+    )
+    db.session.add(default_service)
+    db.session.commit()
+    print('🟩Adding default service to the database')
+
+# Check if the default FAQ exists
+if not FAQs.query.first():
+    default_faq = FAQs(
+        question='Some Question',
+        answer='Some Answer'
+    )
+    db.session.add(default_faq)
+    db.session.commit()
+    print('🟩Adding default FAQ to the database')
+
+# Check if the default contact info exists
+if not Contacts.query.first():
+    default_contact = Contacts(
+        email = os.environ.get("contact-info-email"),
+        location = '25 Partridge Walk, Oxford, OX4 4QF',
+        phone_number = os.environ.get("contact-info-phone-number"),
+        facebook_url = 'https://www.facebook.com/',
+        instagram_url = 'https://www.instagram.com/',
+        twitter_url = 'https://twitter.com/')
+            
 
 
 
 # -----------------Routes-------------------------
 
-@app.route('/admin')
+@app.route("/",methods=['POST', 'GET'])
 def admin():
     return render_template('admin-dashboard-base.html')
 
 
 
 
-@app.route("/")
+@app.route("/",methods=['POST', 'GET'])
 def home():
     """
     This function returns the home page of the website
@@ -101,22 +128,13 @@ def home():
         send_admin_email(name=name, subject=subject, email=email, message=message)
 
 
+    for contact in contacts_data:
+        print(f'{contact.email}\n')
 
-    # Converting the queried data to dictionaries
-    home_page_dict = [item.to_dict() for item in home_page_data]
-    services_dict = [item.to_dict() for item in services_data]
-    contacts_dict = [item.to_dict() for item in contacts_data]
-    faqs_dict = [item.to_dict() for item in faqs_data]
 
-    # Structuring the JSON response
-    response = {
-        "home_page": home_page_dict,
-        "services": services_dict,
-        "contacts": contacts_dict,
-        "faqs": faqs_dict
-    }
 
-    return jsonify(response)
+
+    return render_template('base.html', callback_form=callback_form, contact_form=contact_form, current_year=current_year, contacts_data=contacts_data, faqs_data=faqs_data, services_data=services_data, home_page_data=home_page_data)
 
 
 
@@ -152,7 +170,7 @@ def add_service():
                 flash(f'Error in {field}: {error}', 'danger')
 
     # Pass endpoint variable and form to the template
-    return render_template('admin_dashboard_base.html', add_service_form=add_service_form, endpoint='add_service')
+    return render_template('admin-dashboard-base.html', add_service_form=add_service_form, endpoint='add_service')
 
 
 
@@ -178,7 +196,7 @@ def get_all_services():
     return render_template('admin-dashboard-base.html', services=services, endpoint='get_all_services')
 
 #TODO: Change the route to html
-@app.route('/patch-service/<int:service_id>', methods=['PATCH'])
+@app.route('/patch-service/<int:service_id>', methods=['POST','PATCH', 'GET'])
 def partially_update_service(service_id):
     """
 
@@ -195,25 +213,25 @@ def partially_update_service(service_id):
     service = Services.query.get_or_404(service_id)
 
     if 'service_name' in request.form and form.validate_on_submit():
-        service.service_name = request.form.get('service_name')
-    if 'homepage_img_url' in request.form:
-        service.homepage_img_url = request.form.get('homepage_img_url')
-    if 'homepage_content' in request.form:
-        service.homepage_content = request.form.get('homepage_content')
-    if 'servicepage_img_url' in request.form:
-        service.servicepage_img_url = request.form.get('servicepage_img_url')
-    if 'banner_subheading' in request.form:
-        service.banner_subheading = request.form.get('banner_subheading')
-    if 'body_content' in request.form:
-        service.body_content = request.form.get('body_content')
+        service.service_name = form.service_name.data
+
+    if 'homepage_content' in request.form and form.validate_on_submit():
+        service.homepage_content = form.homepage_content.data
+    if 'servicepage_img_url' in request.form and form.validate_on_submit():
+        service.servicepage_img_url = form.service_img_url.data
+    if 'banner_subheading' in request.form and form.validate_on_submit():
+        service.banner_subheading = form.banner_subheading.data
+    if 'Service Body Content' in request.form and form.validate_on_submit():
+        service.body_content = form.service_body_content.data
+
+    db.session.commit()
 
     flash('Service added successfully', 'success')
 
     #Todo : Change the return to render_template
-    #return render_template('admin-dashboard-base', service_id=service_id, endpoint='patch_service', UpdateServicesForm=form)
-    return render_template('404.html')
+    return render_template('admin-dashboard-base.html', service=service, endpoint='patch_service', service_form=form)
 
-@app.route('/delete-service/<int:service_id>', methods=['DELETE'])
+@app.route('/delete-service/<int:service_id>', methods=['GET','DELETE'])
 def delete_service(service_id):
     """
     This function deletes a service from the database
@@ -390,43 +408,7 @@ def partially_update_job_info(job_id):
 
 
 #------ Contact Info Routes -------
-@app.route('/add-contact-info', methods=['POST'])
-def add_contact_info():
-    """
-    This function adds contact information to the database
-    :return:
-    """
-    email = request.form.get('email')
-    location = request.form.get('location')
-    phone_number = request.form.get('phone_number')
-    facebook_url = request.form.get('facebook_url')
-    instagram_url = request.form.get('instagram_url')
-    twitter_url = request.form.get('twitter_url')
 
-    print(f'Email: {email}')
-    print(f'Location: {location}')
-    print(f'Phone Number: {phone_number}')
-    print(f'Facebook URL: {facebook_url}')
-    print(f'Instagram URL: {instagram_url}')
-    print(f'Twitter URL: {twitter_url}')
-
-    new_contact_info = Contacts(
-        email=email,
-        location=location,
-        phone_number=phone_number,
-        facebook_url=facebook_url,
-        instagram_url=instagram_url,
-        twitter_url=twitter_url
-    )
-
-    print('🟩 Adding new contact to the database')
-    db.session.add(new_contact_info)
-    db.session.commit()
-
-    if new_contact_info:
-        return jsonify({"message": "Contact Info added successfully"})
-    else:
-        return jsonify({"message": "Contact not added"})
 
 @app.route('/get-contact-info')
 def get_contact_info():
@@ -435,10 +417,9 @@ def get_contact_info():
     :return:
     """
     contacts = Contacts.query.all()
-    contacts_dict = [contact.to_dict() for contact in contacts]
-    return jsonify(contacts_dict)
+    return render_template('admin-dashboard-base.html', contacts=contacts, endpoint='get_contact_info')
 
-@app.route('/patch-contact-info/<int:contact_id>', methods=['PATCH'])
+@app.route('/patch-contact-info/<int:contact_id>', methods=['PATCH', 'POST', 'GET'])
 def partially_update_contact(contact_id):
     """
     This function partially updates a contact in the database or completely updates it
@@ -446,6 +427,7 @@ def partially_update_contact(contact_id):
     :return:
     """
     contact = Contacts.query.get_or_404(contact_id)
+    form = ContactInfo()
 
     if 'email' in request.form:
         contact.email = request.form.get('email')
@@ -461,7 +443,14 @@ def partially_update_contact(contact_id):
         contact.twitter_url = request.form.get('twitter_url')
 
     db.session.commit()
-    return jsonify("message: 'Contact updated successfully'")
+    flash('Service added successfully', 'success')
+
+    if form.errors:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f'Error in {field}: {error}', 'danger')
+
+    return render_template('admin-dashboard-base.html', contact_info_form=form, endpoint='edit_contact_info', contact=contact)
 
 
 
@@ -537,17 +526,20 @@ def partially_update_home_content(home_id):
     :param home_id:
     :return:
     """
-    home = HomePage.query.get_or_404(home_id)
+    form = HomePageInfoForm()
+    home_content = HomePage.query.get_or_404(home_id)
 
-    if 'name' in request.form:
-        home.name = request.form.get('name')
-    if 'heading' in request.form:
-        home.heading = request.form.get('heading')
-    if 'subheading' in request.form:
-        home.subheading = request.form.get('subheading')
+    if 'Company name' in request.form and form.validate_on_submit():
+        home_content .name = request.form.get('name')
+    if 'heading' in request.form and form.validate_on_submit():
+        home_content .heading = request.form.get('heading')
+    if 'subheading' in request.form and form.validate_on_submit():
+        home_content .subheading = request.form.get('subheading')
 
     db.session.commit()
-    return jsonify("message: 'Home updated successfully'")
+    flash('Home Page Content added successfully', 'success')
+
+    return render_template('admin-dashboard-base.html', home_form=form, endpoint='patch_home_content', home=home_content )
 
 
 #------ User Routes -------

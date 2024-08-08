@@ -10,16 +10,16 @@
     <meta name="author" content="">
 
     <!--Todo Edit Title-->
-    <title>SB Admin 2 - Blank</title>
+    <title>Admin Dashboard</title>
 
     <!-- Custom fonts for this template-->
-    <link href="/static/Admin dashboard startboostrap/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin dashboard static/Admin dashboard startboostrap/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
 <!-- Custom styles for this template-->
-<link href="/static/Admin dashboard startboostrap/css/sb-admin-2.min.css" rel="stylesheet">
+<link href="/static/admin dashboard static/Admin dashboard startboostrap/css/sb-admin-2.min.css" rel="stylesheet">
 
 </head>
 
@@ -29,7 +29,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-         {% include 'admin-sidebar.html' %}
+         {% include '/admin/admin-sidebar.html' %}
 
         <!-- End of Sidebar -->
 
@@ -40,7 +40,7 @@
             <div id="content">
 
                 <!-- Navbar -->
-                 {% include 'admin-navbar.html' %}
+                 {% include '/admin/admin-navbar.html' %}
 
                 <!-- End of Navbar -->
 
@@ -64,11 +64,23 @@
                                         {% endif %}
                                         {% endwith %}
                                         <!-- End of Flash Messages -->
+
+
+
+
+                    {% if endpoint == 'get_home_content' %}
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-4 text-gray-800"> Home Page Content</h1>
+
+                        {% include '/admin/home-content.html' %}
+
+                    {% endif %}
+
                     {% if endpoint == 'patch_home_content' %}
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Edit Home Page Content</h1>
+                    <h1 class="h3 mb-4 text-gray-800"> Customise Home Page Content</h1>
 
-                        {% include 'edit-home-content.html' %}
+                        {% include '/admin/edit-home-content.html' %}
 
                     {% endif %}
 
@@ -79,7 +91,7 @@
                     <!-- Page Heading -->
                     <h1 class="h3 mb-4 text-gray-800">Add Service</h1>
 
-                        {% include 'add-service.html' %}
+                        {% include '/admin/add-service.html' %}
 
 
                     {% endif %}
@@ -88,9 +100,9 @@
                     <!--Get all services endpoint-->
                     {% if endpoint == 'get_all_services' %}
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Customise your services pages</h1>
+                    <h1 class="h3 mb-4 text-gray-800">Services Content</h1>
 
-                        {% include 'services-list-admin.html' %}
+                        {% include '/admin/services-list-admin.html' %}
 
                     {% endif %}
 
@@ -100,7 +112,7 @@
                     <!-- Page Heading -->
                     <h1 class="h3 mb-4 text-gray-800">Editing  </h1>
 
-                        {% include 'edit-service.html' %}
+                        {% include '/admin/edit-service.html' %}
 
                     
 
@@ -109,9 +121,9 @@
                     <!--Add contact info endpoint-->
                     {% if endpoint == 'edit_contact_info' %}
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Customise Contact Info</h1>
+                    <h1 class="h3 mb-4 text-gray-800"> Contact Info Content</h1>
 
-                        {% include 'edit-contact-info.html' %}
+                        {% include '/admin/edit-contact-info.html' %}
 
                     {% endif %}
 
@@ -119,7 +131,7 @@
                     <!-- Page Heading -->
                     <h1 class="h3 mb-4 text-gray-800">Contact Info</h1>
 
-                        {% include 'contact-info.html' %}
+                        {% include '/admin/contact-info.html' %}
 
                     {% endif %}
 
@@ -176,21 +188,21 @@
     </div>
 
     <!-- Bootstrap core JavaScript-->
-    <script src="/static/Admin dashboard startboostrap/vendor/jquery/jquery.min.js"></script>
-    <script src="/static/Admin dashboard startboostrap/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/admin dashboard static/Admin dashboard startboostrap/vendor/jquery/jquery.min.js"></script>
+    <script src="/static/admin dashboard static/Admin dashboard startboostrap/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     
     <!-- Core plugin JavaScript-->
-    <script src="/static/Admin dashboard startboostrap/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="/static/admin dashboard static/Admin dashboard startboostrap/vendor/jquery-easing/jquery.easing.min.js"></script>
     
     <!-- Custom scripts for all pages-->
-    <script src="/static/Admin dashboard startboostrap/js/sb-admin-2.min.js"></script>
+    <script src="/static/admin dashboard static/Admin dashboard startboostrap/js/sb-admin-2.min.js"></script>
     
     <!-- Page level plugins -->
-    <script src="/static/Admin dashboard startboostrap/vendor/chart.js/Chart.min.js"></script>
+    <script src="/static/admin dashboard static/Admin dashboard startboostrap/vendor/chart.js/Chart.min.js"></script>
     
     <!-- Page level custom scripts -->
-    <script src="/static/Admin dashboard startboostrap/js/demo/chart-area-demo.js"></script>
-    <script src="/static/Admin dashboard startboostrap/js/demo/chart-pie-demo.js"></script>
+    <script src="/static/admin dashboard static/Admin dashboard startboostrap/js/demo/chart-area-demo.js"></script>
+    <script src="/static/admin dashboard static/Admin dashboard startboostrap/js/demo/chart-pie-demo.js"></script>
 
 
 </body>

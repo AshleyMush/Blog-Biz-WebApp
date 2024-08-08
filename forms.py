@@ -13,6 +13,7 @@ class HomePageInfoForm(FlaskForm):
     name = StringField('Company Name', validators=[DataRequired()])
     heading = StringField('Heading', validators=[DataRequired()])
     subheading = StringField('Subheading', validators=[DataRequired()])
+    img_url = StringField('Image URL', validators=[DataRequired(), URL()])
     submit = SubmitField('Save Changes')
 
 class CallbackForm(FlaskForm):
@@ -86,4 +87,18 @@ class ContactInfo(FlaskForm):
     twitter_url = StringField('Twitter URL', validators=[Optional(), URL()])
     submit = SubmitField('Save Changes')
 
+
+class JobsForm(FlaskForm):
+    job_name = StringField('Job Name', validators=[DataRequired()])
+    job_card_img_url = StringField('Job Card Image URL', validators=[DataRequired(), URL()])
+    job_description = TextAreaField('Job Description', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+class CareerPageContentForm(FlaskForm):
+    page_img_url = StringField('Page Image URL', validators=[DataRequired()])
+    banner_heading = StringField('Banner Heading', validators=[DataRequired()])
+    banner_subheading = StringField('Banner Subheading', validators=[DataRequired()])
+    page_content = CKEditorField('Page Content', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+    
 

@@ -93,12 +93,13 @@ class Jobs(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     job_name = db.Column(db.String(250), nullable=False)
     job_card_img_url = db.Column(db.String(250), nullable=False)
+    job_description = db.Column(db.Text, nullable=False)
 
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
-class JobPageContent(db.Model, UserMixin):
-    __tablename__ = "job_page_content"
+class CareerPageContent(db.Model, UserMixin):
+    __tablename__ = "Career page content"
 
     id = db.Column(db.Integer, primary_key=True)
     page_img_url = db.Column(db.String(250), nullable=False)

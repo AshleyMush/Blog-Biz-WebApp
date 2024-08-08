@@ -29,7 +29,8 @@
                         <td>{{ contact.phone_number }}</td>
                         <td>{{ contact.facebook_url }}</td>
                         <td>{{ contact.instagram_url }}</td>
-                        <td>{{ contact.twitter_url }}</td>        <!--TODO: Add the correct URL for the edit_service route-->
+                        <td>{{ contact.twitter_url }}</td>        
+                        <!--TODO: Add the correct URL for the edit_service route-->
                             <a href="{{ url_for('partially_update_contact', contact_id=contact.id) }}">
                                 <button class="btn btn-primary m-1">
                                     <i class="fas fa-fw fa-wrench"></i> Edit contact info

@@ -139,7 +139,7 @@ def home():
 
 
 
-    return render_template('/website/base.html',callback_form=callback_form, contact_form=contact_form, current_year=current_year, contacts_data=contacts_data, faqs_data=faqs_data, services_data=services_data, home_page_data=home_page_data, endpoint='home')
+    return render_template('/website/index.html',callback_form=callback_form, contact_form=contact_form, current_year=current_year, contacts_data=contacts_data, faqs_data=faqs_data, services_data=services_data, home_page_data=home_page_data, endpoint='home')
 
 
 
@@ -225,14 +225,14 @@ def partially_update_service(service_id):
     if 'service_name' in request.form and form.validate_on_submit():
         service.service_name = form.service_name.data
 
-    if 'homepage_content' in request.form and form.validate_on_submit():
-        service.homepage_content = form.homepage_content.data
-    if 'servicepage_img_url' in request.form and form.validate_on_submit():
-        service.servicepage_img_url = form.service_img_url.data
+    if 'homepage_description' in request.form and form.validate_on_submit():
+        service.homepage_description = form.homepage_description.data
+    if 'service_img_url' in request.form and form.validate_on_submit():
+        service.service_img_url = form.service_img_url.data
     if 'banner_subheading' in request.form and form.validate_on_submit():
         service.banner_subheading = form.banner_subheading.data
-    if 'Service Body Content' in request.form and form.validate_on_submit():
-        service.body_content = form.service_body_content.data
+    if 'service_body_content' in request.form and form.validate_on_submit():
+        service.service_body_content = form.service_body_content.data
 
     db.session.commit()
 

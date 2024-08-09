@@ -1,0 +1,9 @@
+I have linked ll the css to the new template
+
+Identify the new templates through not being added on git
+
+Refactor the Js files once you have extracted it
+
+refector the assets and ectract them
+
+index is refactored

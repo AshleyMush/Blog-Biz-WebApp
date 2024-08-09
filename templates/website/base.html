@@ -24,40 +24,18 @@
 
 <body class="d-flex flex-column h-100">
     <main class="flex-shrink-0">
-    {% block content %}
         <!-- Navigation-->
         {% include '/website/navbar 2.html' %}
+        <!-- End Navigation-->
+
+                {% block content %}
 
 
-
-        <!-- ----------------- Home --------------------->
-        {% if endpoint == 'home' %}
-
-
-        <!-- Header-->
-        {% include '/website/hero 2.html' %}
-        <!-- Features section-->
-        {% include '/website/features 1.html' %}
-        <!-- About section one-->
-        {% include '/website/testimonial 1.html' %}
-
-        {% endif %}
-
-        <!-- ----------------- EndHome --------------------->
-        {% if endpoint == 'get_service' %}
-        <!-- Services section-->
-        {% include '/website/service.html' %}
-        {% endif %}
-
-
-
-
-
+                {% endblock %}
 
         <!--  footer-->
         {% include '/website/footer 3.html' %}
-
-    {% endblock %}
+        <!--  End footer-->
     </main>
 
 

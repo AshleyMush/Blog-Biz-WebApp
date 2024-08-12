@@ -52,12 +52,13 @@ class UpdateServiceForm(FlaskForm):
     service_name = StringField('Service Name')
     banner_subheading = StringField('Banner Subheading')
     homepage_description = TextAreaField('Homepage Description', validators=[Optional()])
-    homepage_image_url = CKEditorField('Homepage Image URL', validators=[URL(message="Please enter a valid URL for the homepage image.")])
+    homepage_image_url = StringField('Homepage Image URL', validators=[URL(message="Please enter a valid URL for the homepage image.")])
     feature_one_description = CKEditorField('Feature One Description')
-    feature_one_image_url = CKEditorField('Feature One Image URL', validators=[URL(message="Please enter a valid URL for the feature one image/video.")])
+    feature_one_image_url = StringField('Feature One Image URL', validators=[URL(message="Please enter a valid URL for the feature one image/video.")])
     feature_two_description = CKEditorField('Feature Two Description')
-    feature_two_image_url = CKEditorField('Feature Two Image URL', validators=[URL(message="Please enter a valid URL for the feature two image/video.")])
+    feature_two_image_url = StringField('Feature Two Image URL', validators=[URL(message="Please enter a valid URL for the feature two image/video.")])
     submit = SubmitField('Save Changes')
+
 
 class UserForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(message="Please enter the email."), Email(message="Please enter a valid email.")])

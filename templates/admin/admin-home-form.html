@@ -1,0 +1,27 @@
+<!--Admin Home  Form-->
+<form action="{{ url_for('partially_update_home_content', home_id=home.id) }}" method="POST">
+    <div class="container mt-4">
+        <div class="form-group">
+            <label for="name">Company Name:</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="{{ home.name }}"
+                value="{{ home.name }}">
+        </div>
+        <div class="form-group">
+            <label for="heading">Heading:</label>
+            <input type="text" class="form-control" id="heading" name="heading" placeholder="{{ home.heading }}"
+                value="{{ home.heading }}">
+        </div>
+        <div class="form-group">
+            <label for="subheading">Subheading:</label>
+            <input type="text" class="form-control" id="subheading" name="subheading"
+                placeholder="{{ home.subheading }}" value="{{ home.subheading }}">
+        </div>
+        <div class="form-group">
+            <label for="img_url">Image URL:</label>
+            <input type="text" class="form-control" id="img_url" name="img_url" placeholder="{{ home.img_url }}"
+                value="{{ home.img_url }}">
+            <img src="{{ home.img_url }}" alt="Home Image" class="img-thumbnail mt-2" style="width: 100px;">
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Update Home Content</button>
+    </div>
+</form>

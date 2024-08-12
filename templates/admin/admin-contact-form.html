@@ -1,0 +1,29 @@
+<form action="{{ url_for('partially_update_contact', contact_id=contact.id) }}" method="POST">
+    <div class="container mt-4">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="{{ contact.email }}" value="{{ contact.email }}">
+        </div>
+        <div class="form-group">
+            <label for="location">Location:</label>
+            <input type="text" class="form-control" id="location" name="location" placeholder="{{ contact.location }}" value="{{ contact.location }}">
+        </div>
+        <div class="form-group">
+            <label for="phone_number">Phone Number:</label>
+            <input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="{{ contact.phone_number }}" value="{{ contact.phone_number }}">
+        </div>
+        <div class="form-group">
+            <label for="facebook_url">Facebook URL:</label>
+            <input type="url" class="form-control" id="facebook_url" name="facebook_url" placeholder="{{ contact.facebook_url }}" value="{{ contact.facebook_url }}">
+        </div>
+        <div class="form-group">
+            <label for="instagram_url">Instagram URL:</label>
+            <input type="url" class="form-control" id="instagram_url" name="instagram_url" placeholder="{{ contact.instagram_url }}" value="{{ contact.instagram_url }}">
+        </div>
+        <div class="form-group">
+            <label for="twitter_url">Twitter URL:</label>
+            <input type="url" class="form-control" id="twitter_url" name="twitter_url" placeholder="{{ contact.twitter_url }}" value="{{ contact.twitter_url }}">
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Update Contact Information</button>
+    </div>
+</form>

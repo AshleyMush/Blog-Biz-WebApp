@@ -1,4 +1,17 @@
+{% extends '/admin/admin-dashboard-base.html' %}
 {% from 'bootstrap4/form.html' import render_form %}
+
+
+{% block title %}Edit Home Page Content{% endblock %}
+
+{% block content %}
+
+
+
+
+<!-- Page Heading -->
+<h1 class="h3 mb-4 text-gray-800"> Home Page Content</h1>
+
 
 <div class="card shadow mb-4 mt-4">
     <div class="card-header py-3">
@@ -14,6 +27,7 @@
                         <th>Heading</th>
                         <th>Subheading</th>
                         <th>Image Url</th>
+                        <th>Home Page Image </th>
                         
                     </tr>
                     </tr>
@@ -48,4 +62,10 @@
     </div>
 </div>
 
-{{ render_form(home_form, novalidate=True)}}
+
+{% include 'admin/admin-home-form.html' %}
+
+
+
+
+    {% endblock %}

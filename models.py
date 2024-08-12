@@ -15,14 +15,27 @@ class Services(db.Model):
     """
     __tablename__ = "services"
     id = db.Column(db.Integer, primary_key=True)
-    service_name = db.Column(db.String(250), nullable=False)
-    service_img_url = db.Column(db.String(250), nullable=False)
-    homepage_description = db.Column(db.Text, nullable=False)  # Rich text content
-    banner_subheading = db.Column(db.String(250), nullable=False)
-    service_body_content = db.Column(db.Text, nullable=False)  # Rich text content
+    
+    # Service information
+    service_name = db.Column(db.String(250), nullable=True)
+    homepage_description = db.Column(db.Text, nullable=True)  # Rich text content
+    
+    # Images and banners for the service
+    homepage_image_url = db.Column(db.String(250), nullable=True)
+    banner_subheading = db.Column(db.String(250), nullable=True)
+    
+    # Feature descriptions and images
+    feature_one_description = db.Column(db.Text, nullable=True)  # Rich text content
+    feature_one_image_url = db.Column(db.String(250), nullable=True)
+    feature_two_description = db.Column(db.Text, nullable=True)  # Rich text content
+    feature_two_image_url = db.Column(db.String(250), nullable=True)
 
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
+
+
+
 
 
 

@@ -1,43 +1,15 @@
+{% extends '/admin/admin-dashboard-base.html' %}
 {% from 'bootstrap4/form.html' import render_form %}
 
 
+{% block title %}Edit Service {{ service.service_name }} {% endblock %}
 
-<!--Service Table-->
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">{{ service.service_name }}</h6>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Service Name</th>
-                        <th>Banner Subheading</th>
-                        <th>Homepage Description</th>
-                        <th>Service Body Content</th>
-                        <th>Service Image URL</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                   
-                    <tr>
-                        <td>{{ service.id }}</td>
-                        <td>{{ service.service_name }}</td>
-                        <td>{{ service.banner_subheading }}</td>
-                        <td>{{ service.homepage_description }}</td>
-                        <td>{{ service.service_body_content }}</td>
-                        <td><img src="{{ service.service_img_url }}" alt="Service Image" style="width: 100px;"></td>
-
-                    </tr>
-                   
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+{% block content %}
 
 
-{{ render_form(service_form, novalidate=True) }}
+
+{% include 'admin/admin-service-form.html' %}
+
+
+
+{% endblock %}

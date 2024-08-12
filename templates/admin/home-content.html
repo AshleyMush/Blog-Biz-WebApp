@@ -1,4 +1,10 @@
+{% extends '/admin/admin-dashboard-base.html' %}
 {% from 'bootstrap4/form.html' import render_form %}
+
+
+{% block title %}Home Page Content{% endblock %}
+
+{% block content %}
 
 <div class="card shadow mb-4 mt-4">
     <div class="card-header py-3">
@@ -44,4 +50,6 @@
             </table>
         </div>
     </div>
-</div>
+
+    
+{% endblock %}

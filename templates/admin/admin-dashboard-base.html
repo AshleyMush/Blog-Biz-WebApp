@@ -10,7 +10,7 @@
     <meta name="author" content="">
 
     <!--Todo Edit Title-->
-    <title>Admin Dashboard</title>
+    <title>{% block title %}Admin Dashboard{% endblock %}</title>
 
     <!-- Custom fonts for this template-->
     <link href="/static/admin dashboard static/Admin dashboard startboostrap/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -49,9 +49,8 @@
                     <!--Ckeditor-->
                     {{ ckeditor.load() }}
 
-                    {% block content %}
 
-                                        <!-- Flash Messages -->
+                      <!-- Flash Messages -->
                                         {% with messages = get_flashed_messages() %}
                                         {% if messages %}
                                         <div class="alert alert-info">
@@ -63,48 +62,23 @@
                                         </div>
                                         {% endif %}
                                         {% endwith %}
-                                        <!-- End of Flash Messages -->
+                    <!-- End of Flash Messages -->
+
+
+{% block content %}
 
 
 
 
-                    {% if endpoint == 'get_home_content' %}
-                    <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800"> Home Page Content</h1>
-
-                        {% include '/admin/home-content.html' %}
-
-                    {% endif %}
-
-                    {% if endpoint == 'patch_home_content' %}
-                    <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800"> Customise Home Page Content</h1>
-
-                        {% include '/admin/edit-home-content.html' %}
-
-                    {% endif %}
 
 
 
-                    <!--Add service endpoint-->
-                    {% if endpoint == 'add_service' %}
-                    <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Add Service</h1>
-
-                        {% include '/admin/add-service.html' %}
 
 
-                    {% endif %}
 
 
-                    <!--Get all services endpoint-->
-                    {% if endpoint == 'get_all_services' %}
-                    <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Services Content</h1>
 
-                        {% include '/admin/services-list-admin.html' %}
 
-                    {% endif %}
 
 
                     <!--Update service endpoint-->
@@ -138,13 +112,16 @@
 
                     
 
-                    {% endblock %}
+
 
                 </div>
                 <!-- /.container-fluid -->
 
             </div>
             <!-- End of Main Content -->
+{% endblock %}
+
+
 
             <!-- Footer -->
             <footer class="sticky-footer bg-white">

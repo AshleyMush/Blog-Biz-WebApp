@@ -95,7 +95,10 @@ class AboutPageContent(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     img_url = db.Column(db.String(250), nullable=False)
     banner_heading = db.Column(db.String(250), nullable=False)
-    banner_subheading = db.Column(db.String(250), nullable=False)
+    feature_one_description = db.Column(db.Text, nullable=False)  # Rich text content
+    feature_one_image_url = db.Column(db.String(250), nullable=False)
+    feature_two_description = db.Column(db.Text, nullable=False)  # Rich text content
+    feature_two_image_url = db.Column(db.String(250), nullable=False)
     body_content = db.Column(db.Text, nullable=False)  # Rich text content
 
     def to_dict(self):

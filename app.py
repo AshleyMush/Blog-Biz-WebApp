@@ -91,6 +91,22 @@ with app.app_context():
             print('🟩Adding default Contact info to the database')
 
 
+        # Check if the default about page content exists
+        if not AboutPageContent.query.first():
+            default_about_content = AboutPageContent(
+                img_url="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                banner_heading="Start Bootstrap was built on the idea that quality, functional website templates and themes should be available to everyone. Use our open source, free products, or support us by purchasing one of our premium products or services.",
+                feature_one_description="<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
+                feature_one_image_url="https://images.unsplash.com/photo-1554260570-47e791ab2fc7?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                feature_two_description="<p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>",
+                feature_two_image_url="https://images.unsplash.com/photo-1690383682965-faf2cf669634?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                body_content="<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>"
+            )
+            db.session.add(default_about_content)
+            db.session.commit()
+            print('🟩Adding default About page content to the database')
+
+
 
 
 
@@ -464,7 +480,7 @@ def partially_update_job_info(job_id):
 #------ Contact Info Routes -------
 
 
-@app.route('/get-contact-info')
+@app.route('/admin/get-contact-info')
 def get_contact_info():
     """
     This function gets all the contacts from the database
@@ -473,7 +489,7 @@ def get_contact_info():
     contacts = Contacts.query.all()
     return render_template('/admin/admin-dashboard-base.html', contacts=contacts, endpoint='get_contact_info')
 
-@app.route('/patch-contact-info/<int:contact_id>', methods=['PATCH', 'POST', 'GET'])
+@app.route('/admin/patch-contact-info/<int:contact_id>', methods=['PATCH', 'POST', 'GET'])
 def partially_update_contact(contact_id):
     """
     This function partially updates a contact in the database or completely updates it
@@ -509,6 +525,18 @@ def partially_update_contact(contact_id):
 
 
 #------ About Us Routes -------
+@app.route('/about-us', methods=['POST', 'GET'])
+def about_us():
+    """
+    This function returns the about us page of the website
+    :return:
+    """
+    about_content = AboutPageContent.query.first()
+
+    print(f'🟩Getting about page content: {about_content.banner_heading}')
+
+    return render_template('/website/about.html', about_content=about_content)
+
 @app.route('/add-about-content', methods=['POST'])
 def add_about_content():
     """

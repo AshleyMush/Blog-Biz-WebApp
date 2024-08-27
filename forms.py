@@ -69,8 +69,11 @@ class UserForm(FlaskForm):
 
 class AboutUsForm(FlaskForm):
     img_url = StringField('Image URL', validators=[DataRequired(message="Please enter the image URL.")])
-    banner_heading = StringField('Banner Heading', validators=[DataRequired(message="Please enter the banner heading.")])
-    banner_content = CKEditorField('Banner Content', validators=[DataRequired(message="Please enter the banner content.")])
+    banner_subheading = StringField('Banner Subheading', validators=[DataRequired(message="Please enter the banner subheading.")])
+    feature_one_description = CKEditorField('Feature One Description', validators=[DataRequired(message="Please enter the feature one description.")])
+    feature_one_image_url = StringField('Feature One Image URL', validators=[DataRequired(message="Please enter the feature one image/video url.")])
+    feature_two_description = CKEditorField('Feature Two Description', validators=[DataRequired(message="Please enter the feature two description.")])
+    feature_two_image_url = StringField('Feature Two Image URL', validators=[DataRequired(message="Please enter the feature two image/video URL.")])
     submit = SubmitField('Submit')
 
 

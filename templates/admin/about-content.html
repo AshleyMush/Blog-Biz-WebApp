@@ -1,0 +1,66 @@
+{% extends '/admin/admin-dashboard-base.html' %}
+{% from 'bootstrap4/form.html' import render_form %}
+
+
+{% block title %}About Page Content{% endblock %}
+
+{% block content %}
+
+<div class="card shadow mb-4 mt-4">
+    <div class="card-header py-3">
+
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Banner Image URL</th>
+                        <th>Page Banner Heading/ Hero text</th>
+                       <th>Feature One Description</th>
+                        <th>Feature One Image/ Video URL</th>
+                        <th>Feature Two Description</th>
+                        <th>Feature Two Image/Video URL</th>
+
+                    </tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <tr>
+                        <td>{{ about.id }}</td>
+                        <td> {{about.img_url}}</td>
+                        <td>{{ about.banner_heading }}</td>
+                        <td>{{ about.feature_one_description | safe }}</td>
+                        <td>{{ about.feature_one_image_url }}
+                            <img src="{{ about.feature_one_image_url }}" alt="Feature One Image" style="width: 100px;">
+                      <td>{{ about.feature_two_description | safe }}</td>
+                        <td>{{ about.feature_two_image_url }}
+                            <img src="{{ about.feature_two_image_url }}" alt="Feature Two Image" style="width: 100px;">
+                        </td>
+
+
+                        <td>
+                                                   <a href="{{ url_for('partially_update_about_content', about_id=about.id) }}">
+                            <button class="btn btn-primary m-1">
+                                <i class="fas fa-fw fa-wrench"></i> Edit About Page info
+                            </button> </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+
+
+
+
+
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    
+{% endblock %}

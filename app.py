@@ -531,11 +531,53 @@ def about_us():
     This function returns the about us page of the website
     :return:
     """
+    #TODO: Add about content to admin and modify the template
+
     about_content = AboutPageContent.query.first()
 
     print(f'🟩Getting about page content: {about_content.banner_heading}')
 
     return render_template('/website/about.html', about_content=about_content)
+
+
+@app.route('/admin/patch-about-content/<int:about_id>', methods=['PATCH', 'POST', 'GET'])
+def partially_update_about_content(about_id):
+    """
+    This function partially updates the about page content
+    :param about_id:
+    :return:
+    """
+
+    form = AboutUsForm()
+    about_content = AboutPageContent.query.get_or_404(about_id)
+
+    if 'img_url' in request.form and form.validate_on_submit():
+        about_content.img_url = request.form.get('img_url')
+    if 'banner_heading' in request.form and form.validate_on_submit():
+        about_content.banner_heading = request.form.get('banner_heading')
+    if 'banner_subheading' in request.form and form.validate_on_submit():
+        about_content.banner_subheading = request.form.get('banner_subheading')
+    if 'body_content' in request.form and form.validate_on_submit():
+        about_content.body_content = request.form.get('body_content')
+
+    db.session.commit()
+    flash('About Page Content added successfully', 'success')
+
+    #TODO: add the correct template
+    return render_template('/admin/edit-about-content.html', about_form=form, about=about_content.query.first() )
+
+
+
+
+#Todo: move this route to api
+@app.route('/api/about-us', methods=['GET'])
+def get_about_us():
+    """
+    This function gets the about us page content from the database
+    :return:
+    """
+    about_content = AboutPageContent.query.first()
+    return jsonify(about_content.to_dict())
 
 @app.route('/add-about-content', methods=['POST'])
 def add_about_content():

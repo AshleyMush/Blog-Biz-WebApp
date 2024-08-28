@@ -103,3 +103,14 @@ def get_all_services():
 
 
     return render_template('/admin/admin-dashboard-base.html', services=services, endpoint='get_all_services')
+
+
+
+@app.route('/api/about-us', methods=['GET'])
+def get_about_us():
+    """
+    This function gets the about us page content from the database
+    :return:
+    """
+    about_content = AboutPageContent.query.first()
+    return jsonify(about_content.to_dict())

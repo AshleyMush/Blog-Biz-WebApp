@@ -564,7 +564,7 @@ def partially_update_about_content(about_id):
     flash('About Page Content added successfully', 'success')
 
     #TODO: add the correct template
-    return render_template('/admin/edit-about-content.html', about_form=form, about=about_content.query.first() )
+    return redirect(url_for('partially_update_about_content', about_id=about_id))
 
 
 
@@ -599,9 +599,19 @@ def add_about_content():
         return jsonify("message: 'About added successfully'")
     else:
         return jsonify("message: 'About not added'")
+    
+@app.route('/admin/get-about-content')
+def get_about_content():
+    """
+    This function gets all the about page content from the database
+    :return:
+    """
+    about_content = AboutPageContent.query.all()
+    return render_template('/admin/about-content.html', about_content=about_content)
+
 
 @app.route('/get-about-content')
-def get_about_content():
+def get_about():
     """
     This function gets all the about page content from the database
     :return:
@@ -615,7 +625,7 @@ def get_about_content():
 #------ Home Page Routes -------
 
 
-@app.route('/get-home-content', methods=['GET'])
+@app.route('/admin/get-home-content', methods=['GET'])
 def get_home_content():
     """
     This function gets all the home page content from the database

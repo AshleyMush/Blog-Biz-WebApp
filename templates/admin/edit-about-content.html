@@ -1,0 +1,65 @@
+{% extends '/admin/admin-dashboard-base.html' %}
+{% from 'bootstrap4/form.html' import render_form %}
+
+
+{% block title %}Edit About Us Content {% endblock %}
+
+{% block content %}
+
+
+
+<!-- Admin About Form -->
+<form action="{{ url_for('partially_update_about_content', about_id=about_content.id) }}" method="POST">
+    <div class="container mt-4">
+        <div class="form-group">
+            <label for="img_url">Image URL:</label>
+            <input type="text" class="form-control" id="img_url" name="img_url"
+                placeholder="{{ about_content.img_url }}" value="{{ about_content.img_url }}">
+            <img src="{{ about_content.img_url }}" alt="About Page Image" class="img-thumbnail mt-2"
+                style="width: 100px;">
+        </div>
+        <div class="form-group">
+            <label for="banner_subheading">Banner Subheading:</label>
+            <input type="text" class="form-control" id="banner_subheading" name="banner_subheading"
+                placeholder="{{ about_content.banner_subheading }}" value="{{ about_content.banner_subheading }}">
+        </div>
+        <div class="form-group">
+            <label for="feature_one_description">Feature One Description:</label>
+            <textarea class="form-control ckeditor" id="feature_one_description" name="feature_one_description"
+                placeholder="{{ about_content.feature_one_description }}"
+                rows="3">{{ about_content.feature_one_description }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="feature_one_image_url">Feature One Image URL:</label>
+            <input type="text" class="form-control" id="feature_one_image_url" name="feature_one_image_url"
+                placeholder="{{ about_content.feature_one_image_url }}"
+                value="{{ about_content.feature_one_image_url }}">
+            <img src="{{ about_content.feature_one_image_url }}" alt="Feature One Image" class="img-thumbnail mt-2"
+                style="width: 100px;">
+        </div>
+        <div class="form-group">
+            <label for="feature_two_description">Feature Two Description:</label>
+            <textarea class="form-control ckeditor" id="feature_two_description" name="feature_two_description"
+                placeholder="{{ about_content.feature_two_description }}"
+                rows="3">{{ about_content.feature_two_description }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="feature_two_image_url">Feature Two Image URL:</label>
+            <input type="text" class="form-control" id="feature_two_image_url" name="feature_two_image_url"
+                placeholder="{{ about_content.feature_two_image_url }}"
+                value="{{ about_content.feature_two_image_url }}">
+            <img src="{{ about_content.feature_two_image_url }}" alt="Feature Two Image" class="img-thumbnail mt-2"
+                style="width: 100px;">
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Update About Page</button>
+    </div>
+</form>
+
+<!-- Include CKEditor script -->
+<script>
+    // Initialize CKEditor for the specific textareas
+    CKEDITOR.replace('feature_one_description');
+    CKEDITOR.replace('feature_two_description');
+</script>
+
+{% endblock %}

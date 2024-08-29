@@ -1,4 +1,15 @@
+{% extends '/admin/admin-dashboard-base.html' %}
 {% from 'bootstrap4/form.html' import render_form %}
+
+
+{% block title %} Customise Contact Information {% endblock %}
+
+{% block content %}
+
+
+<h1 class="h3 mb-4 text-gray-800"> Edit Contact Info </h1>
+
+
 
 <div class="card shadow mb-4 mt-4">
     <div class="card-header py-3">
@@ -41,4 +52,7 @@
 </div>
 
 {% include 'admin/admin-contact-form.html' %}
+
+{% endblock %}
+
 

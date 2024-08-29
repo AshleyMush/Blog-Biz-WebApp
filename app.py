@@ -95,12 +95,11 @@ with app.app_context():
         if not AboutPageContent.query.first():
             default_about_content = AboutPageContent(
                 img_url="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                banner_heading="Start Bootstrap was built on the idea that quality, functional website templates and themes should be available to everyone. Use our open source, free products, or support us by purchasing one of our premium products or services.",
+                banner_subheading="Start Bootstrap was built on the idea that quality, functional website templates and themes should be available to everyone. Use our open source, free products, or support us by purchasing one of our premium products or services.",
                 feature_one_description="<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
                 feature_one_image_url="https://images.unsplash.com/photo-1554260570-47e791ab2fc7?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                 feature_two_description="<p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>",
                 feature_two_image_url="https://images.unsplash.com/photo-1690383682965-faf2cf669634?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                body_content="<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>"
             )
             db.session.add(default_about_content)
             db.session.commit()
@@ -427,7 +426,7 @@ def get_job(job_id):
     job = Jobs.query.get_or_404(job_id)
     return jsonify(job.to_dict())
 
-@app.route('/add-job-content', methods=['POST'])
+@app.route('/admin/add-job-content', methods=['PATCH', 'POST', 'GET'])
 def add_jobpage_content():
     """
     This function adds job page/ careers content to the database
@@ -444,7 +443,7 @@ def add_jobpage_content():
     db.session.commit()
     return jsonify("message: 'Job content added successfully'")
 
-@app.route('/delete-job/<int:job_id>', methods=['DELETE'])
+@app.route('/admin/delete-job/<int:job_id>', methods=['DELETE'])
 def delete_job(job_id):
     """
     This function deletes a job from the database
@@ -457,7 +456,7 @@ def delete_job(job_id):
     db.session.commit()
     return jsonify("message: 'Job deleted successfully'")
 
-@app.route('/patch-job-info/<int:job_id>', methods=['PATCH'])
+@app.route('/admin/patch-job-info/<int:job_id>', methods=['PATCH', 'POST', 'GET'])
 def partially_update_job_info(job_id):
     """
     This function partially updates a job in the database or completely updates it
@@ -466,19 +465,55 @@ def partially_update_job_info(job_id):
     """
     job = Jobs.query.get_or_404(job_id)
 
-    if 'job_card_img_url' in request.form:
-        job.img_url = request.form.get('img_url')
+    if request.method in ['POST', 'PATCH']:
+        if form.validate_on_submit():
 
-    if 'job_name' in request.form:
-        job.job_name= request.form.get('job_name')
+            if 'job_card_img_url' in request.form:
+                job.img_url = request.form.get('img_url')
 
-    db.session.commit()
-    return jsonify("message: 'Job updated successfully'")
+            if 'job_name' in request.form:
+                job.job_name= request.form.get('job_name')
+
+            db.session.commit()
+            return jsonify("message: 'Job updated successfully'")
+        
+        else:
+
+            """
+                    else:
+            # Form has errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(f'Error in {field}: {error}', 'danger')
+            
+            """
+            return jsonify("message: 'Job not updated'")
 
 
 
 #------ Contact Info Routes -------
+@app.route('/contact-us', methods=['POST', 'GET'])
+def contact_us():
+    """
+    This function returns the contact us page of the website
+    :return:
+    """
+    contact_form = ContactForm()
+    if contact_form.validate_on_submit() and contact_form.data:
+        name = contact_form.name.data
+        email = contact_form.email.data
+        subject = contact_form.subject.data
+        message = contact_form.message.data
+        print(f'🟩Sending contact form data:\n'
+              f'{name}\n'
+              f'{email}\n'
+              f'{subject}\n'
+              f'{message}\n')
 
+        send_confirmation_email(name=name, email=email, subject=subject)
+        send_admin_email(name=name, subject=subject, email=email, message=message)
+
+    return render_template('/website/contact.html', contact_form=contact_form)
 
 @app.route('/admin/get-contact-info')
 def get_contact_info():
@@ -487,7 +522,7 @@ def get_contact_info():
     :return:
     """
     contacts = Contacts.query.all()
-    return render_template('/admin/admin-dashboard-base.html', contacts=contacts, endpoint='get_contact_info')
+    return render_template('/admin/contact-info.html', contacts=contacts)
 
 @app.route('/admin/patch-contact-info/<int:contact_id>', methods=['PATCH', 'POST', 'GET'])
 def partially_update_contact(contact_id):
@@ -499,28 +534,32 @@ def partially_update_contact(contact_id):
     contact = Contacts.query.get_or_404(contact_id)
     form = ContactInfo()
 
-    if 'email' in request.form:
-        contact.email = request.form.get('email')
-    if 'location' in request.form:
-        contact.location = request.form.get('location')
-    if 'phone_number' in request.form:
-        contact.phone_number = request.form.get('phone_number')
-    if 'facebook_url' in request.form:
-        contact.facebook_url = request.form.get('facebook_url')
-    if 'instagram_url' in request.form:
-        contact.instagram_url = request.form.get('instagram_url')
-    if 'twitter_url' in request.form:
-        contact.twitter_url = request.form.get('twitter_url')
+    if request.method in ['POST', 'PATCH']:
+        if form.validate_on_submit():
+            if 'email' in request.form:
+                contact.email = request.form.get('email')
+            if 'location' in request.form:
+                contact.location = request.form.get('location')
+            if 'phone_number' in request.form:
+                contact.phone_number = request.form.get('phone_number')
+            if 'facebook_url' in request.form:
+                contact.facebook_url = request.form.get('facebook_url')
+            if 'instagram_url' in request.form:
+                contact.instagram_url = request.form.get('instagram_url')
+            if 'twitter_url' in request.form:
+                contact.twitter_url = request.form.get('twitter_url')
 
-    db.session.commit()
-    flash('Service added successfully', 'success')
+            db.session.commit()
+            flash('Service added successfully', 'success')
+            return redirect(url_for('partially_update_contact', contact_id=contact_id))
 
-    if form.errors:
-        for field, errors in form.errors.items():
-            for error in errors:
-                flash(f'Error in {field}: {error}', 'danger')
+        else:
+            # Form has errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(f'Error in {field}: {error}', 'danger')
 
-    return render_template('/admin/admin-dashboard-base.html', contact_info_form=form, endpoint='edit_contact_info', contact=contact)
+    return render_template('/admin/edit-contact-info.html', contact_info_form=form, endpoint='edit_contact_info', contact=contact)
 
 
 
@@ -535,9 +574,10 @@ def about_us():
 
     about_content = AboutPageContent.query.first()
 
-    print(f'🟩Getting about page content: {about_content.banner_heading}')
+    print(f'🟩Getting about page content: {about_content.banner_subheading}')
 
     return render_template('/website/about.html', about_content=about_content)
+
 
 
 @app.route('/admin/patch-about-content/<int:about_id>', methods=['PATCH', 'POST', 'GET'])
@@ -548,23 +588,34 @@ def partially_update_about_content(about_id):
     :return:
     """
 
+    print('🟩Updating about page content')
+
     form = AboutUsForm()
     about_content = AboutPageContent.query.get_or_404(about_id)
 
-    if 'img_url' in request.form and form.validate_on_submit():
-        about_content.img_url = request.form.get('img_url')
-    if 'banner_heading' in request.form and form.validate_on_submit():
-        about_content.banner_heading = request.form.get('banner_heading')
-    if 'banner_subheading' in request.form and form.validate_on_submit():
-        about_content.banner_subheading = request.form.get('banner_subheading')
-    if 'body_content' in request.form and form.validate_on_submit():
-        about_content.body_content = request.form.get('body_content')
+    if request.method in ['POST', 'PATCH']:
+        if form.validate_on_submit():
+            if 'img_url' in request.form:
+                about_content.img_url = request.form.get('img_url')
+            if 'banner_subheading' in request.form:
+                about_content.banner_subheading = request.form.get('banner_subheading')
+            if 'feature_one_description' in request.form:
+                about_content.feature_one_description = request.form.get('feature_one_description')
+            if 'feature_one_image_url' in request.form:
+                about_content.feature_one_image_url = request.form.get('feature_one_image_url')
+            if 'feature_two_description' in request.form:
+                about_content.feature_two_description = request.form.get('feature_two_description')
+            if 'feature_two_image_url' in request.form:
+                about_content.feature_two_image_url = request.form.get('feature_two_image_url')
 
-    db.session.commit()
-    flash('About Page Content added successfully', 'success')
+            db.session.commit()
+            flash('About Page Content updated successfully', 'success')
+            return redirect(url_for('partially_update_about_content', about_id=about_id))
+        else:
+            flash('Form validation failed', 'error')
 
-    #TODO: add the correct template
-    return redirect(url_for('partially_update_about_content', about_id=about_id))
+    # Handle GET request or form validation failure
+    return render_template('/admin/edit-about-content.html', about_form=form, about_content=about_content)
 
 
 
@@ -648,17 +699,28 @@ def partially_update_home_content(home_id):
     form = HomePageInfoForm()
     home_content = HomePage.query.get_or_404(home_id)
 
-    if 'Company name' in request.form and form.validate_on_submit():
-        home_content .name = request.form.get('name')
-    if 'heading' in request.form and form.validate_on_submit():
-        home_content .heading = request.form.get('heading')
-    if 'subheading' in request.form and form.validate_on_submit():
-        home_content .subheading = request.form.get('subheading')
+    if request.method in ['POST', 'PATCH']:
+        if form.validate_on_submit():
 
-    db.session.commit()
-    flash('Home Page Content added successfully', 'success')
+            if 'Company name' in request.form and form.validate_on_submit():
+                home_content .name = request.form.get('name')
+            if 'heading' in request.form and form.validate_on_submit():
+                home_content .heading = request.form.get('heading')
+            if 'subheading' in request.form and form.validate_on_submit():
+                home_content .subheading = request.form.get('subheading')
+
+            db.session.commit()
+            flash('Home Page Content added successfully', 'success')
+            return render_template('/admin/edit-home-content.html', home_form=form, home=home_content )
+        else:
+            # Form has errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(f'Error in {field}: {error}', 'danger')
 
     return render_template('/admin/edit-home-content.html', home_form=form, home=home_content )
+
+
 
 
 #------ User Routes -------

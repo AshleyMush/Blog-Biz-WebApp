@@ -88,7 +88,7 @@ with app.app_context():
             db.session.add(default_contact)
             db.session.commit()
 
-            print('🟩Adding default Contact info to the database')
+            print('🟩Adding default Contact info to the database.')
 
         # Check if Contact page content exists
         if not ContactPageContent.query.first():

@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
 import smtplib
 from email.mime.text import MIMEText
-from models import db, Contacts, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
+from models import db, ContactInfo, ContactFormData, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
 from forms import CallbackForm,ContactInfo, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, JobsForm, AboutUsForm, CareerPageContentForm
 import os
 import requests
@@ -77,8 +77,8 @@ with app.app_context():
             print('🟩Adding default FAQ to the database')
 
         # Check if the default contact info exists
-        if not Contacts.query.first():
-            default_contact = Contacts(
+        if not ContactInfo.query.first():
+            default_contact = ContactInfo(
                 email=os.environ.get("contact-info-email"),
                 location='25 Partridge Walk, Oxford, OX4 4QF',
                 phone_number=os.environ.get("contact-info-phone-number"),
@@ -89,6 +89,21 @@ with app.app_context():
             db.session.commit()
 
             print('🟩Adding default Contact info to the database')
+
+        # Check if Contact page content exists
+        if not ContactPageContent.query.first():
+            default_contact_page_content = ContactPageContent(
+                page_name="Contact Us",
+                img_url="https://images.unsplash.com/photo-1596524430615-b46475ddff6e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGNvbnRhY3QlMjB1c3xlbnwwfHwwfHx8MA%3D%3D",
+                banner_subheading="Contact Us",
+                content="<p>Get in touch with us today to learn more about our services and how we can help you.</p>",
+                img_one_url="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                description_one="<p>Get in touch with us today to learn more about our services and how we can help you.</p>",
+                img_two_url="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                description_two="<p>Get in touch with us today to learn more about our services and how we can help you.</p>",
+            )
+            db.session.add(default_contact_page_content)
+            db.session.commit()
 
 
         # Check if the default about page content exists
@@ -126,7 +141,7 @@ def home():
     """
     current_year = datetime.now().year
 
-    contacts_data = Contacts.query.all()
+    contacts_data = ContactInfo.query.all()
     faqs_data = FAQs.query.all()
     services_data = Services.query.all()
     home_page_data = HomePage.query.all()
@@ -521,7 +536,7 @@ def get_contact_info():
     This function gets all the contacts from the database
     :return:
     """
-    contacts = Contacts.query.all()
+    contacts = ContactInfo.query.all()
     return render_template('/admin/contact-info.html', contacts=contacts)
 
 @app.route('/admin/patch-contact-info/<int:contact_id>', methods=['PATCH', 'POST', 'GET'])
@@ -531,7 +546,7 @@ def partially_update_contact(contact_id):
     :param contact_id:
     :return:
     """
-    contact = Contacts.query.get_or_404(contact_id)
+    contact = ContactInfo.query.get_or_404(contact_id)
     form = ContactInfo()
 
     if request.method in ['POST', 'PATCH']:

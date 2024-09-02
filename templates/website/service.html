@@ -1,89 +1,69 @@
-{% extends '/website/base.html' %} {% block content %}
-<!--  hero section-->
-<div class="px-4 pt-5 my-5 text-center border-bottom">
-  <h1 class="display-4 fw-bold text-body-emphasis">
-    {{ service.service_name }}
-  </h1>
-  <div class="service"></div>
-  <div class="col-lg-6 mx-auto">
-    <p class="lead mb-4">{{service.banner_subheading}}</p>
-    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
-      <button type="button" class="btn btn-primary btn-lg px-4 me-sm-3">
-        Primary button
-      </button>
-      <button type="button" class="btn btn-outline-secondary btn-lg px-4">
-        Secondary
-      </button>
-    </div>
-  </div>
-  <div class="overflow-hidden" style="max-height: 30vh">
-    <div class="container px-5">
-      <img
-        src="{{ service.homepage_image_url }}"
-        class="img-fluid border rounded-3 shadow-lg mb-4"
-        alt="Example image"
-        width="700"
-        height="500"
-        loading="lazy"
-      />
-    </div>
-  </div>
-</div>
+{% extends '/website/base.html' %}
 
+{% block header %}
+<!--  hero section-->
+<div class="container col-xxl-8 px-4 py-5">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-10 col-sm-8 col-lg-6">
+            <img
+                src="{{ service.homepage_image_url }}"
+                class="img-fluid border rounded-3 shadow-lg mb-4"
+                alt="Example image"
+                width="700"
+                height="500"
+                loading="lazy"
+            />
+        </div>
+        <div class="col-lg-6">
+            <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">{{ service.service_name }}</h1>
+            <p class="lead">{{ service.banner_subheading }}</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <button type="button" class="btn btn-primary btn-lg px-4 me-md-2">Primary</button>
+                <button type="button" class="btn btn-outline-secondary btn-lg px-4">Default</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
 <!-- Feature section one-->
 <section class="py-5 bg-light" id="scroll-target">
-  <div class="container px-5 my-5">
-    <div class="row gx-5 align-items-center">
-      <div class="col-lg-6">
-        <img
-          class="img-fluid rounded mb-5 mb-lg-0"
-          src="{{ service.feature_one_image_url }}"
-          alt="..."
-          width="600"
-          height="400"
-        />
-      </div>
-      <div class="col-lg-6">
-        <!--
-                            <h2 class="fw-bolder">Our founding</h2>
-                            <p class="lead fw-normal text-muted mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto est, ut esse a labore aliquam beatae expedita. Blanditiis impedit numquam libero molestiae et fugit cupiditate, quibusdam expedita, maiores eaque quisquam.</p>
-                            -->
-
-        {{ service.feature_one_description | safe }}
-      </div>
+    <div class="container px-5 my-5">
+        <div class="row gx-5 align-items-center">
+            <div class="col-lg-6">
+                <img
+                    class="img-fluid rounded mb-5 mb-lg-0"
+                    src="{{ service.feature_one_image_url }}"
+                    alt="..."
+                    width="600"
+                    height="400"
+                />
+            </div>
+            <div class="col-lg-6">
+                {{ service.feature_one_description | safe }}
+            </div>
+        </div>
     </div>
-  </div>
 </section>
 
 <!-- Feature section two-->
 <section class="py-5">
-  <div class="container px-5 my-5">
-    <div class="row gx-5 align-items-center">
-      <div class="col-lg-6 order-first order-lg-last">
-        <img
-          class="img-fluid rounded mb-5 mb-lg-0"
-          src="{{ service.feature_two_image_url }}"
-          alt="..."
-          width="600"
-          height="400"
-        />
-      </div>
-      <div class="col-lg-6">
-        <!--
-          <h2 class="fw-bolder">Growth &amp; beyond</h2>
-          <p class="lead fw-normal text-muted mb-0">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto est, ut
-            esse a labore aliquam beatae expedita. Blanditiis impedit numquam
-            libero molestiae et fugit cupiditate, quibusdam expedita, maiores
-            eaque quisquam.
-          </p>
-        -->
-        {{ service.feature_two_description | safe }}
-      </div>
+    <div class="container px-5 my-5">
+        <div class="row gx-5 align-items-center">
+            <div class="col-lg-6 order-first order-lg-last">
+                <img
+                    class="img-fluid rounded mb-5 mb-lg-0"
+                    src="{{ service.feature_two_image_url }}"
+                    alt="..."
+                    width="600"
+                    height="400"
+                />
+            </div>
+            <div class="col-lg-6">
+                {{ service.feature_two_description | safe }}
+            </div>
+        </div>
     </div>
-  </div>
 </section>
-
-<!-- /END THE FEATURETTES -->
-
 {% endblock %}

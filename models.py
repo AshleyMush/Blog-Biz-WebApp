@@ -77,18 +77,51 @@ class FAQs(db.Model, UserMixin):
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
-class Contacts(db.Model, UserMixin):
-    __tablename__ = "contacts"
+class ContactFormData(db.Model, UserMixin):
+    __tablename__ = "contact_form"
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(250), unique=True, nullable=False)
-    location = db.Column(db.Text, nullable=False)
-    phone_number = db.Column(db.String(250), unique=True, nullable=False)
+    name = db.Column(db.String(250), nullable=True)
+    number = db.Column(db.String(250), nullable=True)
+    email = db.Column(db.String(250), nullable=True)
+    message = db.Column(db.String(250), nullable=True)
+
+    def to_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
+class ContactInfo(db.Model, UserMixin):
+    __tablename__ = "contact_info"
+    # Contact information
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(250), unique=True, nullable=True)
+    location = db.Column(db.Text, nullable=True)
+    phone_number = db.Column(db.String(250), unique=True, nullable=True)
     facebook_url = db.Column(db.String(250), nullable=True)
     instagram_url = db.Column(db.String(250), nullable=True)
     twitter_url = db.Column(db.String(250), nullable=True)
 
+
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
+class ContactPageContent(db.Model, UserMixin):
+    __tablename__ = "contact_page"
+    id = db.Column(db.Integer, primary_key=True)
+    # Contact Page data
+    page_name = db.Column(db.String(250), nullable=True)
+    img_url = db.Column(db.String(250), nullable=True)
+    banner_subheading = db.Column(db.String(250), nullable=True)
+    content = db.Column(db.Text, nullable=True)
+    img_one_url = db.Column(db.String(250), nullable=True)
+    description_one = db.Column(db.Text, nullable=True)
+    img_two_url = db.Column(db.String(250), nullable=True)
+    description_two = db.Column(db.Text, nullable=True)
+    img_three_url = db.Column(db.String(250), nullable=True)
+    description_three = db.Column(db.Text, nullable=True)
+
+    def to_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
+
 
 class AboutPageContent(db.Model, UserMixin):
     __tablename__ = "about_page"

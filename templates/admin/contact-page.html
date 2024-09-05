@@ -1,0 +1,101 @@
+
+
+
+
+
+<!-- Page Heading -->
+<h1 class="h3 mb-4 text-gray-800">Contact Page Data</h1>
+
+
+<div class="card shadow mb-4 mt-4">
+    <div class="card-header py-3">
+        
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Page Name</th>
+                        <th>Banner Image/ Video Url</th>
+                        <th>Banner Subheading</th>
+                        <th>Contact Content</th>
+                        <th>Feature One Icon (SVG/IMG) URL</th>
+                        <th>Feature One description</th>
+                        <th>Feature Two Icon (SVG/IMG) URL</th>
+                        <th>Feature Two description</th>
+                        <th>Feature Three Icon (SVG/IMG) URL</th>
+                        <th>Feature Three description</th>
+                    </tr>        </tr>
+                </thead>
+                <tbody>
+                    {% for data in contact_page %}
+                    <tr>
+                        <td>{{ data.id }}</td>
+                        <td>{{ data.page_name }}</td>
+                        <td>{{ data.banner_img_url | safe }}
+                             <img src="{{ data.banner_img_url }}" alt="Contact Page Banner Image" style="width: 100px;">
+
+                        </td>
+                               <td>{{ data.banner_subheading }}</td>
+        <td>{{ data.content | safe }}</td>
+
+        <!-- Feature One Image or Icon -->
+        <td>
+            {% if 'http' in data.img_one_url %}
+                <img src="{{ data.img_one_url }}" alt="Feature One Icon" style="width: 100px;">
+            {% else %}
+                {{ data.img_one_url | safe }} <!-- Render the icon directly -->
+            {% endif %}
+        </td>
+        <td>{{ data.description_one | safe }}</td>
+
+        <!-- Feature Two Image or Icon -->
+        <td>
+            {% if 'http' in data.img_two_url %}
+                <img src="{{ data.img_two_url }}" alt="Feature Two Icon" style="width: 100px;">
+            {% else %}
+                {{ data.img_two_url | safe }} <!-- Render the icon directly -->
+            {% endif %}
+        </td>
+        <td>{{ data.description_two }}</td>
+
+        <!-- Feature Three Image or Icon -->
+        <td>
+            {% if 'http' in data.img_three_url %}
+                <img src="{{ data.img_three_url }}" alt="Feature Three Icon" style="width: 100px;">
+
+
+            {% else %}
+            {{ data.img_three_url }}
+            <div
+            class="feature bg-primary bg-gradient text-white rounded-3 d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+
+            {{ data.img_three_url | safe }} <!-- Render the icon directly -->
+          </div>
+
+
+
+            {% endif %}
+        </td>
+        <td>{{ data.description_three | safe }}</td>
+
+
+                        <!--TODO: Change the ID-->
+                            <a href="{{ url_for('partially_update_contact_page', contact_page_id=data.id) }}">
+                                <button class="btn btn-primary m-1">
+                                    <i class="fas fa-fw fa-wrench"></i> Edit contact page
+                                </button>        </a>
+
+                        
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+

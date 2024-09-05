@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
 import smtplib
 from email.mime.text import MIMEText
-from models import db, ContactInfo, ContactFormData, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
+from models import db, ContactDetails, ContactFormData, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
 from forms import CallbackForm,ContactInfo, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, JobsForm, AboutUsForm, CareerPageContentForm
 import os
 import requests
@@ -77,8 +77,8 @@ with app.app_context():
             print('🟩Adding default FAQ to the database')
 
         # Check if the default contact info exists
-        if not ContactInfo.query.first():
-            default_contact = ContactInfo(
+        if not ContactDetails.query.first():
+            default_contact = ContactDetails(
                 email=os.environ.get("contact-info-email"),
                 location='25 Partridge Walk, Oxford, OX4 4QF',
                 phone_number=os.environ.get("contact-info-phone-number"),
@@ -93,14 +93,17 @@ with app.app_context():
         # Check if Contact page content exists
         if not ContactPageContent.query.first():
             default_contact_page_content = ContactPageContent(
-                page_name="Contact Us",
-                img_url="https://images.unsplash.com/photo-1596524430615-b46475ddff6e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGNvbnRhY3QlMjB1c3xlbnwwfHwwfHx8MA%3D%3D",
-                banner_subheading="Contact Us",
-                content="<p>Get in touch with us today to learn more about our services and how we can help you.</p>",
-                img_one_url="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                description_one="<p>Get in touch with us today to learn more about our services and how we can help you.</p>",
-                img_two_url="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                description_two="<p>Get in touch with us today to learn more about our services and how we can help you.</p>",
+                page_name='Contact Us',
+                img_url='https://images.unsplash.com/photo-1596524430615-b46475ddff6e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGNvbnRhY3QlMjB1c3xlbnwwfHwwfHx8MA%3D%3D',
+                banner_subheading='Contact Us Subheading',
+                content='<p>Get in touch with us today to learn more about our services and how we can help you.</p>',
+                img_one_url=' <i class="bi bi-envelope"></i>',
+                description_one='<p>Email us today</p>',
+                img_two_url='<i class="bi bi-telephone"></i>',
+                description_two='<p>Give us a call</p>',
+                img_three_url='<i class="bi bi-question-circle"></i>',
+                description_three='<p>See our Frequentky asked quuestions</p>',
+
             )
             db.session.add(default_contact_page_content)
             db.session.commit()
@@ -133,21 +136,17 @@ def admin():
 
 
 
-@app.route("/",methods=['POST', 'GET'])
+@app.route('/')
 def home():
-    """
-    This function returns the home page of the website
-    :return:
-    """
     current_year = datetime.now().year
 
-    contacts_data = ContactInfo.query.all()
+    # Correctly access the query attribute from the class, not an instance
+    contacts_data = ContactDetails.query.all()
     faqs_data = FAQs.query.all()
     services_data = Services.query.all()
     home_page_data = HomePage.query.all()
 
-    # Form------------
-    current_year = datetime.now().year
+    # Form handling
     callback_form = CallbackForm()
     contact_form = ContactForm()
 
@@ -165,14 +164,10 @@ def home():
         send_confirmation_email(name=name, email=email, subject=subject)
         send_admin_email(name=name, subject=subject, email=email, message=message)
 
-
     for contact in contacts_data:
         print(f'{contact.email}\n')
 
-
-
-
-    return render_template('/website/index.html',callback_form=callback_form, contact_form=contact_form, current_year=current_year, contacts_data=contacts_data, faqs_data=faqs_data, services_data=services_data, home_page_data=home_page_data, endpoint='home')
+    return render_template('/website/index.html', callback_form=callback_form, contact_form=contact_form, current_year=current_year, contacts_data=contacts_data, faqs_data=faqs_data, services_data=services_data, home_page_data=home_page_data, endpoint='home')
 
 
 
@@ -510,34 +505,117 @@ def partially_update_job_info(job_id):
 @app.route('/contact-us', methods=['POST', 'GET'])
 def contact_us():
     """
-    This function returns the contact us page of the website
-    :return:
+    This function handles the contact form submission and sends emails.
     """
-    contact_form = ContactForm()
-    if contact_form.validate_on_submit() and contact_form.data:
-        name = contact_form.name.data
-        email = contact_form.email.data
-        subject = contact_form.subject.data
-        message = contact_form.message.data
-        print(f'🟩Sending contact form data:\n'
-              f'{name}\n'
-              f'{email}\n'
-              f'{subject}\n'
-              f'{message}\n')
+    contact_page_data = ContactPageContent.query.all()
+    contacts = ContactDetails.query.all()
+    form = ContactForm()
 
-        send_confirmation_email(name=name, email=email, subject=subject)
-        send_admin_email(name=name, subject=subject, email=email, message=message)
+    if form.validate_on_submit():
+        name = form.name.data
+        email = form.email.data
+        number = form.number.data
+        message = form.message.data
 
-    return render_template('/website/contact.html', contact_form=contact_form)
+        print(f'🟩Received contact form data:\nName: {name}\nEmail: {email}\nNumber: {number}\nMessage: {message}')
 
-@app.route('/admin/get-contact-info')
-def get_contact_info():
+        # Save the form data to the database
+        new_message = ContactFormData(
+            name=name,
+            email=email,
+            number=number,
+            message=message
+        )
+        db.session.add(new_message)
+        db.session.commit()
+        print("🟩New contact form data added to the database")
+
+        # Send emails
+        try:
+            send_confirmation_email(name=name, email=email, subject="Contact Form Submission")
+            send_admin_email(name=name, subject="New Contact Form Submission", email=email, message=message)
+            flash('Message sent successfully!', 'success')
+        except Exception as e:
+            flash('Error sending message. Please try again later.', 'danger')
+            print(f"Error during email sending: {e}")
+
+        return redirect(url_for('contact_us'))
+    else:
+        if request.method == 'POST':
+            # Form has errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(f'Error in {field}: {error}', 'danger')
+
+    return render_template('/website/contact.html', form=form, contact_page_data=contact_page_data, contacts=contacts)
+
+
+#Todo: move this route to api
+@app.route('/api/get-contact-info')
+def get_contact_info_api():
     """
     This function gets all the contacts from the database
     :return:
     """
-    contacts = ContactInfo.query.all()
-    return render_template('/admin/contact-info.html', contacts=contacts)
+    contacts = ContactDetails.query.all()
+    contact_page = ContactPageContent.query.all()
+    contact_page_dict = [contact.to_dict() for contact in contact_page]
+    contacts_dict = [contact.to_dict() for contact in contacts]
+    return jsonify(contacts_dict, contact_page_dict)
+
+
+
+
+
+@app.route('/admin/get-contact-info')
+def customize_contact_page():
+    """
+    This function gets all the contacts from the database
+    :return:
+    """
+    contacts = ContactDetails.query.all()
+    contact_page = ContactPageContent.query.all()
+    return render_template('/admin/customize-contact-info.html', contacts=contacts, contact_page=contact_page)
+
+@app.route('/admin/patch-contact-page/<int:contact_page_id>', methods=['POST', 'PATCH', 'GET'])
+def partially_update_contact_page(contact_page_id):
+    """
+    This function partially updates the contact page content
+    :return:
+    """
+    contact_page = ContactPageContent.query.first()
+    form = ContactInfo()
+
+    if request.method in ['POST', 'PATCH']:
+        if form.validate_on_submit():
+            if 'img_url' in request.form:
+                contact_page.img_url = request.form.get('img_url')
+            if 'banner_subheading' in request.form:
+                contact_page.banner_subheading = request.form.get('banner_subheading')
+            if 'content' in request.form:
+                contact_page.content = request.form.get('content')
+            if 'img_one_url' in request.form:
+                contact_page.img_one_url = request.form.get('img_one_url')
+            if 'description_one' in request.form:
+                contact_page.description_one = request.form.get('description_one')
+            if 'img_two_url' in request.form:
+                contact_page.img_two_url = request.form.get('img_two_url')
+            if 'description_two' in request.form:
+                contact_page.description_two = request.form.get('description_two')
+            if 'img_three_url' in request.form:
+                contact_page.img_three_url = request.form.get('img_three_url')
+            if 'description_three' in request.form:
+                contact_page.description_three = request.form.get('description_three')
+
+            db.session.commit()
+            flash('Contact Page Content updated successfully', 'success')
+            return redirect(url_for('partially_update_contact_page'))
+
+        else:
+            flash('Form validation failed', 'error')
+
+    # Handle GET request or form validation failure
+    return render_template('/admin/edit-contact-page.html', contact_info_form=form, contact_page=contact_page)
 
 @app.route('/admin/patch-contact-info/<int:contact_id>', methods=['PATCH', 'POST', 'GET'])
 def partially_update_contact(contact_id):
@@ -546,7 +624,7 @@ def partially_update_contact(contact_id):
     :param contact_id:
     :return:
     """
-    contact = ContactInfo.query.get_or_404(contact_id)
+    contact = ContactDetails.query.get_or_404(contact_id)
     form = ContactInfo()
 
     if request.method in ['POST', 'PATCH']:
@@ -785,40 +863,25 @@ def search():
 
 
 
-
 def send_confirmation_email(name, email, subject, service='gmail'):
     """
-    This function sends a confirmation email to the user
-    :param name:
-    :param email:
-    :param subject:
-    :param service:
-    :return:
+    Sends a confirmation email to the user.
     """
-    # Email content
     email_content = render_template('user_email.html', name=name)
 
-    # MIMEText logic
     msg = MIMEText(email_content, 'html')
     msg['From'] = ADMIN_EMAIL_ADDRESS
-    msg['To'] = email  # Send to the user's email
+    msg['To'] = email
     msg['Subject'] = f"Confirmation: {subject}"
     msg['Reply-To'] = ADMIN_EMAIL_ADDRESS
-
-
-    # ---SMTP logic-----
 
     smtp_settings = {
         'gmail': ('smtp.gmail.com', 587),
         'yahoo': ('smtp.mail.yahoo.com', 587),
         'outlook': ('smtp.office365.com', 587)
-        # Add more services as needed
     }
 
-    if service in smtp_settings:
-        smtp_server, smtp_port = smtp_settings[service]
-    else:
-        raise ValueError("Unsupported email service")
+    smtp_server, smtp_port = smtp_settings.get(service, smtp_settings['gmail'])
 
     try:
         with smtplib.SMTP(smtp_server, smtp_port) as connection:
@@ -827,24 +890,13 @@ def send_confirmation_email(name, email, subject, service='gmail'):
             connection.sendmail(ADMIN_EMAIL_ADDRESS, email, msg.as_string())
     except Exception as e:
         print(f"Error sending email: {e}")
-        render_template('base.html')
+        flash('Error sending confirmation email. Please try again later.', 'danger')
 
 def send_admin_email(name, subject, email, message, service='gmail'):
     """
-    This function sends an email to the admin
-    :param name:
-    :param subject:
-    :param email:
-    :param message:
-    :param service:
-    :return:
+    Sends an email to the admin with the contact form details.
     """
-
-
-    email_content = render_template('admin_email.html', name=name, subject=subject, email=email,
-                                    message=message)
-
-    # -- MIMETEXT logic ---
+    email_content = render_template('admin_email.html', name=name, subject=subject, email=email, message=message)
 
     msg = MIMEText(email_content, 'html')
     msg['From'] = email
@@ -852,31 +904,23 @@ def send_admin_email(name, subject, email, message, service='gmail'):
     msg['Subject'] = f"New message from {name}: {subject}"
     msg['Reply-To'] = email
 
-    # ---SMTP logic-----
-
     smtp_settings = {
         'gmail': ('smtp.gmail.com', 587),
         'yahoo': ('smtp.mail.yahoo.com', 587),
         'outlook': ('smtp.office365.com', 587)
-        # Add more services as needed
     }
 
-    if service in smtp_settings:
-        smtp_server, smtp_port = smtp_settings[service]
-    else:
-        raise ValueError("Unsupported email service")
+    smtp_server, smtp_port = smtp_settings.get(service, smtp_settings['gmail'])
 
     try:
         with smtplib.SMTP(smtp_server, smtp_port) as connection:
             connection.starttls()
             connection.login(ADMIN_EMAIL_ADDRESS, ADMIN_EMAIL_PW)
-            connection.sendmail(from_addr=email, to_addrs=ADMIN_EMAIL_ADDRESS,
-                                msg=msg.as_string())
+            connection.sendmail(from_addr=email, to_addrs=ADMIN_EMAIL_ADDRESS, msg=msg.as_string())
     except Exception as e:
-        print(f"Error sending email: {e}")
-        #Todo: Add a flash message in the base.html
-        flash(message='Error sending email', category='danger')
-        render_template('base.html')
+        print(f"Error sending admin email: {e}")
+        flash('Error sending admin notification. Please try again later.', 'danger')
+
 
 
 

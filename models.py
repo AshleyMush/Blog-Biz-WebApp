@@ -88,8 +88,8 @@ class ContactFormData(db.Model, UserMixin):
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
-class ContactInfo(db.Model, UserMixin):
-    __tablename__ = "contact_info"
+class ContactDetails(db.Model, UserMixin):
+    __tablename__ = "contact_details"
     # Contact information
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(250), unique=True, nullable=True)
@@ -98,6 +98,9 @@ class ContactInfo(db.Model, UserMixin):
     facebook_url = db.Column(db.String(250), nullable=True)
     instagram_url = db.Column(db.String(250), nullable=True)
     twitter_url = db.Column(db.String(250), nullable=True)
+
+    def to_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
 
     def to_dict(self):

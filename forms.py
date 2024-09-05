@@ -31,10 +31,10 @@ class CallbackForm(FlaskForm):
 class ContactForm(FlaskForm):
     name = StringField(label='Name', validators=[DataRequired(message="Please enter the name."), Length(max=64)], render_kw={"placeholder": "Name", "id": "name"})
     email = StringField('Email', validators=[DataRequired(message="Please enter the email."), Email(message="Please enter a valid email.")], render_kw={"placeholder": "Email", "id": "email"})
+    number = StringField('Phone Number', validators=[DataRequired(message="Please enter your phone number.")], render_kw={"placeholder": "Phone Number", "id": "phone"})
     subject = StringField('Subject', validators=[DataRequired(message="Please enter the subject.")], render_kw={"placeholder": "Subject", "id": "subject"})
     message = TextAreaField('Message', validators=[DataRequired(message="Please enter the message.")], render_kw={"id": "message", "placeholder": "Enter your message", "rows": 6})
     submit = SubmitField('Send Message', render_kw={'id':'contact_submit_btn'})
-
 
 class AddServicesForm(FlaskForm):
     service_name = StringField('Service Name', validators=[DataRequired(message="Please enter the service name.")])

@@ -1,0 +1,34 @@
+    <div class="container px-4 py-5" id="hanging-icons">
+
+      <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+        <div class="col d-flex align-items-start">
+          <div
+            class="feature bg-primary bg-gradient text-white rounded-3 d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+
+            {{ page_data.img_one_url | safe }}
+          </div>
+          <div>
+            {{ page_data.description_one | safe }}
+          </div>
+        </div>
+        <div class="col d-flex align-items-start">
+          <div
+            class="feature bg-primary bg-gradient text-white rounded-3 d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+
+            {{ page_data.img_two_url | safe }}
+          </div>
+          <div>
+            {{ page_data.description_two | safe }}
+          </div>
+        </div>
+        <div class="col d-flex align-items-start">
+          <div
+            class="feature bg-primary bg-gradient text-white rounded-3 d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+            {{ page_data.img_three_url| safe }}
+          </div>
+          <div>
+            {{ page_data.description_three | safe }}
+          </div>
+        </div>
+      </div>
+    </div>

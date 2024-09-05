@@ -1,9 +1,4 @@
-I have linked ll the css to the new template
+Add form for editing the contact page data in admin oannel and add feature of seeing the default img and svgs in the contact page data table
 
-Identify the new templates through not being added on git
-
-Refactor the Js files once you have extracted it
-
-refector the assets and ectract them
-
-index is refactored
+TODO 2:
+Fix form functionality of the Contact form

@@ -4,7 +4,7 @@ from flask_ckeditor import CKEditor
 import smtplib
 from email.mime.text import MIMEText
 from models import db, ContactDetails, ContactFormData, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
-from forms import CallbackForm,ContactInfo, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, JobsForm, AboutUsForm, CareerPageContentForm
+from forms import CallbackForm,ContactInfo, ContactPageForm, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, JobsForm, AboutUsForm, CareerPageContentForm
 import os
 import requests
 
@@ -584,7 +584,7 @@ def partially_update_contact_page(contact_page_id):
     :return:
     """
     contact_page = ContactPageContent.query.first()
-    form = ContactInfo()
+    form = ContactPageForm()
 
     if request.method in ['POST', 'PATCH']:
         if form.validate_on_submit():
@@ -609,13 +609,14 @@ def partially_update_contact_page(contact_page_id):
 
             db.session.commit()
             flash('Contact Page Content updated successfully', 'success')
-            return redirect(url_for('partially_update_contact_page'))
+            return redirect(url_for('partially_update_contact_page', contact_page_id=contact_page_id))
+
 
         else:
             flash('Form validation failed', 'error')
 
     # Handle GET request or form validation failure
-    return render_template('/admin/edit-contact-page.html', contact_info_form=form, contact_page=contact_page)
+    return render_template('/admin/contact-page-form.html', contact_info_form=form, data=contact_page)
 
 @app.route('/admin/patch-contact-info/<int:contact_id>', methods=['PATCH', 'POST', 'GET'])
 def partially_update_contact(contact_id):

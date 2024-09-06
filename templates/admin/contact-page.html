@@ -4,8 +4,10 @@
 
 
 <!-- Page Heading -->
+ 
 <h1 class="h3 mb-4 text-gray-800">Contact Page Data</h1>
 
+           
 
 <div class="card shadow mb-4 mt-4">
     <div class="card-header py-3">
@@ -46,7 +48,16 @@
             {% if 'http' in data.img_one_url %}
                 <img src="{{ data.img_one_url }}" alt="Feature One Icon" style="width: 100px;">
             {% else %}
-                {{ data.img_one_url | safe }} <!-- Render the icon directly -->
+
+
+                            {{ data.img_one_url }}
+            <div class="col d-flex align-items-start">
+          <div
+            class="feature bg-primary bg-gradient text-white rounded-3 d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+            {{ data.img_one_url| safe }}
+          </div>
+          <div>
+
             {% endif %}
         </td>
         <td>{{ data.description_one | safe }}</td>
@@ -56,7 +67,14 @@
             {% if 'http' in data.img_two_url %}
                 <img src="{{ data.img_two_url }}" alt="Feature Two Icon" style="width: 100px;">
             {% else %}
-                {{ data.img_two_url | safe }} <!-- Render the icon directly -->
+                           {{ data.img_two_url }}
+            <div class="col d-flex align-items-start">
+          <div
+            class="feature bg-primary bg-gradient text-white rounded-3 d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+            {{ data.img_two_url| safe }}
+          </div>
+          <div>
+
             {% endif %}
         </td>
         <td>{{ data.description_two }}</td>
@@ -68,12 +86,14 @@
 
 
             {% else %}
-            {{ data.img_three_url }}
-            <div
-            class="feature bg-primary bg-gradient text-white rounded-3 d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
 
-            {{ data.img_three_url | safe }} <!-- Render the icon directly -->
+            {{ data.img_three_url }}
+            <div class="col d-flex align-items-start">
+          <div
+            class="feature bg-primary bg-gradient text-white rounded-3 d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+            {{ data.img_three_url| safe }}
           </div>
+          <div>
 
 
 
@@ -91,6 +111,7 @@
                         
                         </td>
                     </tr>
+
                     {% endfor %}
                 </tbody>
             </table>

@@ -1,0 +1,109 @@
+{% extends '/admin/base.html' %}
+
+
+
+{% block title %} Customize {{ data.page_name }} Page{% endblock %}
+
+{% block content %}
+
+<h1 class="h3 mb-4 text-gray-800">Editing Contact Page </h1>
+
+
+<!-- Admin Contact Page Form -->
+<form action="{{ url_for('partially_update_contact_page', contact_page_id=data.id) }}" method="POST">
+    <div class="container mt-4">
+        <div class="form-group">
+            <label for="page_name">Page Name:</label>
+            <input type="text" class="form-control" id="page_name" name="page_name" placeholder="{{ data.page_name }}"
+                value="{{ data.page_name }}">
+        </div>
+      
+        <div class="form-group">
+            <label for="banner_subheading">Banner Subheading:</label>
+            <input type="text" class="form-control" id="banner_subheading" name="banner_subheading"
+                placeholder="{{ data.banner_subheading }}" value="{{ data.banner_subheading }}">
+        </div>
+        <div class="form-group">
+            <label for="img_url">Banner Image URL:</label>
+            <input type="text" class="form-control" id="img_url" name="img_url"
+                placeholder="{{ data.img_url }}" value="{{ data.img_url }}">
+            <img src="{{ data.img_url }}" alt="Banner Image" class="img-thumbnail mt-2" style="width: 100px;">
+        </div>
+        <div class="form-group">
+            <label for="content">Google Maps Section Content:</label>
+            <textarea class="form-control ckeditor" id="content" name="content"
+                placeholder="{{ data.content }}" rows="3">{{ data.content }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="img_one_url">Feature One Icon code (bootstrap or fontawesome)/ Image URL:</label>
+            <input type="text" class="form-control" id="img_one_url" name="img_one_url"
+                placeholder="{{ data.img_one_url }}" value="{{ data.img_one_url }}">
+        </div>
+        {% if 'http' in data.img_one_url %}
+                <img src="{{ data.img_one_url }}" alt="Feature One Icon" style="width: 100px;">
+        {% else %}
+          <div
+            class="feature bg-primary bg-gradient text-white rounded-3 d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+            {{ data.img_one_url| safe }}
+          </div>
+          <div>
+        {% endif %}
+        <div class="form-group">
+            <label for="description_one">Feature One Description:</label>
+            <textarea class="form-control ckeditor" id="description_one" name="description_one"
+                placeholder="{{ data.description_one }}" rows="3">{{ data.description_one }}</textarea>       </div>    
+
+        <div class="form-group">
+            <label for="img_two_url">Feature Two Icon code (bootstrap or fontawesome)/ Image URL:</label>
+            <input type="text" class="form-control" id="img_two_url" name="img_two_url"
+                placeholder="{{ data.img_two_url }}" value="{{ data.img_two_url }}">
+        </div>
+        {% if 'http' in data.img_two_url %}
+                <img src="{{ data.img_two_url }}" alt="Feature Two Icon" style="width: 100px;">
+        {% else %}
+          <div
+            class="feature bg-primary bg-gradient text-white rounded-3 d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+            {{ data.img_two_url| safe }}
+          </div>
+          <div>
+        {% endif %}
+        
+        <div class="form-group">
+            <label for="description_two">Feature Two Description:</label>
+            <textarea class="form-control ckeditor" id="description_two" name="description_two"
+                placeholder="{{ data.description_two }}" rows="3">{{ data.description_two }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="img_three_url">Feature Three Icon code (bootstrap or fontawesome)/ Image URL:</label>
+            <input type="text" class="form-control" id="img_three_url" name="img_three_url"
+                placeholder="{{ data.img_three_url }}" value="{{ data.img_three_url }}">
+        </div>
+        
+    {% if 'http' in data.img_three_url %}
+                <img src="{{ data.img_three_url }}" alt="Feature Three Icon" style="width: 100px;">
+
+
+    {% else %}
+
+          <div
+            class="feature bg-primary bg-gradient text-white rounded-3 d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+            {{ data.img_three_url| safe }}
+          </div>
+          <div>
+
+    {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="description_three">Feature Three Description:</label>
+            <textarea class="form-control ckeditor" id="description_three" name="description_three"
+                placeholder="{{ data.description_three }}" rows="3">{{ data.description_three }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+
+
+{% endblock %}
+
+

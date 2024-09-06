@@ -113,13 +113,13 @@ class ContactPageContent(db.Model, UserMixin):
     page_name = db.Column(db.String(250), nullable=True)
     img_url = db.Column(db.String(250), nullable=True)
     banner_subheading = db.Column(db.String(250), nullable=True)
-    content = db.Column(db.Text, nullable=True)
+    content = db.Column(db.Text, nullable=True) # Rich content
     img_one_url = db.Column(db.String(250), nullable=True)
-    description_one = db.Column(db.Text, nullable=True)
+    description_one = db.Column(db.Text, nullable=True) # Rich content
     img_two_url = db.Column(db.String(250), nullable=True)
-    description_two = db.Column(db.Text, nullable=True)
+    description_two = db.Column(db.Text, nullable=True) # Rich content
     img_three_url = db.Column(db.String(250), nullable=True)
-    description_three = db.Column(db.Text, nullable=True)
+    description_three = db.Column(db.Text, nullable=True) # Rich content
 
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}

@@ -29,12 +29,19 @@ class CallbackForm(FlaskForm):
 
 
 class ContactForm(FlaskForm):
-    name = StringField(label='Name', validators=[DataRequired(message="Please enter the name."), Length(max=64)], render_kw={"placeholder": "Name", "id": "name"})
-    email = StringField('Email', validators=[DataRequired(message="Please enter the email."), Email(message="Please enter a valid email.")], render_kw={"placeholder": "Email", "id": "email"})
-    number = StringField('Phone Number', validators=[DataRequired(message="Please enter your phone number.")], render_kw={"placeholder": "Phone Number", "id": "phone"})
-    subject = StringField('Subject', validators=[DataRequired(message="Please enter the subject.")], render_kw={"placeholder": "Subject", "id": "subject"})
-    message = TextAreaField('Message', validators=[DataRequired(message="Please enter the message.")], render_kw={"id": "message", "placeholder": "Enter your message", "rows": 6})
-    submit = SubmitField('Send Message', render_kw={'id':'contact_submit_btn'})
+    name = StringField('Name', validators=[DataRequired(message="Please enter the name."), Length(max=64)],
+                       render_kw={"placeholder": "Name", "class": "form-control"})
+    number = StringField('Contact Number', validators=[DataRequired(message="Please enter the contact number."), Length(max=20)],)
+    email = StringField('Email', validators=[DataRequired(message="Please enter the email."), Email(message="Please enter a valid email.")],
+                        render_kw={"placeholder": "Email", "class": "form-control"})
+    message = TextAreaField('Message', validators=[DataRequired(message="Please enter the message.")],
+                            render_kw={"placeholder": "Message", "class": "form-control"})
+
+    submit = SubmitField('Send Message', render_kw={"class": "btn btn-primary call-back-btn"})
+    
+    
+
+    
 
 class AddServicesForm(FlaskForm):
     service_name = StringField('Service Name', validators=[DataRequired(message="Please enter the service name.")])
@@ -86,6 +93,19 @@ class ContactInfo(FlaskForm):
     twitter_url = StringField('Twitter URL', validators=[Optional(), URL()])
     submit = SubmitField('Save Changes')
 
+class ContactPageForm(FlaskForm):
+    page_name = StringField('Page Name', validators=[DataRequired(message="Please enter the page name.")])
+    img_url = StringField('Image URL', validators=[DataRequired(message="Please enter the image URL.")])
+    banner_subheading = StringField('Banner Subheading', validators=[DataRequired(message="Please enter the banner subheading.")])
+    content = CKEditorField('Content', validators=[DataRequired(message="Please enter the content.")])
+    img_one_url = StringField('Image One URL', validators=[DataRequired(message="Please enter a URL for an image or Bootsrap/ Fontaweson icon code for SVGs")])
+    description_one = CKEditorField('Description One', validators=[DataRequired(message="Please enter the description one.")])
+    img_two_url = StringField('Image Two URL', validators=[DataRequired(message="Please enter a URL for an image or Bootsrap/ Fontaweson icon code for SVGs")])
+    description_two = CKEditorField('Description Two', validators=[DataRequired(message="Please enter the description two.")])
+    img_three_url = StringField('Image Three URL', validators=[DataRequired(message="Please enter a URL for an image or Bootsrap/ Fontaweson icon code for SVGs.")])
+    description_three = CKEditorField('Description Three', validators=[DataRequired(message="Please enter the description three.")])
+    submit = SubmitField('Submit')
+
 
 class JobsForm(FlaskForm):
     job_name = StringField('Job Name', validators=[DataRequired(message="Please enter the job name.")])
@@ -100,3 +120,6 @@ class CareerPageContentForm(FlaskForm):
     banner_subheading = StringField('Banner Subheading', validators=[DataRequired(message="Please enter the banner subheading.")])
     page_content = CKEditorField('Page Content', validators=[DataRequired(message="Please enter the page content.")])
     submit = SubmitField('Submit')
+
+
+

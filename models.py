@@ -77,8 +77,8 @@ class FAQs(db.Model, UserMixin):
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
-class ContactFormData(db.Model, UserMixin):
-    __tablename__ = "contact_form"
+class Inbox(db.Model, UserMixin):
+    __tablename__ = "Inbox"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=True)
     number = db.Column(db.String(250), nullable=True)

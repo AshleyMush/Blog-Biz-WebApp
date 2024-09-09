@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
 import smtplib
 from email.mime.text import MIMEText
-from models import db, ContactDetails, ContactFormData, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
+from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
 from forms import CallbackForm,ContactInfo, ContactPageForm, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, JobsForm, AboutUsForm, CareerPageContentForm
 import os
 import requests
@@ -511,41 +511,42 @@ def contact_us():
     contacts = ContactDetails.query.all()
     form = ContactForm()
 
-    if form.validate_on_submit():
-        name = form.name.data
-        email = form.email.data
-        number = form.number.data
-        message = form.message.data
+    if request.method in ['POST']:
+        if form.validate_on_submit():
+            name = form.name.data
+            email = form.email.data
+            number = form.number.data
+            message = form.message.data
 
-        print(f'🟩Received contact form data:\nName: {name}\nEmail: {email}\nNumber: {number}\nMessage: {message}')
+            print(f'🟩Received contact form data:\nName: {name}\nEmail: {email}\nNumber: {number}\nMessage: {message}')
 
-        # Save the form data to the database
-        new_message = ContactFormData(
-            name=name,
-            email=email,
-            number=number,
-            message=message
-        )
-        db.session.add(new_message)
-        db.session.commit()
-        print("🟩New contact form data added to the database")
+            # Save the form data to the database
+            new_message = Inbox(
+                name=name,
+                email=email,
+                number=number,
+                message=message
+            )
+            db.session.add(new_message)
+            db.session.commit()
+            print("🟩New contact form data added to the database")
 
-        # Send emails
-        try:
-            send_confirmation_email(name=name, email=email, subject="Contact Form Submission")
-            send_admin_email(name=name, subject="New Contact Form Submission", email=email, message=message)
-            flash('Message sent successfully!', 'success')
-        except Exception as e:
-            flash('Error sending message. Please try again later.', 'danger')
-            print(f"Error during email sending: {e}")
+            # Send emails
+            try:
+                send_confirmation_email(name=name, email=email, subject="Message Sent Successfully")
+                send_admin_email(name=name, subject=f"New Message from your website, from {name}", email=email, message=message)
+                flash('Message sent successfully!', 'success')
+            except Exception as e:
+                flash('Error sending message. Please try again later.', 'danger')
+                print(f"Error during email sending: {e}")
 
-        return redirect(url_for('contact_us'))
-    else:
-        if request.method == 'POST':
-            # Form has errors
-            for field, errors in form.errors.items():
-                for error in errors:
-                    flash(f'Error in {field}: {error}', 'danger')
+            return redirect(url_for('contact_us'))
+        else:
+            if request.method == 'POST':
+                # Form has errors
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        flash(f'Error in {field}: {error}', 'danger')
 
     return render_template('/website/contact.html', form=form, contact_page_data=contact_page_data, contacts=contacts)
 

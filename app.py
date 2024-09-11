@@ -1,10 +1,12 @@
 from flask import Flask,  render_template,jsonify,   flash, request, redirect, url_for
 from flask_bootstrap import Bootstrap5
+from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user
+from werkzeug.security import generate_password_hash
 from flask_ckeditor import CKEditor
 import smtplib
 from email.mime.text import MIMEText
 from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
-from forms import CallbackForm,ContactInfo, ContactPageForm, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, JobsForm, AboutUsForm, CareerPageContentForm
+from forms import CallbackForm,RegisterForm,ContactInfo, ContactPageForm, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, JobsForm, AboutUsForm, CareerPageContentForm
 import os
 import requests
 
@@ -29,6 +31,12 @@ app.config['WTF_CSRF_ENABLED'] = False
 # -----------------Configure DB-------------------------
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///Agency.db"
 db.init_app(app)
+
+
+# --- Configure Flask-Login ---
+login_manager = LoginManager()
+login_manager.init_app(app)
+
 
 with app.app_context():
 
@@ -169,6 +177,13 @@ def home():
 
     return render_template('/website/index.html', callback_form=callback_form, contact_form=contact_form, current_year=current_year, contacts_data=contacts_data, faqs_data=faqs_data, services_data=services_data, home_page_data=home_page_data, endpoint='home')
 
+
+# ---- Admin Dashboard 
+
+# TODO: Add authentication to the admin dashboard
+@app.route('/admin/dashboard', methods=['GET','POST'])
+def admin_dashboard():
+    return render_template('/admin/404.html')
 
 
 #------ Service Routes -------
@@ -865,7 +880,8 @@ def search():
 
 # ------ Blog Routes ----
 
-"""@app.route("/new-post", methods=["GET", "POST"])
+"""
+@app.route("/new-post", methods=["GET", "POST"])
 def add_new_post():
     form = CreatePostForm()
     if form.validate_on_submit():
@@ -881,6 +897,91 @@ def add_new_post():
         db.session.commit()
         return redirect(url_for("get_all_posts"))
     return render_template("make-post.html", form=form)"""
+
+#
+# # TODO: Use a decorator so only an admin user can edit a post
+# @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
+# def edit_post(post_id):
+#     post = db.get_or_404(BlogPost, post_id)
+#     edit_form = CreatePostForm(
+#         title=post.title,
+#         subtitle=post.subtitle,
+#         img_url=post.img_url,
+#         author=post.author,
+#         body=post.body
+#     )
+#     if edit_form.validate_on_submit():
+#         post.title = edit_form.title.data
+#         post.subtitle = edit_form.subtitle.data
+#         post.img_url = edit_form.img_url.data
+#         post.author = current_user
+#         post.body = edit_form.body.data
+#         db.session.commit()
+#         return redirect(url_for("show_post", post_id=post.id))
+#     return render_template("make-post.html", form=edit_form, is_edit=True)
+
+# # TODO: Use a decorator so only an admin user can delete a post
+# @app.route("/delete/<int:post_id>")
+# def delete_post(post_id):
+#     post_to_delete = db.get_or_404(BlogPost, post_id)
+#     db.session.delete(post_to_delete)
+#     db.session.commit()
+#     return redirect(url_for('get_all_posts'))
+
+
+@app.route('/login')
+def login():
+    return render_template("login.html")
+
+@app.route('/admin/register', methods=["GET", "POST"])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        # Hash the password with salt
+        hash_and_salted_password = generate_password_hash(
+            form.password.data,
+            method='pbkdf2:sha256',
+            salt_length=8
+        )
+
+        # Create new user
+        new_user = User(
+            email=form.email.data,
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
+            password=hash_and_salted_password
+        )
+
+        # Add and commit the user to the database
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash('Registered successfully', 'success')
+
+        # Automatically log in the new user
+        login_user(new_user)
+
+        # Redirect to a different page (e.g., blog posts or dashboard)
+        return redirect(url_for("admin_dashboard"))
+
+    else:
+        # Form has errors
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f'Error in {field}: {error}', 'danger')
+
+
+
+    return render_template("register.html", form=form)
+
+@app.route('/logout')
+def logout():
+    return redirect(url_for('get_all_posts'))
+
+
+
+
+# ------ Contact Form Functions ------
 
 
 

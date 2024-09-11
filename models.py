@@ -47,12 +47,16 @@ class User(db.Model, UserMixin):
     """
     This class represents the User table.
     """
-    __tablename__ = "User"
+    __tablename__ = "User Details"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
-    name = db.Column(db.String(250), nullable=False)
+    first_name = db.Column(db.String(250), nullable=False)
+    last_name = db.Column(db.String(250), nullable=False)
+    number = db.Column(db.String(250), nullable=True)
 
+
+    # For api purposes, to convert the data to a dictionary
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 

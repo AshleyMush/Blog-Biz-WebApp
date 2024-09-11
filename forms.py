@@ -1,9 +1,21 @@
 from flask_wtf import FlaskForm
 from flask_ckeditor import CKEditorField
-from wtforms import StringField, SubmitField, TextAreaField
-from wtforms.validators import DataRequired, URL, Email, Length, ValidationError, InputRequired, Optional
+from wtforms import StringField, SubmitField, TextAreaField, PasswordField
+from wtforms.validators import DataRequired, URL, Email, Length, ValidationError, InputRequired, Optional, EqualTo
 import re
 from flask import flash
+
+
+class RegisterForm(FlaskForm):
+    email = StringField("Email", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    confirm_password = PasswordField("Repeat Password",
+                                     validators=[DataRequired(), EqualTo('password', message="Passwords must match")])
+    first_name = StringField("First Name", validators=[DataRequired()])
+    last_name = StringField("Last Name", validators=[DataRequired()])
+    submit = SubmitField("Register")
+
+
 
 class HomePageInfoForm(FlaskForm):
     name = StringField('Company Name', validators=[DataRequired(message="Please enter the company name.")])

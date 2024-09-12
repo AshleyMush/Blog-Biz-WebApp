@@ -7,13 +7,24 @@ from flask import flash
 
 
 class RegisterForm(FlaskForm):
-    email = StringField("Email", validators=[DataRequired()])
-    password = PasswordField("Password", validators=[DataRequired()])
-    confirm_password = PasswordField("Repeat Password",
-                                     validators=[DataRequired(), EqualTo('password', message="Passwords must match")])
     first_name = StringField("First Name", validators=[DataRequired()])
     last_name = StringField("Last Name", validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    password = PasswordField("Password", validators=[
+        DataRequired(),
+        Length(min=8, message="Password must be at least 8 characters long")
+    ])
+    confirm_password = PasswordField("Repeat Password", validators=[
+        DataRequired(),
+        EqualTo('password', message="Passwords must match")
+    ])
     submit = SubmitField("Register")
+
+
+class LoginForm(FlaskForm):
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    submit = SubmitField("Login")
 
 
 

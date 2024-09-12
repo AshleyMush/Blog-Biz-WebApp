@@ -6,7 +6,7 @@ from flask_ckeditor import CKEditor
 import smtplib
 from email.mime.text import MIMEText
 from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
-from forms import CallbackForm,RegisterForm,ContactInfo, ContactPageForm, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, JobsForm, AboutUsForm, CareerPageContentForm
+from forms import CallbackForm,RegisterForm, LoginForm,ContactInfo, ContactPageForm, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, JobsForm, AboutUsForm, CareerPageContentForm
 import os
 import requests
 
@@ -931,12 +931,12 @@ def add_new_post():
 
 @app.route('/login')
 def login():
-    return render_template("login.html")
+    return render_template("/admin/login.html")
 
 @app.route('/admin/register', methods=["GET", "POST"])
 def register():
     form = RegisterForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit() and form.data:
         # Hash the password with salt
         hash_and_salted_password = generate_password_hash(
             form.password.data,
@@ -958,21 +958,19 @@ def register():
 
         flash('Registered successfully', 'success')
 
-        # Automatically log in the new user
-        login_user(new_user)
+        # Automatically log in the new user if desired ⭐⭐⭐⭐
+        # login_user(new_user)
 
         # Redirect to a different page (e.g., blog posts or dashboard)
         return redirect(url_for("admin_dashboard"))
 
     else:
-        # Form has errors
-        for field, errors in form.errors.items():
-            for error in errors:
-                flash(f'Error in {field}: {error}', 'danger')
+        if form.errors:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(f'Error in {field}: {error}', 'danger')
 
-
-
-    return render_template("register.html", form=form)
+    return render_template("/admin/register.html", form=form)
 
 @app.route('/logout')
 def logout():

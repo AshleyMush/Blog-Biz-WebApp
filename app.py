@@ -1,7 +1,7 @@
 from flask import Flask,  render_template,jsonify,   flash, request, redirect, url_for
 from flask_bootstrap import Bootstrap5
 from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_ckeditor import CKEditor
 import smtplib
 from email.mime.text import MIMEText
@@ -34,12 +34,12 @@ db.init_app(app)
 
 
 # --- Configure Flask-Login ---
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-#
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return db.get_or_404(User, user_id)
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db.get_or_404(User, user_id)
 
 
 with app.app_context():
@@ -141,8 +141,14 @@ with app.app_context():
 
 # -----------------Routes-------------------------
 
+
+# ---- Admin Dashboard
+
+# TODO: Add authentication to the admin dashboard
+
+
 @app.route("/admin",methods=['POST', 'GET'])
-def admin():
+def admin_dashboard():
     return render_template('/admin/admin-dashboard-base.html')
 
 
@@ -182,12 +188,7 @@ def home():
     return render_template('/website/index.html', callback_form=callback_form, contact_form=contact_form, current_year=current_year, contacts_data=contacts_data, faqs_data=faqs_data, services_data=services_data, home_page_data=home_page_data, endpoint='home')
 
 
-# ---- Admin Dashboard 
 
-# TODO: Add authentication to the admin dashboard
-@app.route('/admin/dashboard', methods=['GET','POST'])
-def admin_dashboard():
-    return render_template('/admin/404.html')
 
 
 #------ Service Routes -------
@@ -933,9 +934,28 @@ def add_new_post():
 #     return redirect(url_for('get_all_posts'))
 
 
-@app.route('/login')
+@app.route('/login', methods=["GET", "POST"])
 def login():
-    return render_template("/admin/login.html")
+    form = LoginForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        result = db.session.execute(db.select(User).where(User.email == email))
+
+        user = result.scalar()
+
+        if user and check_password_hash(user.password, password):
+            login_user(user, remember=form.remember_me.data)  # Uses remember_me checkbox value
+            return redirect(url_for('admin_dashboard'))
+
+        flash('Invalid email or password', 'danger')  # Flash message for incorrect credentials
+
+    return render_template("/admin/login.html", form=form)
+
+
+
+
+
 
 @app.route('/admin/register', methods=["GET", "POST"])
 def register():

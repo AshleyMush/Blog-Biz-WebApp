@@ -2,3 +2,8 @@ Add form for editing the contact page data in admin oannel and add feature of se
 
 TODO 2:
 Fix form functionality of the Contact form
+
+#TODO 3;
+ Add feature of login redirecting to the admin panel
+
+ #Added another login feature for the blog login and regitration

@@ -996,6 +996,39 @@ def register():
 
     return render_template("/admin/register.html", form=form)
 
+
+
+#----- Admin dashboard auth -------
+
+# @app.route('/login-admin-dashboard', methods=["GET", "POST"])
+# def login_admin():
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         email = form.email.data
+#         password = form.password.data
+#         result = db.session.execute(db.select(User).where(User.email == email))
+#
+#         user = result.scalar()
+#
+#         if user and check_password_hash(user.password, password):
+#             login_user(user, remember=form.remember_me.data)  # Uses remember_me checkbox value
+#             #Todo: Add a check to see if the user is an admin
+#             #Todo: Redirect to the admin dashboard
+#             return redirect(url_for('admin_dashboard'))
+#
+#         flash('Invalid email or password', 'danger')  # Flash message for incorrect credentials
+#     #Todo: Add admindashboard login template
+#     return render_template("/admin/login.html", form=form)
+
+#Todo: add crud functions for the admin dashboard
+
+
+
+
+
+
+
+
 @app.route('/logout')
 def logout():
     return redirect(url_for('get_all_posts'))

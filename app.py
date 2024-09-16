@@ -149,7 +149,7 @@ with app.app_context():
 
 @app.route("/admin",methods=['POST', 'GET'])
 def admin_dashboard():
-    return render_template('/admin/admin-dashboard-base.html')
+    return render_template('/admin/base.html')
 
 
 
@@ -882,8 +882,30 @@ def search():
         return jsonify({'services': [], 'jobs': []}), 200
 
 
+#------ User Routes -------
+@app.route('/profile', methods=['POST', 'GET'])
+def profile():
+    return render_template('/website/profile.html')
+
+
 
 # ------ Blog Routes ----
+
+#Todo: change the url
+@app.route('/blog', methods=['GET', 'POST'])
+def blog():
+    return render_template('/website/blog-home.html')
+
+@app.route('/blog-post', methods=['GET', 'POST'])
+def blog_post():
+    return render_template('/website/blog-post.html')
+
+
+
+# @app.route('/blog/<int:post_id>', methods=['GET', 'POST'])
+# def blog_post(post_id):
+#     post = BlogPost.query.get_or_404(post_id)
+#     return render_template('/website/blog-post.html', post=post)
 
 """
 @app.route("/new-post", methods=["GET", "POST"])
@@ -946,7 +968,9 @@ def login():
 
         if user and check_password_hash(user.password, password):
             login_user(user, remember=form.remember_me.data)  # Uses remember_me checkbox value
-            return redirect(url_for('admin_dashboard'))
+
+            #Todo: Add if user is admin, elsoe redirect to the user dashboard
+            return redirect(url_for('profile'))
 
         flash('Invalid email or password', 'danger')  # Flash message for incorrect credentials
 

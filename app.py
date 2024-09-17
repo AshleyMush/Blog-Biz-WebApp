@@ -1,8 +1,9 @@
-from flask import Flask,  render_template,jsonify,   flash, request, redirect, url_for
+from flask import Flask,  render_template,jsonify, abort,flash, request, redirect, url_for
 from flask_bootstrap import Bootstrap5
 from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_ckeditor import CKEditor
+from functools import wraps
 import smtplib
 from email.mime.text import MIMEText
 from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
@@ -43,10 +44,10 @@ def load_user(user_id):
 
 
 with app.app_context():
-
-
-
     db.create_all()
+
+#------------- Admin Configuration -------------------
+
 
 # -----------------Dummy content-------------------------
 
@@ -149,7 +150,7 @@ with app.app_context():
 
 @app.route("/admin",methods=['POST', 'GET'])
 def admin_dashboard():
-    return render_template('/admin/base.html')
+    return render_template('/admin/dashboard.html')
 
 
 
@@ -980,6 +981,12 @@ def login():
 
 
 
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
+
+
 
 @app.route('/admin/register', methods=["GET", "POST"])
 def register():
@@ -1053,9 +1060,6 @@ def register():
 
 
 
-@app.route('/logout')
-def logout():
-    return redirect(url_for('get_all_posts'))
 
 
 

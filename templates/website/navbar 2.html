@@ -12,9 +12,21 @@
                 <li class="nav-item"><a class="nav-link" href="{{url_for('contact_us')}}">Contact</a></li>
                 <li class="nav-item"><a class="nav-link" href="pricing.html">Pricing</a></li>
                 <li class="nav-item"><a class="nav-link" href="faq.html">FAQ</a></li>
-                <!--TODO: Add Logout button if user is logged in-->
-                <li class="nav-item"><a class="nav-link" href="{{url_for('login')}}">
-                        Log in</a></li>
+                <!-- Only show Login/Register if user is logged out. Otherwise show "Log Out" -->
+                {% if not current_user.is_authenticated: %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('login')}}">
+                        Log in
+                    </a>
+                </li>
+                <!-- Add registration below-->
+                {% else: %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('logout')}}">
+                        Log out
+                    </a>
+                </li>
+                {% endif %}
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdownBlog" href="#" role="button"

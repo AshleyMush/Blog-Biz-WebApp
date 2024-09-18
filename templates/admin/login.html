@@ -30,7 +30,7 @@
                             </div>
 
                             <!-- Flask-WTF Form -->
-                            <form method="POST" class="user" action="{{ url_for('login') }}">
+                            <form method="POST" class="user" action="{{ url_for('auth_bp.login') }}">
                                 {{ form.hidden_tag() }} <!-- CSRF Protection -->
 
                                 <div class="form-group">
@@ -70,7 +70,7 @@
                                 <a class="small" href="forgot-password.html">Forgot Password?</a>
                             </div>
                             <div class="text-center">
-                                <a class="small" href="{{ url_for('register') }}">Create an Account!</a>
+                                <a class="small" href="{{ url_for('auth_bp.register') }}">Create an Account!</a>
                             </div>
                         </div>
                     </div>

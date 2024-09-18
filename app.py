@@ -1,15 +1,17 @@
 from flask import Flask,  render_template,jsonify, abort,flash, request, redirect, url_for
 from flask_bootstrap import Bootstrap5
 from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_ckeditor import CKEditor
 from functools import wraps
 import smtplib
 from email.mime.text import MIMEText
 from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
-from forms import CallbackForm,RegisterForm, LoginForm,ContactInfo, ContactPageForm, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, JobsForm, AboutUsForm, CareerPageContentForm
+from forms import CallbackForm, ContactInfo, ContactPageForm, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, JobsForm, AboutUsForm, CareerPageContentForm
 import os
 import requests
+from auth_routes import auth_bp
+from decorators import roles_required
+from encryption import hash_and_salt_password, check_password_hash
 
 from datetime import datetime
 
@@ -24,8 +26,8 @@ app.config['SECRET_KEY'] = os.environ.get("SECRET_APP_KEY")
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 
-#Todo: Remove and reactivate CRF token
-app.config['WTF_CSRF_ENABLED'] = False
+#____________ Register the blueprints_________
+app.register_blueprint(auth_bp)
 
 
 
@@ -50,6 +52,18 @@ with app.app_context():
 
 
 # -----------------Dummy content-------------------------
+    if not User.query.first():
+        system_admin = User(
+            email=os.environ.get("sys-admin-email"),
+            password= generate_password_hash(os.environ.get("sys-admin-pw")),
+            first_name= os.environ.get("sys-admin-name"),
+            last_name= os.environ.get("sys-admin-last-name"),
+            number = os.environ.get("sys-admin-number"),
+            role=os.environ.get("role")
+        )
+        db.session.add(system_admin)
+        db.session.commit()
+        print(f'🟩Adding system admin to the database\n {system_admin.email}, {system_admin.first_name}, {system_admin.last_name}, {system_admin.number}, {system_admin.role}')
 
  # Check if the default service exists
     if not Services.query.first():
@@ -840,12 +854,19 @@ def partially_update_home_content(home_id):
 
 
 #------ User Routes -------
+
 @app.route('/add-user', methods=['POST'])
+@roles_required('Admin')
 def add_user():
+    """
+    This function adds a new user to the database, it hashes and salts the password before storing it.
+     If the user is added successfully, it returns a success message, otherwise it returns an error message.
+    """
     new_user = User(
         email=request.form.get('email'),
-        password=request.form.get('password'),
-        name=request.form.get('name')
+        password= hash_and_salt_password(request.form.get('password')),
+        name=request.form.get('name'),
+        role='User'
     )
     print('🟩Adding new user to the database')
     db.session.add(new_user)
@@ -957,75 +978,6 @@ def add_new_post():
 #     return redirect(url_for('get_all_posts'))
 
 
-@app.route('/login', methods=["GET", "POST"])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        password = form.password.data
-        result = db.session.execute(db.select(User).where(User.email == email))
-
-        user = result.scalar()
-
-        if user and check_password_hash(user.password, password):
-            login_user(user, remember=form.remember_me.data)  # Uses remember_me checkbox value
-
-            #Todo: Add if user is admin, elsoe redirect to the user dashboard
-            return redirect(url_for('profile'))
-
-        flash('Invalid email or password', 'danger')  # Flash message for incorrect credentials
-
-    return render_template("/admin/login.html", form=form)
-
-
-
-
-
-@app.route('/logout')
-def logout():
-    logout_user()
-    return redirect(url_for('home'))
-
-
-
-@app.route('/admin/register', methods=["GET", "POST"])
-def register():
-    form = RegisterForm()
-    if form.validate_on_submit() and form.data:
-        # Hash the password with salt
-        hash_and_salted_password = generate_password_hash(
-            form.password.data,
-            method='pbkdf2:sha256',
-            salt_length=8
-        )
-
-        # Create new user
-        new_user = User(
-            email=form.email.data,
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-            password=hash_and_salted_password
-        )
-
-        # Add and commit the user to the database
-        db.session.add(new_user)
-        db.session.commit()
-
-        flash('Registered successfully', 'success')
-
-        # Automatically log in the new user if desired ⭐⭐⭐⭐
-        # login_user(new_user)
-
-        # Redirect to a different page (e.g., blog posts or dashboard)
-        return redirect(url_for("admin_dashboard"))
-
-    else:
-        if form.errors:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    flash(f'Error in {field}: {error}', 'danger')
-
-    return render_template("/admin/register.html", form=form)
 
 
 

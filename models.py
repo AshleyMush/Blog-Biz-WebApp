@@ -47,13 +47,19 @@ class User(db.Model, UserMixin):
     """
     This class represents the User table.
     """
-    __tablename__ = "User Details"
+    __tablename__ = "UserDetails"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
     first_name = db.Column(db.String(250), nullable=False)
     last_name = db.Column(db.String(250), nullable=False)
     number = db.Column(db.String(250), nullable=True)
+    role = db.Column(db.String(250), nullable=False)
+
+
+    def __repr__(self):
+        """This method returns a string representation of the User object. for readability purposes."""
+        return f"User('{self.email}', '{self.first_name}', '{self.last_name}')"
 
 
     # For api purposes, to convert the data to a dictionary

@@ -10,6 +10,7 @@
 
 <!-- Admin About Form -->
 <form action="{{ url_for('partially_update_about_content', about_id=about_content.id) }}" method="POST">
+    {{ form.hidden_tag() }}
     <div class="container mt-4">
         <div class="form-group">
             <label for="img_url">Image URL:</label>

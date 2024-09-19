@@ -11,6 +11,7 @@
 
 <!-- Admin Service Form -->
 <form action="{{ url_for('partially_update_service', service_id=service.id) }}" method="POST">
+    {{ form.hidden_tag() }}
     <div class="container mt-4">
         <div class="form-group">
             <label for="service_name">Service Name:</label>

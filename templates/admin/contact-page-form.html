@@ -11,6 +11,7 @@
 
 <!-- Admin Contact Page Form -->
 <form action="{{ url_for('partially_update_contact_page', contact_page_id=data.id) }}" method="POST">
+    {{ form.hidden_tag() }}
     <div class="container mt-4">
         <div class="form-group">
             <label for="page_name">Page Name:</label>

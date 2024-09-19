@@ -1,9 +1,13 @@
 # decorators.py
-from flask import abort
+from flask import g, request, redirect, url_for, abort
 from functools import wraps
 from flask_login import current_user
 
 def roles_required(*roles):
+    """"
+    Decorator to check if the user has the required roles"
+    param roles: The roles required by the user (str)
+    """
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -15,3 +19,4 @@ def roles_required(*roles):
             return f(*args, **kwargs)
         return decorated_function
     return decorator
+

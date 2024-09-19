@@ -1,17 +1,16 @@
-from flask import Flask,  render_template,jsonify, abort,flash, request, redirect, url_for
+from flask import Flask,  render_template,jsonify, flash, request, redirect, url_for
 from flask_bootstrap import Bootstrap5
-from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user
+from flask_login import LoginManager
 from flask_ckeditor import CKEditor
-from functools import wraps
 import smtplib
 from email.mime.text import MIMEText
 from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
-from forms import CallbackForm, ContactInfo, ContactPageForm, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, JobsForm, AboutUsForm, CareerPageContentForm
+from forms import CallbackForm, ContactInfo, ContactPageForm, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, \
+    AboutUsForm
 import os
-import requests
-from auth_routes import auth_bp
+from routes.auth_routes import auth_bp
 from decorators import roles_required
-from encryption import hash_and_salt_password, check_password_hash
+from encryption import hash_and_salt_password
 
 from datetime import datetime
 
@@ -55,7 +54,7 @@ with app.app_context():
     if not User.query.first():
         system_admin = User(
             email=os.environ.get("sys-admin-email"),
-            password= generate_password_hash(os.environ.get("sys-admin-pw")),
+            password= hash_and_salt_password(os.environ.get("sys-admin-pw")),
             first_name= os.environ.get("sys-admin-name"),
             last_name= os.environ.get("sys-admin-last-name"),
             number = os.environ.get("sys-admin-number"),
@@ -63,7 +62,6 @@ with app.app_context():
         )
         db.session.add(system_admin)
         db.session.commit()
-        print(f'🟩Adding system admin to the database\n {system_admin.email}, {system_admin.first_name}, {system_admin.last_name}, {system_admin.number}, {system_admin.role}')
 
  # Check if the default service exists
     if not Services.query.first():
@@ -79,7 +77,6 @@ with app.app_context():
         )
         db.session.add(default_service)
         db.session.commit()
-        print('🟩Adding default service to the database')
 
         # Check if the default home page content exists
         if not HomePage.query.first():
@@ -91,7 +88,6 @@ with app.app_context():
             )
             db.session.add(default_home_content)
             db.session.commit()
-            print('🟩Adding default home page content to the database')
 
         # Check if the default FAQ exists
         if not FAQs.query.first():
@@ -101,7 +97,6 @@ with app.app_context():
             )
             db.session.add(default_faq)
             db.session.commit()
-            print('🟩Adding default FAQ to the database')
 
         # Check if the default contact info exists
         if not ContactDetails.query.first():
@@ -115,7 +110,6 @@ with app.app_context():
             db.session.add(default_contact)
             db.session.commit()
 
-            print('🟩Adding default Contact info to the database.')
 
         # Check if Contact page content exists
         if not ContactPageContent.query.first():
@@ -148,7 +142,6 @@ with app.app_context():
             )
             db.session.add(default_about_content)
             db.session.commit()
-            print('🟩Adding default About page content to the database')
 
 
 
@@ -157,14 +150,7 @@ with app.app_context():
 # -----------------Routes-------------------------
 
 
-# ---- Admin Dashboard
 
-# TODO: Add authentication to the admin dashboard
-
-
-@app.route("/admin",methods=['POST', 'GET'])
-def admin_dashboard():
-    return render_template('/admin/dashboard.html')
 
 
 
@@ -188,17 +174,11 @@ def home():
         email = contact_form.email.data
         subject = contact_form.subject.data
         message = contact_form.message.data
-        print(f'🟩Sending contact form data:\n'
-              f'{name}\n'
-              f'{email}\n'
-              f'{subject}\n'
-              f'{message}\n')
+
 
         send_confirmation_email(name=name, email=email, subject=subject)
         send_admin_email(name=name, subject=subject, email=email, message=message)
 
-    for contact in contacts_data:
-        print(f'{contact.email}\n')
 
     return render_template('/website/index.html', callback_form=callback_form, contact_form=contact_form, current_year=current_year, contacts_data=contacts_data, faqs_data=faqs_data, services_data=services_data, home_page_data=home_page_data, endpoint='home')
 
@@ -209,6 +189,8 @@ def home():
 #------ Service Routes -------
 
 @app.route('/admin/add-service', methods=['POST', 'GET'])
+
+@roles_required('Admin')
 def add_service():
     """
     This function adds a service to the database for service homepage content and service page content
@@ -232,7 +214,6 @@ def add_service():
         return redirect(url_for('add_service'))
 
     if add_service_form.errors:
-        print(add_service_form.errors)
         for field, errors in add_service_form.errors.items():
             for error in errors:
                 flash(f'Error in {field}: {error}', 'danger')
@@ -258,6 +239,8 @@ def get_service(service_id):
 
 
 @app.route('/admin/get-all-services', methods=['GET', 'POST'])
+
+@roles_required('Admin')
 def get_all_services():
     """
     This function gets all the services from the database
@@ -269,6 +252,8 @@ def get_all_services():
     return render_template('/admin/services-list-admin.html', services=services)
 
 @app.route('/admin/patch-service/<int:service_id>', methods=['POST', 'PATCH', 'GET'])
+
+@roles_required('Admin')
 def partially_update_service(service_id):
     """
     This function partially updates a service in the database or completely updates it.
@@ -346,6 +331,8 @@ def partially_update_service(service_id):
 
 
 @app.route('/admin/delete-service/<int:service_id>', methods=['GET','DELETE'])
+
+@roles_required('Admin')
 def delete_service(service_id):
     """
     This function deletes a service from the database
@@ -353,7 +340,6 @@ def delete_service(service_id):
     :return:
     """
     service_to_delete = Services.query.get_or_404(service_id)
-    print('🟥Deleting service from the database')
     db.session.delete(service_to_delete)
     db.session.commit()
     flash('Service deleted successfully', 'success')
@@ -372,7 +358,6 @@ def add_faq():
         question=request.form.get('question'),
         answer=request.form.get('answer')
     )
-    print('🟩Adding new FAQ to the database')
     db.session.add(new_faq)
     db.session.commit()
 
@@ -427,7 +412,6 @@ def delete_faq(faq_id):
     :return:
     """
     faq_to_delete = FAQs.query.get_or_404(faq_id)
-    print('🟥Deleting FAQ from the database')
     db.session.delete(faq_to_delete)
     db.session.commit()
     return jsonify("message: 'FAQ deleted successfully'")
@@ -472,6 +456,8 @@ def get_job(job_id):
     return jsonify(job.to_dict())
 
 @app.route('/admin/add-job-content', methods=['PATCH', 'POST', 'GET'])
+
+@roles_required('Admin')
 def add_jobpage_content():
     """
     This function adds job page/ careers content to the database
@@ -489,6 +475,8 @@ def add_jobpage_content():
     return jsonify("message: 'Job content added successfully'")
 
 @app.route('/admin/delete-job/<int:job_id>', methods=['DELETE'])
+
+@roles_required('Admin')
 def delete_job(job_id):
     """
     This function deletes a job from the database
@@ -496,43 +484,44 @@ def delete_job(job_id):
     :return:
     """
     job_to_delete = Jobs.query.get_or_404(job_id)
-    print('🟥Deleting Job from the database')
+
     db.session.delete(job_to_delete)
     db.session.commit()
     return jsonify("message: 'Job deleted successfully'")
 
-@app.route('/admin/patch-job-info/<int:job_id>', methods=['PATCH', 'POST', 'GET'])
-def partially_update_job_info(job_id):
-    """
-    This function partially updates a job in the database or completely updates it
-    :param job_id:
-    :return:
-    """
-    job = Jobs.query.get_or_404(job_id)
-
-    if request.method in ['POST', 'PATCH']:
-        if form.validate_on_submit():
-
-            if 'job_card_img_url' in request.form:
-                job.img_url = request.form.get('img_url')
-
-            if 'job_name' in request.form:
-                job.job_name= request.form.get('job_name')
-
-            db.session.commit()
-            return jsonify("message: 'Job updated successfully'")
-        
-        else:
-
-            """
-                    else:
-            # Form has errors
-            for field, errors in form.errors.items():
-                for error in errors:
-                    flash(f'Error in {field}: {error}', 'danger')
-            
-            """
-            return jsonify("message: 'Job not updated'")
+# @app.route('/admin/patch-job-info/<int:job_id>', methods=['PATCH', 'POST', 'GET'])
+# 
+# @roles_required('Admin')
+# def partially_update_job_info(job_id):
+#     """
+#     This function partially updates a job in the database or completely updates it
+#     :param job_id:
+#     :return:
+#     """
+#     job = Jobs.query.get_or_404(job_id)
+#
+#         if form.validate_on_submit():
+#
+#             if 'job_card_img_url' in request.form:
+#                 job.img_url = request.form.get('img_url')
+#
+#             if 'job_name' in request.form:
+#                 job.job_name= request.form.get('job_name')
+#
+#             db.session.commit()
+#             return jsonify("message: 'Job updated successfully'")
+#
+#         else:
+#
+#             """
+#                     else:
+#             # Form has errors
+#             for field, errors in form.errors.items():
+#                 for error in errors:
+#                     flash(f'Error in {field}: {error}', 'danger')
+#
+#             """
+#             return jsonify("message: 'Job not updated'")
 
 
 
@@ -553,7 +542,6 @@ def contact_us():
             number = form.number.data
             message = form.message.data
 
-            print(f'🟩Received contact form data:\nName: {name}\nEmail: {email}\nNumber: {number}\nMessage: {message}')
 
             # Save the form data to the database
             new_message = Inbox(
@@ -564,7 +552,8 @@ def contact_us():
             )
             db.session.add(new_message)
             db.session.commit()
-            print("🟩New contact form data added to the database")
+            flash('Message sent successfully!', 'success')
+
 
             # Send emails
             try:
@@ -573,7 +562,6 @@ def contact_us():
                 flash('Message sent successfully!', 'success')
             except Exception as e:
                 flash('Error sending message. Please try again later.', 'danger')
-                print(f"Error during email sending: {e}")
 
             return redirect(url_for('contact_us'))
         else:
@@ -604,7 +592,10 @@ def get_contact_info_api():
 
 
 @app.route('/admin/get-contact-info')
+
+@roles_required('Admin')
 def customize_contact_page():
+
     """
     This function gets all the contacts from the database
     :return:
@@ -614,6 +605,8 @@ def customize_contact_page():
     return render_template('/admin/customize-contact-info.html', contacts=contacts, contact_page=contact_page)
 
 @app.route('/admin/patch-contact-page/<int:contact_page_id>', methods=['POST', 'PATCH', 'GET'])
+
+@roles_required('Admin')
 def partially_update_contact_page(contact_page_id):
     """
     This function partially updates the contact page content
@@ -655,6 +648,8 @@ def partially_update_contact_page(contact_page_id):
     return render_template('/admin/contact-page-form.html', contact_info_form=form, data=contact_page)
 
 @app.route('/admin/patch-contact-info/<int:contact_id>', methods=['PATCH', 'POST', 'GET'])
+
+@roles_required('Admin')
 def partially_update_contact(contact_id):
     """
     This function partially updates a contact in the database or completely updates it
@@ -704,13 +699,14 @@ def about_us():
 
     about_content = AboutPageContent.query.first()
 
-    print(f'🟩Getting about page content: {about_content.banner_subheading}')
 
     return render_template('/website/about.html', about_content=about_content)
 
 
 
 @app.route('/admin/patch-about-content/<int:about_id>', methods=['PATCH', 'POST', 'GET'])
+
+@roles_required('Admin')
 def partially_update_about_content(about_id):
     """
     This function partially updates the about page content
@@ -718,7 +714,6 @@ def partially_update_about_content(about_id):
     :return:
     """
 
-    print('🟩Updating about page content')
 
     form = AboutUsForm()
     about_content = AboutPageContent.query.get_or_404(about_id)
@@ -761,6 +756,8 @@ def get_about_us():
     return jsonify(about_content.to_dict())
 
 @app.route('/add-about-content', methods=['POST'])
+
+@roles_required('Admin')
 def add_about_content():
     """
     This function adds about page content to the database
@@ -772,7 +769,6 @@ def add_about_content():
         banner_subheading=request.form.get('banner_subheading'),
         body_content=request.form.get('banner_content')
     )
-    print('🟩Adding new about to the database')
     db.session.add(new_about_content)
     db.session.commit()
 
@@ -782,6 +778,8 @@ def add_about_content():
         return jsonify("message: 'About not added'")
     
 @app.route('/admin/get-about-content')
+
+@roles_required('Admin')
 def get_about_content():
     """
     This function gets all the about page content from the database
@@ -791,6 +789,8 @@ def get_about_content():
     return render_template('/admin/about-content.html', about_content=about_content)
 
 
+
+#Todo: move this route to api
 @app.route('/get-about-content')
 def get_about():
     """
@@ -807,6 +807,8 @@ def get_about():
 
 
 @app.route('/admin/get-home-content', methods=['GET'])
+
+@roles_required('Admin')
 def get_home_content():
     """
     This function gets all the home page content from the database
@@ -816,6 +818,8 @@ def get_home_content():
     return render_template('/admin/home-content.html', home_content=home_content)
 
 @app.route('/admin/patch-home-content/<int:home_id>', methods=['PATCH', 'POST', 'GET'])
+
+@roles_required('Admin')
 def partially_update_home_content(home_id):
     """
     This function partially updates the home page content
@@ -823,7 +827,6 @@ def partially_update_home_content(home_id):
     :return:
     """
 
-    print('🟩Updating home page content')
 
 
     form = HomePageInfoForm()
@@ -856,6 +859,7 @@ def partially_update_home_content(home_id):
 #------ User Routes -------
 
 @app.route('/add-user', methods=['POST'])
+
 @roles_required('Admin')
 def add_user():
     """
@@ -868,7 +872,6 @@ def add_user():
         name=request.form.get('name'),
         role='User'
     )
-    print('🟩Adding new user to the database')
     db.session.add(new_user)
     db.session.commit()
 
@@ -882,7 +885,6 @@ def add_user():
 @app.route('/search', methods=['GET'])
 def search():
     search_term = request.args.get('search')
-    print(f'Searching for: {search_term}')
 
     if search_term:
         # Query Services
@@ -905,9 +907,30 @@ def search():
 
 
 #------ User Routes -------
-@app.route('/profile', methods=['POST', 'GET'])
-def profile():
-    return render_template('/website/profile.html')
+
+
+# TODO: Add authentication to the admin dashboard
+
+@app.route("/admin",methods=['POST', 'GET'])
+@roles_required('Admin')
+def admin_dashboard():
+    return render_template('/admin/dashboard.html')
+
+
+@app.route('/profile', methods=[ 'GET'])
+@roles_required('User','Admin')
+def user_profile():
+    return render_template('/website/user-profile.html')
+
+@app.route('/contributor', methods=[ 'GET'])
+@roles_required('Contributor','Admin')
+def contributor_profile():
+    return render_template('/website/contributor-profile.html')
+
+@app.route('/moderator', methods=['GET'])
+@roles_required('Moderator','Admin')
+def moderator_profile():
+    return render_template('/website/moderator-profile.html')
 
 
 
@@ -1048,7 +1071,6 @@ def send_confirmation_email(name, email, subject, service='gmail'):
             connection.login(ADMIN_EMAIL_ADDRESS, ADMIN_EMAIL_PW)
             connection.sendmail(ADMIN_EMAIL_ADDRESS, email, msg.as_string())
     except Exception as e:
-        print(f"Error sending email: {e}")
         flash('Error sending confirmation email. Please try again later.', 'danger')
 
 def send_admin_email(name, subject, email, message, service='gmail'):
@@ -1077,7 +1099,6 @@ def send_admin_email(name, subject, email, message, service='gmail'):
             connection.login(ADMIN_EMAIL_ADDRESS, ADMIN_EMAIL_PW)
             connection.sendmail(from_addr=email, to_addrs=ADMIN_EMAIL_ADDRESS, msg=msg.as_string())
     except Exception as e:
-        print(f"Error sending admin email: {e}")
         flash('Error sending admin notification. Please try again later.', 'danger')
 
 

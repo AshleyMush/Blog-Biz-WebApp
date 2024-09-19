@@ -1,5 +1,6 @@
 <!--Admin Home  Form-->
 <form action="{{ url_for('partially_update_home_content', home_id=home.id) }}" method="POST">
+    {{ form.hidden_tag() }}
     <div class="container mt-4">
         <div class="form-group">
             <label for="name">Company Name:</label>

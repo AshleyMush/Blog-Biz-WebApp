@@ -9,7 +9,7 @@ def hash_and_salt_password(password):
     return generate_password_hash(
         password,
         method='pbkdf2:sha256',
-        salt_length=8
+        salt_length=16
     )
     return password
 

@@ -14,6 +14,10 @@ auth_bp = Blueprint('auth_bp', __name__)
 
 @auth_bp.route('/login', methods=["GET", "POST"])
 def login():
+    """
+    This function logs in a user
+    :return:
+    """
     form = LoginForm()
     if form.validate_on_submit():
         email = form.email.data
@@ -25,17 +29,18 @@ def login():
         if user and check_password_hash(user.password, password):
             flash('Logged in successfully', 'success')
             login_user(user, remember=form.remember_me.data)  # Uses remember_me checkbox value
-            if User.role == "Admin":
+            if user.role == "Admin":
                 return redirect(url_for('admin_dashboard'))
-            elif User.role == "Contributor":
+            elif user.role == "Contributor":
                 return redirect(url_for('contributor_profile'))
-            elif User.role == "Moderator":
+            elif user.role == "Moderator":
                 return redirect(url_for('moderator_profile'))
+            else:
+                return redirect(url_for('user_profile'))
 
-
-        return redirect(url_for('user_profile'))
-
-        flash('Invalid email or password', 'danger')
+        else:
+            flash('Invalid email or password', 'danger')
+            return render_template("/admin/login.html", form=form)
 
     return render_template("/admin/login.html", form=form)
 

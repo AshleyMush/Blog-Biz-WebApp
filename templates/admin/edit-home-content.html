@@ -12,13 +12,14 @@
 <!-- Page Heading -->
 <h1 class="h3 mb-4 text-gray-800"> Home Page Content</h1>
 
-
+<!--Table  div to display Home Page Content-->
 <div class="card shadow mb-4 mt-4">
     <div class="card-header py-3">
 
     </div>
     <div class="card-body">
         <div class="table-responsive">
+            <!--Table to display Home Page Content-->
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
@@ -43,26 +44,48 @@
                         <td>
                             <img src="{{ home.img_url }}" alt="Home Page Image" style="width: 100px;"></td>                            
                             
-                            <a href="#" class="btn btn-primary m-1">
+                            <a href="{{url_for('home')}}" class="btn btn-primary m-1">
                                 <i class="fas fa-home "></i> View Home Page
                             </a>
 
-                  
-
-           
 
 
-
-                        
                     </tr>
 
                 </tbody>
             </table>
+            <!--End of Table-->
         </div>
     </div>
 </div>
+<!--End of Table div-->
 
+<!--todo: Fix form submission-->
+<!--Admin Home  Form-->
+<form action="{{ url_for('admin_bp.partially_update_home_content', home_id=home.id) }}" method="POST">
+    {{ form.hidden_tag() }}
+    <div class="container mt-4">
+        <div class="form-group">
+            <label for="name">Company Name:</label>
+            {{ form.name(class_="form-control", id="name", value=home.name) }}
+        </div>
+        <div class="form-group">
+            <label for="heading">Heading:</label>
+            {{ form.heading(class_="form-control", id="heading", value=home.heading) }}
+        </div>
+        <div class="form-group">
+            <label for="subheading">Subheading:</label>
+            {{ form.subheading(class_="form-control", id="subheading", value=home.subheading) }}
+        </div>
+        <div class="form-group">
+            <label for="img_url">Image URL:</label>
+            {{ form.img_url(class_="form-control", id="img_url", value=home.img_url) }}
+            <img src="{{ home.img_url }}" alt="Home Image" class="img-thumbnail mt-2" style="width: 100px;">
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Update Home Content</button>
+    </div>
+</form>
 
-{% include 'admin/admin-home-form.html' %}
+<!--End of Admin Home Form-->
 
 {% endblock %}

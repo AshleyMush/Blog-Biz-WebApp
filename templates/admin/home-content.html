@@ -32,7 +32,7 @@
                         <td>{{ home.heading }}</td>
                         <td>{{ home.subheading }}</td>
                         <td><img src="{{ home.img_url }}" alt="Home Page Image" style="width: 100px;"></td>
-                        <a href="{{ url_for('partially_update_home_content', home_id=home.id) }}">
+                        <a href="{{ url_for('admin_bp.partially_update_home_content', home_id=home.id) }}">
                             <button class="btn btn-primary m-1">
                                 <i class="fas fa-fw fa-wrench"></i> Edit Home Page info
                             </button> </a>

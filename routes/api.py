@@ -114,3 +114,17 @@ def get_about_us():
     """
     about_content = AboutPageContent.query.first()
     return jsonify(about_content.to_dict())
+
+
+#Todo: move this route to api
+@app.route('/api/get-contact-info')
+def get_contact_info_api():
+    """
+    This function gets all the contacts from the database
+    :return:
+    """
+    contacts = ContactDetails.query.all()
+    contact_page = ContactPageContent.query.all()
+    contact_page_dict = [contact.to_dict() for contact in contact_page]
+    contacts_dict = [contact.to_dict() for contact in contacts]
+    return jsonify(contacts_dict, contact_page_dict)

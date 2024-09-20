@@ -10,58 +10,46 @@
 
 
 <!-- Admin Service Form -->
-<form action="{{ url_for('partially_update_service', service_id=service.id) }}" method="POST">
+<form action="{{ url_for('admin_bp.partially_update_service', service_id=service.id) }}" method="POST">
     {{ form.hidden_tag() }}
     <div class="container mt-4">
         <div class="form-group">
-            <label for="service_name">Service Name:</label>
-            <input type="text" class="form-control" id="service_name" name="service_name"
-                placeholder="{{ service.service_name }}" value="{{ service.service_name }}">
+            <h3>{{ form.service_name.label(class="form-label") }}</h3>
+            {{ form.service_name(class="form-control", value=service.service_name) }}
         </div>
         <div class="form-group">
-            <label for="banner_subheading">Banner Subheading:</label>
-            <input type="text" class="form-control" id="banner_subheading" name="banner_subheading"
-                placeholder="{{ service.banner_subheading }}" value="{{ service.banner_subheading }}">
+            <h3>{{ form.banner_subheading.label(class="form-label") }}</h3>
+            {{ form.banner_subheading(class="form-control", value=service.banner_subheading) }}
         </div>
         <div class="form-group">
-            <label for="homepage_description">Homepage Description:</label>
-            <textarea class="form-control" id="homepage_description" name="homepage_description"
-                placeholder="{{ service.homepage_description }}" rows="3">{{ service.homepage_description }}</textarea>
+            <h3>{{ form.homepage_description.label(class="form-label") }}</h3>
+            {{ form.homepage_description(class="form-control", rows="3") }}{{ service.homepage_description }}</textarea>
         </div>
         <div class="form-group">
-            <label for="homepage_image_url">Homepage Image URL:</label>
-            <input type="text" class="form-control" id="homepage_image_url" name="homepage_image_url"
-                placeholder="{{ service.homepage_image_url }}" value="{{ service.homepage_image_url }}">
-            <img src="{{ service.homepage_image_url }}" alt="Home Page Image" class="img-thumbnail mt-2"
-                style="width: 100px;">
+            <h3>{{ form.homepage_image_url.label(class="form-label") }}</h3>
+            {{ form.homepage_image_url(class="form-control", value=service.homepage_image_url) }}
+            <img src="{{ service.homepage_image_url }}" alt="Home Page Image" class="img-thumbnail mt-2" style="width: 100px;">
         </div>
         <div class="form-group">
-            <label for="feature_one_description">Feature One Description:</label>
-            <textarea class="form-control ckeditor" id="feature_one_description" name="feature_one_description"
-                placeholder="{{ service.feature_one_description }}"
-                rows="3">{{ service.feature_one_description }}</textarea>
+            <h3>{{ form.feature_one_description.label(class="form-label") }}</h3>
+            {{ form.feature_one_description(class="form-control ckeditor", rows="3") }}{{ service.feature_one_description }}</textarea>
         </div>
         <div class="form-group">
-            <label for="feature_one_image_url">Feature One Image URL:</label>
-            <input type="text" class="form-control" id="feature_one_image_url" name="feature_one_image_url"
-                placeholder="{{ service.feature_one_image_url }}" value="{{ service.feature_one_image_url }}">
-            <img src="{{ service.feature_one_image_url }}" alt="Feature One Image" class="img-thumbnail mt-2"
-                style="width: 100px;">
+            <h3>{{ form.feature_one_image_url.label(class="form-label") }}</h3>
+            {{ form.feature_one_image_url(class="form-control", value=service.feature_one_image_url) }}
+            <img src="{{ service.feature_one_image_url }}" alt="Feature One Image" class="img-thumbnail mt-2" style="width: 100px;">
         </div>
         <div class="form-group">
-            <label for="feature_two_description">Feature Two Description:</label>
-            <textarea class="form-control ckeditor" id="feature_two_description" name="feature_two_description"
-                placeholder="{{ service.feature_two_description }}"
-                rows="3">{{ service.feature_two_description }}</textarea>
+            <h3>{{ form.feature_two_description.label(class="form-label") }}</h3>
+            {{ form.feature_two_description(class="form-control ckeditor", rows="3") }}{{ service.feature_two_description }}</textarea>
         </div>
         <div class="form-group">
-            <label for="feature_two_image_url">Feature Two Image URL:</label>
-            <input type="text" class="form-control" id="feature_two_image_url" name="feature_two_image_url"
-                placeholder="{{ service.feature_two_image_url }}" value="{{ service.feature_two_image_url }}">
-            <img src="{{ service.feature_two_image_url }}" alt="Feature Two Image" class="img-thumbnail mt-2"
-                style="width: 100px;">
+            <h3>{{ form.feature_two_image_url.label(class="form-label") }}</h3>
+            {{ form.feature_two_image_url(class="form-control", value=service.feature_two_image_url) }}
+            <img src="{{ service.feature_two_image_url }}" alt="Feature Two Image" class="img-thumbnail mt-2" style="width: 100px;">
         </div>
-        <button type="submit" class="btn btn-primary mt-3">Update Service</button>
+        <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+        <a href="{{ url_for('admin_bp.services') }}" class="btn btn-secondary mt-3">Cancel</a>
     </div>
 </form>
 

@@ -9,7 +9,8 @@ from forms import CallbackForm, ContactInfo, ContactPageForm, ContactForm, AddSe
     AboutUsForm
 import os
 from routes.auth_routes import auth_bp
-from decorators import roles_required
+from routes.admin_routes import admin_bp
+from routes.decorators import roles_required
 from encryption import hash_and_salt_password
 
 from datetime import datetime
@@ -25,8 +26,9 @@ app.config['SECRET_KEY'] = os.environ.get("SECRET_APP_KEY")
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 
-#____________ Register the blueprints_________
+# ____________ Register the blueprints_________
 app.register_blueprint(auth_bp)
+app.register_blueprint(admin_bp)
 
 
 
@@ -188,38 +190,7 @@ def home():
 
 #------ Service Routes -------
 
-@app.route('/admin/add-service', methods=['POST', 'GET'])
 
-@roles_required('Admin')
-def add_service():
-    """
-    This function adds a service to the database for service homepage content and service page content
-    :return:
-    """
-
-
-    add_service_form = AddServicesForm()
-    if add_service_form.validate_on_submit() and add_service_form.data:
-
-        new_service = Services(
-            service_name=add_service_form.service_name.data,
-            homepage_description=add_service_form.homepage_description.data,
-            service_img_url=add_service_form.service_img_url.data,
-            banner_subheading=add_service_form.banner_subheading.data,
-            service_body_content=add_service_form.service_body_content.data
-        )
-        db.session.add(new_service)
-        db.session.commit()
-        flash('Service added successfully', 'success')
-        return redirect(url_for('add_service'))
-
-    if add_service_form.errors:
-        for field, errors in add_service_form.errors.items():
-            for error in errors:
-                flash(f'Error in {field}: {error}', 'danger')
-
-    # Pass endpoint variable and form to the template
-    return render_template('/admin/add-service.html', add_service_form=add_service_form)
 
 
 
@@ -238,112 +209,12 @@ def get_service(service_id):
 
 
 
-@app.route('/admin/get-all-services', methods=['GET', 'POST'])
-
-@roles_required('Admin')
-def get_all_services():
-    """
-    This function gets all the services from the database
-    :return:
-    """
-    services = Services.query.all()
 
 
-    return render_template('/admin/services-list-admin.html', services=services)
-
-@app.route('/admin/patch-service/<int:service_id>', methods=['POST', 'PATCH', 'GET'])
-
-@roles_required('Admin')
-def partially_update_service(service_id):
-    """
-    This function partially updates a service in the database or completely updates it.
-    :param service_id: ID of the service to update
-    :return: Rendered template with the form and service data
-    """
-    form = UpdateServiceForm()
-    service = Services.query.get_or_404(service_id)
-
-    if request.method in ['POST', 'PATCH']:
-        if form.validate_on_submit():
-            if 'service_name' in request.form:
-                service.service_name = form.service_name.data
-            if 'homepage_description' in request.form:
-                service.homepage_description = form.homepage_description.data
-            if 'homepage_image_url' in request.form:
-                service.homepage_image_url = form.homepage_image_url.data
-            if 'banner_subheading' in request.form:
-                service.banner_subheading = form.banner_subheading.data
-            if 'feature_one_description' in request.form:
-                service.feature_one_description = form.feature_one_description.data
-            if 'feature_one_image_url' in request.form:
-                service.feature_one_image_url = form.feature_one_image_url.data
-            if 'feature_two_description' in request.form:
-                service.feature_two_description = form.feature_two_description.data
-            if 'feature_two_image_url' in request.form:
-                service.feature_two_image_url = form.feature_two_image_url.data
-
-            db.session.commit()
-            flash('Service updated successfully', 'success')
-            return redirect(url_for('partially_update_service', service_id=service_id))
-        else:
-            # Form has errors
-            for field, errors in form.errors.items():
-                for error in errors:
-                    flash(f'Error in {field}: {error}', 'danger')
-
-    return render_template('/admin/edit-service.html', service=service, form=form)
-
-    """
-    This function partially updates a service in the database or completely updates it.
-    :param service_id: ID of the service to update
-    :return: Rendered template with the form and service data
-    """
-    form = UpdateServiceForm()
-    service = Services.query.get_or_404(service_id)
-
-    # Check if the form has been submitted
-    if request.method in ['POST', 'PATCH']:
-        if form.validate_on_submit():
-            # Update fields if they are in the request and the form is valid
-            if 'service_name' in request.form:
-                service.service_name = form.service_name.data
-            if 'homepage_description' in request.form:
-                service.homepage_description = form.homepage_description.data
-            if 'service_img_url' in request.form:
-                service.service_img_url = form.service_img_url.data
-            if 'banner_subheading' in request.form:
-                service.banner_subheading = form.banner_subheading.data
-            if 'service_body_content' in request.form:
-                service.service_body_content = form.service_body_content.data
-
-            # Commit the changes to the database
-            db.session.commit()
-            flash('Service updated successfully', 'success')
-            return redirect(url_for('partially_update_service', service_id=service_id))
-        else:
-            # Form has errors
-            for field, errors in form.errors.items():
-                for error in errors:
-                    flash(f'Error in {field}: {error}', 'danger')
-
-    # No flash message if the route is accessed via GET
-    return render_template('/admin/edit-service.html', service=service, service_form=form)
 
 
-@app.route('/admin/delete-service/<int:service_id>', methods=['GET','DELETE'])
 
-@roles_required('Admin')
-def delete_service(service_id):
-    """
-    This function deletes a service from the database
-    :param service_id:
-    :return:
-    """
-    service_to_delete = Services.query.get_or_404(service_id)
-    db.session.delete(service_to_delete)
-    db.session.commit()
-    flash('Service deleted successfully', 'success')
-    return redirect(url_for('get_all_services'))
+
 
 
 
@@ -456,7 +327,6 @@ def get_job(job_id):
     return jsonify(job.to_dict())
 
 @app.route('/admin/add-job-content', methods=['PATCH', 'POST', 'GET'])
-
 @roles_required('Admin')
 def add_jobpage_content():
     """
@@ -475,7 +345,6 @@ def add_jobpage_content():
     return jsonify("message: 'Job content added successfully'")
 
 @app.route('/admin/delete-job/<int:job_id>', methods=['DELETE'])
-
 @roles_required('Admin')
 def delete_job(job_id):
     """
@@ -574,117 +443,17 @@ def contact_us():
     return render_template('/website/contact.html', form=form, contact_page_data=contact_page_data, contacts=contacts)
 
 
-#Todo: move this route to api
-@app.route('/api/get-contact-info')
-def get_contact_info_api():
-    """
-    This function gets all the contacts from the database
-    :return:
-    """
-    contacts = ContactDetails.query.all()
-    contact_page = ContactPageContent.query.all()
-    contact_page_dict = [contact.to_dict() for contact in contact_page]
-    contacts_dict = [contact.to_dict() for contact in contacts]
-    return jsonify(contacts_dict, contact_page_dict)
 
 
 
 
 
-@app.route('/admin/get-contact-info')
-
-@roles_required('Admin')
-def customize_contact_page():
-
-    """
-    This function gets all the contacts from the database
-    :return:
-    """
-    contacts = ContactDetails.query.all()
-    contact_page = ContactPageContent.query.all()
-    return render_template('/admin/customize-contact-info.html', contacts=contacts, contact_page=contact_page)
-
-@app.route('/admin/patch-contact-page/<int:contact_page_id>', methods=['POST', 'PATCH', 'GET'])
-
-@roles_required('Admin')
-def partially_update_contact_page(contact_page_id):
-    """
-    This function partially updates the contact page content
-    :return:
-    """
-    contact_page = ContactPageContent.query.first()
-    form = ContactPageForm()
-
-    if request.method in ['POST', 'PATCH']:
-        if form.validate_on_submit():
-            if 'img_url' in request.form:
-                contact_page.img_url = request.form.get('img_url')
-            if 'banner_subheading' in request.form:
-                contact_page.banner_subheading = request.form.get('banner_subheading')
-            if 'content' in request.form:
-                contact_page.content = request.form.get('content')
-            if 'img_one_url' in request.form:
-                contact_page.img_one_url = request.form.get('img_one_url')
-            if 'description_one' in request.form:
-                contact_page.description_one = request.form.get('description_one')
-            if 'img_two_url' in request.form:
-                contact_page.img_two_url = request.form.get('img_two_url')
-            if 'description_two' in request.form:
-                contact_page.description_two = request.form.get('description_two')
-            if 'img_three_url' in request.form:
-                contact_page.img_three_url = request.form.get('img_three_url')
-            if 'description_three' in request.form:
-                contact_page.description_three = request.form.get('description_three')
-
-            db.session.commit()
-            flash('Contact Page Content updated successfully', 'success')
-            return redirect(url_for('partially_update_contact_page', contact_page_id=contact_page_id))
 
 
-        else:
-            flash('Form validation failed', 'error')
 
-    # Handle GET request or form validation failure
-    return render_template('/admin/contact-page-form.html', contact_info_form=form, data=contact_page)
 
-@app.route('/admin/patch-contact-info/<int:contact_id>', methods=['PATCH', 'POST', 'GET'])
 
-@roles_required('Admin')
-def partially_update_contact(contact_id):
-    """
-    This function partially updates a contact in the database or completely updates it
-    :param contact_id:
-    :return:
-    """
-    contact = ContactDetails.query.get_or_404(contact_id)
-    form = ContactInfo()
 
-    if request.method in ['POST', 'PATCH']:
-        if form.validate_on_submit():
-            if 'email' in request.form:
-                contact.email = request.form.get('email')
-            if 'location' in request.form:
-                contact.location = request.form.get('location')
-            if 'phone_number' in request.form:
-                contact.phone_number = request.form.get('phone_number')
-            if 'facebook_url' in request.form:
-                contact.facebook_url = request.form.get('facebook_url')
-            if 'instagram_url' in request.form:
-                contact.instagram_url = request.form.get('instagram_url')
-            if 'twitter_url' in request.form:
-                contact.twitter_url = request.form.get('twitter_url')
-
-            db.session.commit()
-            flash('Service added successfully', 'success')
-            return redirect(url_for('partially_update_contact', contact_id=contact_id))
-
-        else:
-            # Form has errors
-            for field, errors in form.errors.items():
-                for error in errors:
-                    flash(f'Error in {field}: {error}', 'danger')
-
-    return render_template('/admin/edit-contact-info.html', contact_info_form=form, endpoint='edit_contact_info', contact=contact)
 
 
 
@@ -704,43 +473,7 @@ def about_us():
 
 
 
-@app.route('/admin/patch-about-content/<int:about_id>', methods=['PATCH', 'POST', 'GET'])
 
-@roles_required('Admin')
-def partially_update_about_content(about_id):
-    """
-    This function partially updates the about page content
-    :param about_id:
-    :return:
-    """
-
-
-    form = AboutUsForm()
-    about_content = AboutPageContent.query.get_or_404(about_id)
-
-    if request.method in ['POST', 'PATCH']:
-        if form.validate_on_submit():
-            if 'img_url' in request.form:
-                about_content.img_url = request.form.get('img_url')
-            if 'banner_subheading' in request.form:
-                about_content.banner_subheading = request.form.get('banner_subheading')
-            if 'feature_one_description' in request.form:
-                about_content.feature_one_description = request.form.get('feature_one_description')
-            if 'feature_one_image_url' in request.form:
-                about_content.feature_one_image_url = request.form.get('feature_one_image_url')
-            if 'feature_two_description' in request.form:
-                about_content.feature_two_description = request.form.get('feature_two_description')
-            if 'feature_two_image_url' in request.form:
-                about_content.feature_two_image_url = request.form.get('feature_two_image_url')
-
-            db.session.commit()
-            flash('About Page Content updated successfully', 'success')
-            return redirect(url_for('partially_update_about_content', about_id=about_id))
-        else:
-            flash('Form validation failed', 'error')
-
-    # Handle GET request or form validation failure
-    return render_template('/admin/edit-about-content.html', about_form=form, about_content=about_content)
 
 
 
@@ -755,38 +488,9 @@ def get_about_us():
     about_content = AboutPageContent.query.first()
     return jsonify(about_content.to_dict())
 
-@app.route('/add-about-content', methods=['POST'])
 
-@roles_required('Admin')
-def add_about_content():
-    """
-    This function adds about page content to the database
-    :return:
-    """
-    new_about_content = AboutPageContent(
-        img_url=request.form.get('img_url'),
-        banner_heading=request.form.get('banner_heading'),
-        banner_subheading=request.form.get('banner_subheading'),
-        body_content=request.form.get('banner_content')
-    )
-    db.session.add(new_about_content)
-    db.session.commit()
-
-    if new_about_content:
-        return jsonify("message: 'About added successfully'")
-    else:
-        return jsonify("message: 'About not added'")
     
-@app.route('/admin/get-about-content')
 
-@roles_required('Admin')
-def get_about_content():
-    """
-    This function gets all the about page content from the database
-    :return:
-    """
-    about_content = AboutPageContent.query.all()
-    return render_template('/admin/about-content.html', about_content=about_content)
 
 
 
@@ -806,79 +510,16 @@ def get_about():
 #------ Home Page Routes -------
 
 
-@app.route('/admin/get-home-content', methods=['GET'])
-
-@roles_required('Admin')
-def get_home_content():
-    """
-    This function gets all the home page content from the database
-    :return:
-    """
-    home_content = HomePage.query.all()
-    return render_template('/admin/home-content.html', home_content=home_content)
-
-@app.route('/admin/patch-home-content/<int:home_id>', methods=['PATCH', 'POST', 'GET'])
-
-@roles_required('Admin')
-def partially_update_home_content(home_id):
-    """
-    This function partially updates the home page content
-    :param home_id:
-    :return:
-    """
 
 
 
-    form = HomePageInfoForm()
-    home_content = HomePage.query.get_or_404(home_id)
-
-    if request.method in ['POST', 'PATCH']:
-        if form.validate_on_submit():
-
-            if 'Company name' in request.form and form.validate_on_submit():
-                home_content .name = request.form.get('name')
-            if 'heading' in request.form and form.validate_on_submit():
-                home_content .heading = request.form.get('heading')
-            if 'subheading' in request.form and form.validate_on_submit():
-                home_content .subheading = request.form.get('subheading')
-
-            db.session.commit()
-            flash('Home Page Content added successfully', 'success')
-            return render_template('/admin/edit-home-content.html', home_form=form, home=home_content )
-        else:
-            # Form has errors
-            for field, errors in form.errors.items():
-                for error in errors:
-                    flash(f'Error in {field}: {error}', 'danger')
-
-    return render_template('/admin/edit-home-content.html', home_form=form, home=home_content )
 
 
 
 
 #------ User Routes -------
 
-@app.route('/add-user', methods=['POST'])
 
-@roles_required('Admin')
-def add_user():
-    """
-    This function adds a new user to the database, it hashes and salts the password before storing it.
-     If the user is added successfully, it returns a success message, otherwise it returns an error message.
-    """
-    new_user = User(
-        email=request.form.get('email'),
-        password= hash_and_salt_password(request.form.get('password')),
-        name=request.form.get('name'),
-        role='User'
-    )
-    db.session.add(new_user)
-    db.session.commit()
-
-    if new_user:
-        return jsonify("message: 'User added successfully'")
-    else:
-        return jsonify("message: 'User not added'")
 
 
 #------ Service Routes -------

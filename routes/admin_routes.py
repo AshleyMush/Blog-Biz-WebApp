@@ -68,20 +68,26 @@ def add_service():
     This function adds a service to the database for service homepage content and service page content
     :return:
     """
+    print('🟩Adding new service to the database')
 
     add_service_form = AddServicesForm()
     if add_service_form.validate_on_submit() and add_service_form.data:
         new_service = Services(
             service_name=add_service_form.service_name.data,
             homepage_description=add_service_form.homepage_description.data,
-            service_img_url=add_service_form.service_img_url.data,
+            homepage_image_url=add_service_form.homepage_image_url.data,
             banner_subheading=add_service_form.banner_subheading.data,
-            service_body_content=add_service_form.service_body_content.data
+            feature_one_description=add_service_form.feature_one_description.data,
+            feature_one_image_url=add_service_form.feature_one_image_url.data,
+            feature_two_description=add_service_form.feature_two_description.data,
+            feature_two_image_url=add_service_form.feature_two_image_url.data
+
         )
         db.session.add(new_service)
         db.session.commit()
         flash('Service added successfully', 'success')
-        return redirect(url_for('add_service'))
+        print('🟩Service added successfully')
+        return redirect(url_for('admin_bp.services'))
 
     if add_service_form.errors:
         for field, errors in add_service_form.errors.items():
@@ -194,7 +200,7 @@ def delete_service(service_id):
     db.session.delete(service_to_delete)
     db.session.commit()
     flash('Service deleted successfully', 'success')
-    return redirect(url_for('get_all_services'))
+    return redirect(url_for('admin_bp.services'))
 
 
 # ----------------- Contact Info----------------- #

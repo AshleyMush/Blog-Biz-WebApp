@@ -52,7 +52,7 @@ with app.app_context():
     db.create_all()
     seed_project_data()
 
-#------------- Admin Configuration -------------------
+#------------- Admin Configuration  -------------------
 
 
 

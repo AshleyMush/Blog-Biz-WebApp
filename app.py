@@ -12,6 +12,7 @@ from routes.auth_routes import auth_bp
 from routes.admin_routes import admin_bp
 from routes.seed import seed_project_data, seed_bp
 from routes.decorators import roles_required
+from routes.contributor_routes import contributor_bp
 from encryption import hash_and_salt_password
 
 from datetime import datetime
@@ -27,10 +28,12 @@ app.config['SECRET_KEY'] = os.environ.get("SECRET_APP_KEY")
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 
+
 # ____________ Register the blueprints_________
 app.register_blueprint(auth_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(seed_bp)
+app.register_blueprint(contributor_bp)
 
 
 
@@ -462,10 +465,6 @@ def search():
 
 # TODO: Add authentication to the admin dashboard
 
-@app.route("/admin",methods=['POST', 'GET'])
-@roles_required('Admin')
-def admin_dashboard():
-    return render_template('/admin/dashboard.html')
 
 
 @app.route('/profile', methods=[ 'GET'])
@@ -473,10 +472,7 @@ def admin_dashboard():
 def user_profile():
     return render_template('/website/user-profile.html')
 
-@app.route('/contributor', methods=[ 'GET'])
-@roles_required('Contributor','Admin')
-def contributor_profile():
-    return render_template('/website/contributor-profile.html')
+
 
 @app.route('/moderator', methods=['GET'])
 @roles_required('Moderator','Admin')

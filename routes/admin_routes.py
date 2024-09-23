@@ -10,6 +10,10 @@ admin_bp = Blueprint('admin_bp', __name__, url_prefix='/admin')
 # TODO: Register the admin_bp blueprint in the app.py file and import it
 
 
+@admin_bp.route("/dashboard",methods=['POST', 'GET'])
+@roles_required('Admin')
+def admin_dashboard():
+    return render_template('/admin/dashboard.html')
 
 
 

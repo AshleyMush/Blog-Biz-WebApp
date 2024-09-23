@@ -1,6 +1,21 @@
 {% extends '/admin/base.html' %}
 
-{% block title %}User Profile{% endblock %}
+
+        <!-- Titles -->
+
+        {% elif current_user.is_authenticated and current_user.role == 'Contributor' %}
+        {% block title %}Contributor Profile{% endblock %}
+
+        {% elif current_user.is_authenticated and current_user.role == 'Moderator' %}
+        {% block title %}Moderator Profile{% endblock %}
+        {% else %}
+        {% block title %}User Profile{% endblock %}
+
+        {% endif %}
+       <!-- End of Titles -->
+
+
+
 
 
 {% block navbar %}
@@ -12,7 +27,7 @@
 
 {% block sidebar %}
 <!-- Sidebar -->
-{% include '/website/sidebar.html' %}
+{% include '/admin/sidebar.html' %}
 
 <!-- End of Sidebar -->
 {% endblock %}

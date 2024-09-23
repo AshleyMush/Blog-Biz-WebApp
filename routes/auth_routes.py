@@ -15,9 +15,17 @@ auth_bp = Blueprint('auth_bp', __name__)
 @auth_bp.route('/login', methods=["GET", "POST"])
 def login():
     """
-    This function logs in a user
-    :return:
+    This function handles the login process.
+
+    If the user is already authenticated, redirect to the admin dashboard.
+    If the form is valid on submission, check the user's credentials.
+    If the credentials are valid, log the user in and redirect based on their role.
+    If the credentials are invalid, flash an error message and render the login form again.
     """
+    if current_user.is_authenticated:
+        return redirect(url_for('admin.index')) # Redirect to the admin dashboard if the user is already logged in
+
+
     form = LoginForm()
     if form.validate_on_submit():
         email = form.email.data
@@ -30,7 +38,7 @@ def login():
             flash('Logged in successfully', 'success')
             login_user(user, remember=form.remember_me.data)  # Uses remember_me checkbox value
             if user.role == "Admin":
-                return redirect(url_for('admin_dashboard'))
+                return redirect(url_for('admin_bp.admin_dashboard'))
             elif user.role == "Contributor":
                 return redirect(url_for('contributor_profile'))
             elif user.role == "Moderator":
@@ -81,7 +89,7 @@ def register():
         # Log in the user
         login_user(new_user)
 
-        return redirect(url_for("admin_dashboard"))
+        return redirect(url_for("admin_bp.admin_dashboard"))
 
     else:
         if form.errors:

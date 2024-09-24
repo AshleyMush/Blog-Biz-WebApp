@@ -1,6 +1,6 @@
-from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
-from flask import Flask,Blueprint,  render_template,jsonify, flash, request, redirect, url_for
-from encryption import hash_and_salt_password
+from models import db, ContactDetails, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage
+from flask import Blueprint
+from utils.encryption import hash_and_salt_password
 import os
 
 

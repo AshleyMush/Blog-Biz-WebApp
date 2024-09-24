@@ -2,16 +2,21 @@
 
 
         <!-- Titles -->
-
-        {% elif current_user.is_authenticated and current_user.role == 'Contributor' %}
-        {% block title %}Contributor Profile{% endblock %}
-
-        {% elif current_user.is_authenticated and current_user.role == 'Moderator' %}
-        {% block title %}Moderator Profile{% endblock %}
-        {% else %}
-        {% block title %}User Profile{% endblock %}
-
-        {% endif %}
+       {% if current_user.is_authenticated %}
+          {% if current_user.role == 'Admin' %}
+              {% set profile_title = 'Admin Profile' %}
+          {% elif current_user.role == 'Contributor' %}
+              {% set profile_title = 'Contributor Profile' %}
+          {% elif current_user.role == 'Moderator' %}
+              {% set profile_title = 'Moderator Profile' %}
+          {% else %}
+              {% set profile_title = 'User Profile' %}
+          {% endif %}
+      {% else %}
+          {% set profile_title = 'User Profile' %}
+      {% endif %}
+      
+      {% block title %}{{ profile_title }}{% endblock %}
        <!-- End of Titles -->
 
 

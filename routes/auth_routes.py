@@ -40,11 +40,11 @@ def login():
             if user.role == "Admin":
                 return redirect(url_for('admin_bp.admin_dashboard'))
             elif user.role == "Contributor":
-                return redirect(url_for('contributor_profile'))
+                return redirect(url_for('contributor_bp.contributor_profile'))
             elif user.role == "Moderator":
                 return redirect(url_for('moderator_profile'))
             else:
-                return redirect(url_for('user_profile'))
+                return redirect(url_for('user_bp.user_profile'))
 
         else:
             flash('Invalid email or password', 'danger')
@@ -89,7 +89,7 @@ def register():
         # Log in the user
         login_user(new_user)
 
-        return redirect(url_for("admin_bp.admin_dashboard"))
+        return redirect(url_for("user_bp.user_profile"))
 
     else:
         if form.errors:

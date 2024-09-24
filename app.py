@@ -13,6 +13,7 @@ from routes.admin_routes import admin_bp
 from routes.seed import seed_project_data, seed_bp
 from routes.decorators import roles_required
 from routes.contributor_routes import contributor_bp
+from routes.user_routes import user_bp
 from encryption import hash_and_salt_password
 
 from datetime import datetime
@@ -34,6 +35,7 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(seed_bp)
 app.register_blueprint(contributor_bp)
+app.register_blueprint(user_bp)
 
 
 

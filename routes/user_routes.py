@@ -6,12 +6,13 @@ from forms import CallbackForm, ContactInfo, ContactPageForm, ContactForm, AddSe
     AboutUsForm
 
 
-user_bp = Blueprint('contributor_bp', __name__, url_prefix='/contributor')
+user_bp = Blueprint('user_bp', __name__, url_prefix='/user')
 
 
-@user_bp.route('/contributor', methods=[ 'GET'])
-@roles_required('User','Admin')
+@user_bp.route('/profile', methods=[ 'GET','POST'])
+@roles_required('User')
 def user_profile():
+
     return render_template('/website/profile.html')
 
 #TODO: Add dashboard for user, comment, like, edit comment

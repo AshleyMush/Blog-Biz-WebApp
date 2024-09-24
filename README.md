@@ -1,86 +1,111 @@
-HealthCare-Agency-Website-Project 🚑💻
-Welcome to the HealthCare Agency Website Project! This project consists of two main branches: main, which is a CRUD API, and health-care-website, which contains templates for a healthcare website.
+# HealthCare Agency Website Project
 
-Project Structure
-Templates
-The templates are organized into two main directories as shown below:
+This repository contains the source code and resources for the HealthCare Agency Website Project. Below is an overview of the directory structure and the functionalities of each file and folder.
 
+## Directory Structure
 
-![image](https://github.com/user-attachments/assets/e7e7e253-c535-4613-bd4f-a558c56fec28)
+```
+/d:/Uni stuff/Software projects/HealthCare-Agency-Website-Project/
+├── templates/
+│   ├── admin/
+│           ├── admin_dashboard.html
+│           ├── login.html
+│           ├── register.html
+│           ├── reset_password.html
+│           ├──sidebar.html
+│           ├── base.html
+│           ├── footer.html
+│           ├── header.html
+│           ├── hero.html
+│           ├── flash-messages.html
+│           ├── dashboard.html
+│   └── website/
+│           ├── blog.html
+│           ├── blog-post.html
+│           ├── contact.html
+│           ├── profile.html
+│           ├── base.html
+│           ├── hero2.html
+│           ├── footer.html
+│           ├── header.html
+├── routes/
+│   ├── admin_routes.py
+│   ├── auth_routes.py
+│   ├── contributor_routes.py
+│   ├── blog_bp.py
+├── utils/
+│   ├── email.py
+│   ├── 
+│   └── 
+├── models/
+├── forms/
+├── assets/
+│   ├── css/
+│   ├── images/
+│   └── js/
+├── app.py
+└── README.md
+└── .gitignore
+└── requirements.txt
+└── Procfile
+└── models.py
+└── encryption.py
+└── forms.py
+└── LICENSE
 
-Admin Dashboard Templates: Located in the admin directory. To access these templates, use /admin/<template_name>.
-Website Templates: Located in the website directory. To access these templates, use /website/<template_name>.
-Static Files
-The static files are organized into directories under the static directory:
+```
 
+### templates/
+Contains all the HTML templates used in the project.
 
-![image](https://github.com/user-attachments/assets/3105f2ba-8af4-40c2-910a-563d32380632)
+- **admin/**: HTML templates for the admin dashboard.
+- **website/**: HTML templates for the website.
 
-Admin Dashboard Static Files: Located in the admin-dashboard-static directory. These files include CSS, JavaScript, and other static assets for the admin dashboard.
-Care Template Static Files: Located in the care-template-static directory. These files include CSS, JavaScript, and other static assets for the main website.
-Images: General images used throughout the website.
-Installation 🛠️
-Clone the repository to your local machine:
+### routes/
+Contains the route handlers for the Flask application.
+These are blueprint objects in different modules that are registered with the Flask application in the `app.py` file through app.register_blueprint(blueprint_name_here).
 
-shell
-Copy code
-git clone https://github.com/AshleyMush/Restful-Crud-api.git
-Navigate to the project directory:
+### models/
+Contains the database models for the Flask application.
 
-shell
-Copy code
+### forms/
+Contains the form classes for the Flask application.
+
+### assets/
+Contains all the static assets used in the project.
+
+- **css/**: Stylesheets for the website.
+- **images/**: Image files used throughout the website.
+- **js/**: JavaScript files for client-side functionality.
+
+### app.py
+The main Python file for the Flask application.
+
+### README.md
+This file. Provides an overview of the project and its structure.
+
+## Getting Started
+
+To get started with the project, clone the repository and install the required Python packages.
+
+```sh
+git clone <repository-url>
 cd HealthCare-Agency-Website-Project
-Install the dependencies using a package manager such as pip:
-
-shell
-Copy code
 pip install -r requirements.txt
-This will install all the required packages and libraries needed for the application to run.
+```
 
-Usage 🚀
-Admin Dashboard
-To access the admin dashboard templates, you need to use the /admin/ route prefix. For example, to render the admin dashboard base template, your route might look like this:
+Then, you can run the Flask application with the following command:
 
-python
-Copy code
-@app.route('/admin/dashboard')
-def admin_dashboard():
-    # Your code logic here
-    return render_template('admin/dashboard.html')
-Website Templates
-To access the main website templates, use the /website/ route prefix. For example, to render the home page template, your route might look like this:
+```sh
+python app.py
+```
 
-python
-Copy code
-@app.route('/')
-def home():
-    # Your code logic here
-    return render_template('website/index.html')
-Example: Updating Home Page Content
-To update the home page content, you can use the following route:
+The application will be available at `http://localhost:5002`.
 
-python
-Copy code
-@app.route('/patch-home-content/<int:home_id>', methods=['PATCH', 'POST', 'GET'])
-def partially_update_home_content(home_id):
-    """
-    This function partially updates the home page content.
-    :param home_id: ID of the home content to update.
-    :return: Rendered template with updated home content.
-    """
-    print('🟩 Updating home page content')
+## Contributing
 
-    # Your code logic here
+Feel free to fork this repository and submit pull requests. For major changes, please open an issue first to discuss what you would like to change.
 
-    return render_template('/admin/admin-dashboard-base.html', home_form=form, endpoint='patch_home_content', home=home_content)
-Contributing 🤝
-Contributions are welcome! Please feel free to submit a Pull Request.
+## License
 
-License 📜
 This project is licensed under the MIT License.
-
-Contact 📬
-If you have any questions or need further assistance, feel free to contact us.
-
-Happy coding! 😊
-

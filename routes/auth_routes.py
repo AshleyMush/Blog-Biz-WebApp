@@ -1,9 +1,9 @@
 # Route for authentication
 from forms import RegisterForm, LoginForm
-from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user
+from flask_login import login_user, current_user, logout_user
 from models import db, User
 from flask import Blueprint, render_template, redirect, url_for, flash
-from encryption import hash_and_salt_password, check_password_hash
+from utils.encryption import hash_and_salt_password, check_password_hash
 
 
 

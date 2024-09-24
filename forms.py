@@ -55,7 +55,7 @@ class ContactForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(message="Please enter the name."), Length(max=64)],
                        render_kw={"placeholder": "Name", "class": "form-control"})
     number = StringField('Contact Number', validators=[DataRequired(message="Please enter the contact number."), Length(max=20)],)
-    email = StringField('Email', validators=[DataRequired(message="Please enter the email."), Email(message="Please enter a valid email.")],
+    email = StringField('Email', validators=[DataRequired(message="Please enter the email."), Email(message="Please enter a valid email.",check_deliverability=True)],
                         render_kw={"placeholder": "Email", "class": "form-control"})
     message = TextAreaField('Message', validators=[DataRequired(message="Please enter the message.")],
                             render_kw={"placeholder": "Message", "class": "form-control"})

@@ -63,15 +63,7 @@
             {{ ckeditor.load() }}
 
             <!-- Flash Messages -->
-            {% with messages = get_flashed_messages() %} {% if messages %}
-            <div class="alert alert-info">
-              <ul class="list-unstyled">
-                {% for message in messages %}
-                <li>{{ message }}</li>
-                {% endfor %}
-              </ul>
-            </div>
-            {% endif %} {% endwith %}
+            {%include 'admin/flash-messages.html'%}
             <!-- End of Flash Messages -->
 
             {% block content %}

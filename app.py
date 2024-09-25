@@ -1,17 +1,18 @@
 from flask import Flask,  render_template,jsonify, flash, request, redirect, url_for
 from flask_bootstrap import Bootstrap5
-from flask_login import LoginManager
+from flask_login import login_user, current_user, logout_user, LoginManager
 from flask_ckeditor import CKEditor
 from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
-from forms import CallbackForm, ContactForm
+from forms import CallbackForm, ContactAdminForm
 import os
-
+import logging
 from routes.auth_routes import auth_bp
 from routes.admin_routes import admin_bp
 from routes.seed import seed_project_data, seed_bp
 from routes.decorators import roles_required
 from routes.contributor_routes import contributor_bp
 from routes.user_routes import user_bp
+from utils.email_utils import send_confirmation_email, send_admin_email
 
 from datetime import datetime
 
@@ -45,7 +46,8 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return db.get_or_404(User, user_id)
+    return db.session.get(User, user_id)  # Use db.session.get instead of db.get_or_404
+
 
 
 with app.app_context():
@@ -67,6 +69,7 @@ with app.app_context():
 
 
 
+
 @app.route('/')
 def home():
     current_year = datetime.now().year
@@ -79,7 +82,7 @@ def home():
 
     # Form handling
     callback_form = CallbackForm()
-    contact_form = ContactForm()
+    contact_form = ContactAdminForm()
 
     if contact_form.validate_on_submit() and contact_form.data:
         name = contact_form.name.data
@@ -92,7 +95,7 @@ def home():
         send_admin_email(name=name, subject=subject, email=email, message=message)
 
 
-    return render_template('/website/index.html', callback_form=callback_form, contact_form=contact_form, current_year=current_year, contacts_data=contacts_data, faqs_data=faqs_data, services_data=services_data, home_page_data=home_page_data, endpoint='home')
+    return render_template('/website/blog-home.html', callback_form=callback_form, contact_form=contact_form, current_year=current_year, contacts_data=contacts_data, faqs_data=faqs_data, services_data=services_data, home_page_data=home_page_data, endpoint='home')
 
 
 
@@ -312,7 +315,7 @@ def contact_us():
     """
     contact_page_data = ContactPageContent.query.all()
     contacts = ContactDetails.query.all()
-    form = ContactForm()
+    form = ContactAdminForm()
 
     if request.method in ['POST']:
         if form.validate_on_submit():

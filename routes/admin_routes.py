@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required
 from routes.decorators import  roles_required
 from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
-from forms import CallbackForm, ContactInfo, ContactPageForm, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, \
+from forms import CallbackForm, ContactInfo, ContactPageForm, ContactAdminForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, \
     AboutUsForm
 admin_bp = Blueprint('admin_bp', __name__, url_prefix='/admin')
 

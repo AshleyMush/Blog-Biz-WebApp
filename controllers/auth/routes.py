@@ -24,7 +24,13 @@ def login():
     If the credentials are invalid, flash an error message and render the login form again.
     """
     if current_user.is_authenticated:
-        return redirect(url_for('admin.index')) # Redirect to the admin dashboard if the user is already logged in
+        if current_user.role == "Admin":
+            return redirect(url_for('admin_bp.admin_dashboard'))
+
+        elif current_user.role == "Contributor":
+            return redirect(url_for('contributor_bp.contributor_profile'))
+        else:
+            return redirect(url_for('user_bp.user_profile'))
 
 
     form = LoginForm()

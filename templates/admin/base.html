@@ -70,12 +70,16 @@
 
         {% elif current_user.role == 'Contributor' %}
         <!--Contributor Navbar -->
-        {% include '/website/navbar 2.html' %}
+        {% include '/blog/blogNavBar.html' %}
 
 
         {% else %}
         <!--User Navbar -->
-        {% include '/website/navbar 2.html' %}
+
+
+
+
+        {% include '/blog/blogNavBar.html' %}
 
         {% endif %}
         {% endif %}

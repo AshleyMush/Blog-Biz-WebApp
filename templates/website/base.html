@@ -26,10 +26,13 @@
 </head>
 <body class="d-flex flex-column h-100">
     <main class="flex-shrink-0">
+
+        {% block navigation %}
         <!-- Navigation-->
         {% include '/website/navbar 2.html' %}
         
         <!-- End Navigation-->
+        {% endblock %}
 
         {% block header %}
         {% endblock %}

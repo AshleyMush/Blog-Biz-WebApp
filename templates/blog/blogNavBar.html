@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container px-5">
-        <a class="navbar-brand" href="index.html">Start Bootstrap</a>
+        <a class="navbar-brand" href="{{url_for('blog_bp.blog_home')}}">Health Navigator</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
                 class="navbar-toggler-icon"></span></button>
@@ -9,26 +9,27 @@
 
                 <!--TODO Add  if config['MAIN_FEATURES_ENABLED'] to this feature and route it to blog_bp %}-->
                 <!-- Include main function menu items  ⛔-->
-                 {% if MAIN_FEATURES_ENABLED}
-                <li class="nav-item"><a class="nav-link" href="{{url_for('main_bp.home')}}">Home</a></li>
 
-                <li class="nav-item"><a class="nav-link" href="{{url_for('main_bp.about_us')}}">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{url_for('main_bp.contact_us')}}">Contact</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Well Being</a></li>
+
+                <li class="nav-item"><a class="nav-link" href="#">Medication</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Conditions</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdownBlog" href="#" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
-                        Services
+                        Topics
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
-                        {% for service in services %}
-                        <li><a class="dropdown-item"
-                                href="{{url_for('main_bp.service',service_id=service.id)}}">{{service.name}}</a></li>
-                        {% endfor %}
+                        <!-- for service in services  -->
+                        <li><a class="dropdown-item" href="#"><!--service.name--> Some topic
+                            </a>
+                        </li>
+                        <!--endfor -->
                     </ul>
                 </li>
                 <!--End TODO ⛔-->
-                <li class="nav-item"><a class="nav-link" href="pricing.html">Pricing</a></li>
-                <li class="nav-item"><a class="nav-link" href="faq.html">FAQ</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Something </a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Something 2</a></li>
 
 
                 {% if not current_user.is_authenticated: %}
@@ -39,11 +40,39 @@
                 </li>
                 <!-- Add registration below-->
                 {% else: %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('auth_bp.logout_main')}}">
-                        Log out
-                    </a>
-                </li>
+                    {% if current_user.role == 'Admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('admin_bp.admin_dashboard')}}">
+                            <i class="bi bi-person-vcard-fill"></i>
+                            <span>Dashboard</span>
+                    
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    {% elif current_user.role == 'Contributor' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('contributor_bp.contributor_profile')}}">
+                            <i class="fa-duotone fa-solid fa-user"></i>
+                            <span>Contributor Profile</span>
+                    
+                        </a>
+                    </li>
+                    
+                    
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{url_for('user_bp.user_profile')}}">
+                                <i class="fa-duotone fa-solid fa-user"></i>
+                                <span>Profile</span>
+                        
+                            </a>
+                        </li>
+                    
+                    
+                    {% endif %}
+                            
                 {% endif %}
 
                 <li class="nav-item dropdown">

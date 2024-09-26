@@ -58,7 +58,7 @@ with app.app_context():
     db.create_all()
     seed_project_data()
 
-#------------- Admin Configuration  ---------------------
+#------------- Admin Configuration  ----------------------
 
 # @app.before_first_request
 # def list_routes():

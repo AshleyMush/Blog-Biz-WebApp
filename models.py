@@ -93,6 +93,7 @@ class Inbox(db.Model, UserMixin):
     name = db.Column(db.String(250), nullable=True)
     number = db.Column(db.String(250), nullable=True)
     email = db.Column(db.String(250), nullable=True)
+    subject = db.Column(db.String(250), nullable=True)
     message = db.Column(db.String(250), nullable=True)
 
     def to_dict(self):

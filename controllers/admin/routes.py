@@ -1,20 +1,21 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required
-from routes.decorators import  roles_required
-from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
-from forms import CallbackForm, ContactInfo, ContactPageForm, ContactForm, AddServicesForm, UpdateServiceForm, HomePageInfoForm, \
+from routes.decorators import roles_required
+from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, \
+    Jobs, CareerPageContent
+from forms import CallbackForm, ContactInfo, ContactPageForm, ContactAdminForm, AddServicesForm, UpdateServiceForm, \
+    HomePageInfoForm, \
     AboutUsForm
-admin_bp = Blueprint('admin_bp', __name__, url_prefix='/admin')
+from . import admin_bp
 
 
 # TODO: Create approve User to be contributor routes
 
 
-@admin_bp.route("/dashboard",methods=['POST', 'GET'])
+@admin_bp.route("/dashboard", methods=['POST', 'GET'])
 @roles_required('Admin')
 def admin_dashboard():
     return render_template('/admin/dashboard.html')
-
 
 
 # ----------------- Home Page----------------- #
@@ -28,6 +29,7 @@ def get_home_content():
     """
     home_content = HomePage.query.all()
     return render_template('/admin/home-content.html', home_content=home_content)
+
 
 @admin_bp.route('/admin/patch-home-content/<int:home_id>', methods=['PATCH', 'POST', 'GET'])
 @roles_required('Admin')
@@ -61,7 +63,7 @@ def partially_update_home_content(home_id):
                     flash(f'Error in {field}: {error}', 'danger')
 
     return render_template('/admin/edit-home-content.html', form=form, home=home_content)
-       
+
 
 # ----------------- Services----------------- #
 
@@ -315,7 +317,6 @@ def partially_update_about_content(about_id):
     :return:
     """
 
-
     form = AboutUsForm()
     about_content = AboutPageContent.query.get_or_404(about_id)
 
@@ -343,6 +344,7 @@ def partially_update_about_content(about_id):
     # Handle GET request or form validation failure
     return render_template('/admin/edit-about-content.html', about_form=form, about_content=about_content)
 
+
 @admin_bp.route('/add-about-content', methods=['POST'])
 @roles_required('Admin')
 def add_about_content():
@@ -363,7 +365,8 @@ def add_about_content():
         return jsonify("message: 'About added successfully'")
     else:
         return jsonify("message: 'About not added'")
-    
+
+
 @admin_bp.route('/admin/get-about-content')
 @roles_required('Admin')
 def get_about_content():
@@ -373,7 +376,6 @@ def get_about_content():
     """
     about_content = AboutPageContent.query.all()
     return render_template('/admin/about-content.html', about_content=about_content)
-
 
 # ----------------- User Management Routes----------------- #
 
@@ -392,7 +394,7 @@ def get_about_content():
 #     )
 #     db.session.add(new_user)
 #     db.session.commit()
-# 
+#
 #     if new_user:
 #         return jsonify("message: 'User added successfully'")
 #     else:

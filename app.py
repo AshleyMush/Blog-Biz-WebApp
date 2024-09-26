@@ -1,17 +1,20 @@
 from flask import Flask,  render_template,jsonify, flash, request, redirect, url_for
 from flask_bootstrap import Bootstrap5
-from flask_login import LoginManager
+from flask_login import login_user, current_user, logout_user, LoginManager
 from flask_ckeditor import CKEditor
 from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
-from forms import CallbackForm, ContactForm
+from forms import CallbackForm, ContactAdminForm
 import os
-
-from routes.auth_routes import auth_bp
-from routes.admin_routes import admin_bp
+import logging
+from controllers.auth import auth_bp
+from controllers.admin import admin_bp
+from controllers.blog import blog_bp
+from controllers.user import user_bp
+from controllers.main import main_bp
 from routes.seed import seed_project_data, seed_bp
 from routes.decorators import roles_required
 from routes.contributor_routes import contributor_bp
-from routes.user_routes import user_bp
+from utils.email_utils import send_confirmation_email, send_admin_email
 
 from datetime import datetime
 
@@ -29,8 +32,10 @@ Bootstrap5(app)
 app.register_blueprint(auth_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(seed_bp)
-app.register_blueprint(contributor_bp)
+#app.register_blueprint(contributor_bp)
 app.register_blueprint(user_bp)
+app.register_blueprint(blog_bp)
+app.register_blueprint(main_bp)
 
 
 
@@ -45,7 +50,8 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return db.get_or_404(User, user_id)
+    return db.session.get(User, user_id)  # Use db.session.get instead of db.get_or_404
+
 
 
 with app.app_context():
@@ -54,12 +60,16 @@ with app.app_context():
 
 #------------- Admin Configuration  ---------------------
 
+# @app.before_first_request
+# def list_routes():
+#     for rule in app.url_map.iter_rules():
+#         print(f"Endpoint: {rule.endpoint}, URL: {rule}")
 
 
 
 
 
-# -----------------Routes-------------------------
+# -----------------Managing biz page-------------------------
 
 
 
@@ -67,32 +77,9 @@ with app.app_context():
 
 
 
-@app.route('/')
-def home():
-    current_year = datetime.now().year
-
-    # Correctly access the query attribute from the class, not an instance
-    contacts_data = ContactDetails.query.all()
-    faqs_data = FAQs.query.all()
-    services_data = Services.query.all()
-    home_page_data = HomePage.query.all()
-
-    # Form handling
-    callback_form = CallbackForm()
-    contact_form = ContactForm()
-
-    if contact_form.validate_on_submit() and contact_form.data:
-        name = contact_form.name.data
-        email = contact_form.email.data
-        subject = contact_form.subject.data
-        message = contact_form.message.data
 
 
-        send_confirmation_email(name=name, email=email, subject=subject)
-        send_admin_email(name=name, subject=subject, email=email, message=message)
 
-
-    return render_template('/website/index.html', callback_form=callback_form, contact_form=contact_form, current_year=current_year, contacts_data=contacts_data, faqs_data=faqs_data, services_data=services_data, home_page_data=home_page_data, endpoint='home')
 
 
 
@@ -104,15 +91,7 @@ def home():
 
 
 
-@app.route('/get-service/<int:service_id>', methods=['GET', 'POST'])
-def get_service(service_id):
-    """
-    This function gets a single service from the database
-    :param service_id:
-    :return:
-    """
-    service = Services.query.get_or_404(service_id)
-    return render_template('/website/service.html', service=service)
+
 
 
 
@@ -305,52 +284,6 @@ def delete_job(job_id):
 
 
 #------ Contact Info Routes -------
-@app.route('/contact-us', methods=['POST', 'GET'])
-def contact_us():
-    """
-    This function handles the contact form submission and sends emails.
-    """
-    contact_page_data = ContactPageContent.query.all()
-    contacts = ContactDetails.query.all()
-    form = ContactForm()
-
-    if request.method in ['POST']:
-        if form.validate_on_submit():
-            name = form.name.data
-            email = form.email.data
-            number = form.number.data
-            message = form.message.data
-
-
-            # Save the form data to the database
-            new_message = Inbox(
-                name=name,
-                email=email,
-                number=number,
-                message=message
-            )
-            db.session.add(new_message)
-            db.session.commit()
-            flash('Message sent successfully!', 'success')
-
-
-            # Send emails
-            try:
-                send_confirmation_email(name=name, email=email, subject="Message Sent Successfully")
-                send_admin_email(name=name, subject=f"New Message from your website, from {name}", email=email, message=message)
-                flash('Message sent successfully!', 'success')
-            except Exception as e:
-                flash('Error sending message. Please try again later.', 'danger')
-
-            return redirect(url_for('contact_us'))
-        else:
-            if request.method == 'POST':
-                # Form has errors
-                for field, errors in form.errors.items():
-                    for error in errors:
-                        flash(f'Error in {field}: {error}', 'danger')
-
-    return render_template('/website/contact.html', form=form, contact_page_data=contact_page_data, contacts=contacts)
 
 
 
@@ -367,19 +300,8 @@ def contact_us():
 
 
 
-#------ About Us Routes -------
-@app.route('/about-us', methods=['POST', 'GET'])
-def about_us():
-    """
-    This function returns the about us page of the website
-    :return:
-    """
-    #TODO: Add about content to admin and modify the template
-
-    about_content = AboutPageContent.query.first()
 
 
-    return render_template('/website/about.html', about_content=about_content)
 
 
 
@@ -478,16 +400,8 @@ def moderator_profile():
 
 
 
-# ------ Blog Routes ----
 
-#Todo: change the url
-@app.route('/blog', methods=['GET', 'POST'])
-def blog():
-    return render_template('/website/blog-home.html')
 
-@app.route('/blog-post', methods=['GET', 'POST'])
-def blog_post():
-    return render_template('/website/blog-post.html')
 
 
 

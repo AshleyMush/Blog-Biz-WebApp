@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_ckeditor import CKEditorField
-from wtforms import StringField, SubmitField, TextAreaField, PasswordField, BooleanField
+from wtforms import StringField, SubmitField,SelectField, TextAreaField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, URL, Email, Length, ValidationError, InputRequired, Optional, EqualTo
 import re
 from flask import flash
@@ -50,6 +50,24 @@ class CallbackForm(FlaskForm):
 
     submit = SubmitField('Request Callback', render_kw={"class": "btn btn-primary call-back-btn"})
 
+
+class ContactAdminForm(FlaskForm):
+    subject = SelectField(
+        'Subject',
+        choices=[
+            ('Advertising and business', 'Advertising and business'),
+            ('Apply to be a contributor', 'Apply to be a contributor'),
+            ('Issues with the website', 'Issues with the website'),
+            ('Other', 'Other')
+        ],
+        validators=[DataRequired(message="Please select a subject.")]
+    )
+    message = TextAreaField(
+        'Message',
+        validators=[DataRequired(message="Please enter the message.")],
+        render_kw={"placeholder": "Message", "class": "form-control"}
+    )
+    submit = SubmitField('Send Message', render_kw={"class": "btn btn-primary call-back-btn"})
 
 class ContactForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(message="Please enter the name."), Length(max=64)],

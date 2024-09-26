@@ -7,6 +7,9 @@ This repository contains the source code and resources for the HealthCare Agency
 ```
 /d:/Uni stuff/Software projects/HealthCare-Agency-Website-Project/
 ├── templates/
+│   ├── email/
+│           ├──admin_email.html
+│           ├──user_email.html
 │   ├── admin/
 │           ├── admin_dashboard.html
 │           ├── login.html
@@ -21,6 +24,10 @@ This repository contains the source code and resources for the HealthCare Agency
 │           ├── dashboard.html
 │   └── website/
 │           ├── blog.html
+│           ├── index.html
+│           ├── about.html
+│           ├── services.html
+│           ├── base.html
 │           ├── blog-post.html
 │           ├── contact.html
 │           ├── profile.html
@@ -28,14 +35,17 @@ This repository contains the source code and resources for the HealthCare Agency
 │           ├── hero2.html
 │           ├── footer.html
 │           ├── header.html
+
 ├── routes/
 │   ├── admin_routes.py
 │   ├── auth_routes.py
 │   ├── contributor_routes.py
-│   ├── blog_bp.py
+│   ├── blog_routes.py
+│   ├── user_routes.py
+│   ├── services_routes.py
 ├── utils/
-│   ├── email.py
-│   ├── 
+│   ├── email_utils.py
+│   ├── encryption.py
 │   └── 
 ├── models/
 ├── forms/
@@ -43,6 +53,8 @@ This repository contains the source code and resources for the HealthCare Agency
 │   ├── css/
 │   ├── images/
 │   └── js/
+├── instance/
+│   ├── Agency.db
 ├── app.py
 └── README.md
 └── .gitignore

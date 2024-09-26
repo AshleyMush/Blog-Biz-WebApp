@@ -4,10 +4,11 @@ from flask_login import login_user, current_user, logout_user
 from models import db, User
 from flask import Blueprint, render_template, redirect, url_for, flash
 from utils.encryption import hash_and_salt_password, check_password_hash
+from . import auth_bp
 
 
 
-auth_bp = Blueprint('auth_bp', __name__)
+
 
 
 
@@ -58,8 +59,21 @@ def login():
 
 @auth_bp.route('/logout')
 def logout():
+    """
+    This function logs out the user and redirects them to the BLOG page.
+    :return:
+    """
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for('blog_bp.blog_home'))
+
+@auth_bp.route('/logout-main')
+def logout_main():
+    """
+    This function logs out the user and redirects them to the  business home page.
+    :return:
+    """
+    logout_user()
+    return redirect(url_for('main_bp.home'))
 
 
 

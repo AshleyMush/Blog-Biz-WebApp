@@ -6,8 +6,8 @@ from forms import CallbackForm, ContactInfo, ContactPageForm, ContactAdminForm, 
     AboutUsForm
 from utils.email_utils import send_confirmation_email, send_admin_email
 import logging
+from . import user_bp
 
-user_bp = Blueprint('user_bp', __name__, url_prefix='/user')
 
 
 @user_bp.route('/profile', methods=[ 'GET','POST'])
@@ -86,6 +86,55 @@ def contact_admin():
         contacts=contacts
     )
 
+
+
+
+# @main_bp.route('/contact-us', methods=['POST', 'GET'])
+# def contact_us():
+#     """
+#     This function handles the contact form submission and sends emails.
+#     """
+#     contact_page_data = ContactPageContent.query.all()
+#     contacts = ContactDetails.query.all()
+#     form = ContactAdminForm()
+#
+#     if request.method in ['POST']:
+#         if form.validate_on_submit():
+#             name = form.name.data
+#             email = form.email.data
+#             number = form.number.data
+#             message = form.message.data
+#
+#
+#             # Save the form data to the database
+#             new_message = Inbox(
+#                 name=name,
+#                 email=email,
+#                 number=number,
+#                 message=message
+#             )
+#             db.session.add(new_message)
+#             db.session.commit()
+#             flash('Message sent successfully!', 'success')
+#
+#
+#             # Send emails
+#             try:
+#                 send_confirmation_email(name=name, email=email, subject="Message Sent Successfully")
+#                 send_admin_email(name=name, subject=f"New Message from your website, from {name}", email=email, message=message)
+#                 flash('Message sent successfully!', 'success')
+#             except Exception as e:
+#                 flash('Error sending message. Please try again later.', 'danger')
+#
+#             return redirect(url_for('contact_us'))
+#         else:
+#             if request.method == 'POST':
+#                 # Form has errors
+#                 for field, errors in form.errors.items():
+#                     for error in errors:
+#                         flash(f'Error in {field}: {error}', 'danger')
+#
+#     return render_template('/website/contact.html', form=form, contact_page_data=contact_page_data, contacts=contacts)
 
 
 # @user_bp.route('/contact-admin', methods=['GET', 'POST'])

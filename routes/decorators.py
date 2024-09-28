@@ -1,7 +1,20 @@
 # decorators.py
 from flask import g, request, redirect, url_for, abort
 from functools import wraps
-from flask_login import current_user
+from flask_login import login_required, current_user
+from flask import flash, redirect, url_for
+
+def admin_required(f):
+    @wraps(f)
+    @login_required
+    def decorated_function(*args, **kwargs):
+        if current_user.role != 'Admin':
+            flash('You do not have permission to access this page.', 'danger')
+            #TODO CHANGE THE REDIRECT URL
+            return redirect(url_for('main_bp.index'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 
 def roles_required(*roles):
     """"

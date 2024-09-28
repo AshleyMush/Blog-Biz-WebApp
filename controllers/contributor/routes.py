@@ -6,22 +6,35 @@ from forms import CallbackForm, ContactInfo, ContactPageForm, ContactAdminForm, 
     AboutUsForm
 from utils.email_utils import send_confirmation_email, send_admin_email
 import logging
-from . import user_bp
+from . import contributor_bp
 
 
 
-@user_bp.route('/profile', methods=[ 'GET','POST'])
-@roles_required('User')
-def user_profile():
+@contributor_bp.route('/profile', methods=[ 'GET','POST'])
+@roles_required('Contributor')
+def contributor_profile():
 
 
     return render_template('/website/profile.html')
 
+# @contributor_bp.route('/contact', methods=['GET', 'POST'])
+# @roles_required('Contributor')
+# def contact():
+#     form = ContactForm()
+#     if form.validate_on_submit():
+#         name = form.name.data
+#         email = form.email.data
+#         message = form.message.data
+#         contact = ContactDetails(name=name, email=email, message=message)
+#         db.session.add(contact)
+#         db.session.commit()
+#         flash('Your message has been sent successfully', 'success')
+#         return redirect(url_for('user_bp.contact'))
+#     return render_template('/website/contact.html', form=form)
 
 
-
-@user_bp.route('/contact-us', methods=['GET', 'POST'])
-@roles_required('User')
+@contributor_bp.route('/contact-us', methods=['GET', 'POST'])
+@roles_required('Contributor')
 def contact_admin():
     """
     Handles the contact form submission and sends emails.
@@ -77,23 +90,6 @@ def contact_admin():
 
 
 
-
-# @user_bp.route('/contact', methods=['GET', 'POST'])
-# @roles_required('User')
-# def contact():
-#     form = ContactForm()
-#     if form.validate_on_submit():
-#         name = form.name.data
-#         email = form.email.data
-#         message = form.message.data
-#         contact = ContactDetails(name=name, email=email, message=message)
-#         db.session.add(contact)
-#         db.session.commit()
-#         flash('Your message has been sent successfully', 'success')
-#         return redirect(url_for('user_bp.contact'))
-#     return render_template('/website/contact.html', form=form)
-
-
 # @main_bp.route('/contact-us', methods=['POST', 'GET'])
 # def contact_us():
 #     """
@@ -142,8 +138,8 @@ def contact_admin():
 #     return render_template('/website/contact.html', form=form, contact_page_data=contact_page_data, contacts=contacts)
 
 
-# @user_bp.route('/contact-admin', methods=['GET', 'POST'])
-# #@roles_required('User')
+# @contributor_bp.route('/contact-admin', methods=['GET', 'POST'])
+# #@roles_required('Contributor')
 # def contact_admin():
 #     """
 #     This function handles the contact form submission and sends emails.

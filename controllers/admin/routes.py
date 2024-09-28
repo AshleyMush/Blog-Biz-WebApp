@@ -3,10 +3,11 @@ from flask_login import login_required
 from routes.decorators import roles_required
 from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, \
     Jobs, CareerPageContent
-from forms import CallbackForm, ContactInfo, ContactPageForm, ContactAdminForm, AddServicesForm, UpdateServiceForm, \
+from forms import ChangeUserRoleForm,ContactInfo, ContactPageForm,  AddServicesForm, UpdateServiceForm, \
     HomePageInfoForm, \
     AboutUsForm
 from . import admin_bp
+
 
 
 # TODO: Create approve User to be contributor routes
@@ -17,10 +18,53 @@ from . import admin_bp
 def admin_dashboard():
     return render_template('/admin/dashboard.html')
 
+# ----------------- User manager----------------- #
+@admin_bp.route('/get-all-users', methods=['GET'])
+@roles_required('Admin')
+def get_users():
+    """
+    This function gets all the users from the database
+    :return:
+    """
+    users = User.query.all()
+    return render_template('/admin/user-manager.html', users=users)
+
+@admin_bp.route('/edit-user/<int:user_id>', methods=['GET','POST'])
+@roles_required('Admin')
+def edit_user(user_id):
+    user = User.query.get_or_404(user_id)
+    form = ChangeUserRoleForm()
+    if request.method == 'POST':
+        new_role = request.form.get('new_role')
+        if new_role in ['User', 'Contributor']:
+            user.role = new_role
+            db.session.commit()
+            flash(f"User role updated to {new_role}.", 'success')
+        else:
+            flash('Invalid role selected.', 'danger')
+        return redirect(url_for('admin_bp.edit_user', user_id=user.id))
+    return render_template('admin/edit-user.html', user=user, form=form)
+
+
+#TODO add blacklist user
+@admin_bp.route('/delete-user/<int:user_id>', methods=['GET', 'DELETE'])
+@roles_required('Admin')
+def delete_user(user_id):
+    """
+    This function deletes a user from the database
+    :param user_id:
+    :return:
+    """
+    user_to_delete = User.query.get_or_404(user_id)
+    db.session.delete(user_to_delete)
+    db.session.commit()
+    flash('User deleted successfully', 'success')
+    return redirect(url_for('admin_bp.get_users'))
+
 
 # ----------------- Home Page----------------- #
 
-@admin_bp.route('/admin/get-home-content', methods=['GET'])
+@admin_bp.route('/get-home-content', methods=['GET'])
 @roles_required('Admin')
 def get_home_content():
     """
@@ -31,7 +75,7 @@ def get_home_content():
     return render_template('/admin/home-content.html', home_content=home_content)
 
 
-@admin_bp.route('/admin/patch-home-content/<int:home_id>', methods=['PATCH', 'POST', 'GET'])
+@admin_bp.route('/patch-home-content/<int:home_id>', methods=['PATCH', 'POST', 'GET'])
 @roles_required('Admin')
 def partially_update_home_content(home_id):
     """
@@ -194,7 +238,7 @@ def partially_update_service(service_id):
     return render_template('/admin/edit-service.html', service=service, service_form=form)
 
 
-@admin_bp.route('/admin/delete-service/<int:service_id>', methods=['GET', 'DELETE'])
+@admin_bp.route('/delete-service/<int:service_id>', methods=['GET', 'DELETE'])
 @roles_required('Admin')
 def delete_service(service_id):
     """
@@ -211,7 +255,7 @@ def delete_service(service_id):
 
 # ----------------- Contact Info----------------- #
 
-@admin_bp.route('/admin/get-contact-info')
+@admin_bp.route('/get-contact-info')
 @roles_required('Admin')
 def customize_contact_page():
     """
@@ -223,7 +267,7 @@ def customize_contact_page():
     return render_template('/admin/customize-contact-info.html', contacts=contacts, contact_page=contact_page)
 
 
-@admin_bp.route('/admin/patch-contact-page/<int:contact_page_id>', methods=['POST', 'PATCH', 'GET'])
+@admin_bp.route('/patch-contact-page/<int:contact_page_id>', methods=['POST', 'PATCH', 'GET'])
 @roles_required('Admin')
 def partially_update_contact_page(contact_page_id):
     """
@@ -266,7 +310,7 @@ def partially_update_contact_page(contact_page_id):
     return render_template('/admin/contact-page-form.html', contact_info_form=form, data=contact_page)
 
 
-@admin_bp.route('/admin/patch-contact-info/<int:contact_id>', methods=['PATCH', 'POST', 'GET'])
+@admin_bp.route('/patch-contact-info/<int:contact_id>', methods=['PATCH', 'POST', 'GET'])
 @roles_required('Admin')
 def partially_update_contact(contact_id):
     """
@@ -308,7 +352,7 @@ def partially_update_contact(contact_id):
 
 # ----------------- About Us----------------- #
 
-@admin_bp.route('/admin/patch-about-content/<int:about_id>', methods=['PATCH', 'POST', 'GET'])
+@admin_bp.route('/patch-about-content/<int:about_id>', methods=['PATCH', 'POST', 'GET'])
 @roles_required('Admin')
 def partially_update_about_content(about_id):
     """

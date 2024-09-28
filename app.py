@@ -11,9 +11,9 @@ from controllers.admin import admin_bp
 from controllers.blog import blog_bp
 from controllers.user import user_bp
 from controllers.main import main_bp
+from controllers.contributor import contributor_bp
 from routes.seed import seed_project_data, seed_bp
 from routes.decorators import roles_required
-from routes.contributor_routes import contributor_bp
 from utils.email_utils import send_confirmation_email, send_admin_email
 
 from datetime import datetime
@@ -32,9 +32,11 @@ Bootstrap5(app)
 app.register_blueprint(auth_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(seed_bp)
-#app.register_blueprint(contributor_bp)
+app.register_blueprint(contributor_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(blog_bp)
+
+#TODO: Disable if not needed
 app.register_blueprint(main_bp)
 
 
@@ -386,17 +388,6 @@ def search():
 
 
 
-@app.route('/profile', methods=[ 'GET'])
-@roles_required('User','Admin')
-def user_profile():
-    return render_template('/website/user-profile.html')
-
-
-
-@app.route('/moderator', methods=['GET'])
-@roles_required('Moderator','Admin')
-def moderator_profile():
-    return render_template('/website/moderator-profile.html')
 
 
 

@@ -28,12 +28,11 @@ class LoginForm(FlaskForm):
 
 
 
-class HomePageInfoForm(FlaskForm):
-    name = StringField('Company Name', validators=[DataRequired(message="Please enter the company name.")])
-    heading = StringField('Heading', validators=[DataRequired(message="Please enter the heading.")])
-    subheading = StringField('Subheading', validators=[DataRequired(message="Please enter the subheading.")])
-    img_url = StringField('Image URL', validators=[DataRequired(message="Please enter the image URL."), URL(message="Please enter a valid URL.")])
-    submit = SubmitField('Save Changes')
+
+
+
+
+
 
 
 class CallbackForm(FlaskForm):
@@ -84,28 +83,10 @@ class ContactForm(FlaskForm):
 
     
 
-class AddServicesForm(FlaskForm):
-    service_name = StringField('Service Name', validators=[DataRequired(message="Please enter the service name.")])
-    homepage_description = TextAreaField('Homepage Description')
-    homepage_image_url = StringField('Homepage Image URL', validators=[DataRequired(message="Please enter the homepage image URL.")])
-    banner_subheading = StringField('Banner Subheading', validators=[DataRequired(message="Please enter the banner subheading.")])
-    feature_one_description = CKEditorField('Feature One Description', validators=[DataRequired(message="Please enter the feature one description.")])
-    feature_one_image_url = StringField('Feature One Image URL', validators=[DataRequired(message="Please enter the feature one image/video..")])
-    feature_two_description = CKEditorField('Feature Two Description', validators=[DataRequired(message="Please enter the feature two description.")])
-    feature_two_image_url = StringField('Feature Two Image URL', validators=[DataRequired(message="Please enter the feature two image/video..")])
-    submit = SubmitField('Submit')
 
 
-class UpdateServiceForm(FlaskForm):
-    service_name = StringField('Service Name')
-    banner_subheading = StringField('Banner Subheading')
-    homepage_description = TextAreaField('Homepage Description', validators=[Optional()])
-    homepage_image_url = StringField('Homepage Image URL', validators=[URL(message="Please enter a valid URL for the homepage image.")])
-    feature_one_description = CKEditorField('Feature One Description')
-    feature_one_image_url = StringField('Feature One Image URL', validators=[URL(message="Please enter a valid URL for the feature one image/video.")])
-    feature_two_description = CKEditorField('Feature Two Description')
-    feature_two_image_url = StringField('Feature Two Image URL', validators=[URL(message="Please enter a valid URL for the feature two image/video.")])
-    submit = SubmitField('Save Changes')
+
+
 
 
 class UserForm(FlaskForm):
@@ -113,6 +94,18 @@ class UserForm(FlaskForm):
     password = StringField('Password', validators=[DataRequired(message="Please enter the password.")])
     name = StringField('Name', validators=[DataRequired(message="Please enter the name.")])
     submit = SubmitField('Submit')
+
+
+
+#-----------------Admin Forms-----------------#
+
+class ChangeUserRoleForm(FlaskForm):
+    new_role = SelectField(
+        'Change User Role',
+        choices=[('User', 'User'), ('Contributor', 'Contributor')],
+        validators=[DataRequired()]
+    )
+    submit = SubmitField('Save Changes')
 
 
 class AboutUsForm(FlaskForm):
@@ -133,6 +126,7 @@ class ContactInfo(FlaskForm):
     instagram_url = StringField('Instagram URL', validators=[Optional(), URL()])
     twitter_url = StringField('Twitter URL', validators=[Optional(), URL()])
     submit = SubmitField('Save Changes')
+
 
 class ContactPageForm(FlaskForm):
     page_name = StringField('Page Name', validators=[DataRequired(message="Please enter the page name.")])
@@ -161,6 +155,37 @@ class CareerPageContentForm(FlaskForm):
     banner_subheading = StringField('Banner Subheading', validators=[DataRequired(message="Please enter the banner subheading.")])
     page_content = CKEditorField('Page Content', validators=[DataRequired(message="Please enter the page content.")])
     submit = SubmitField('Submit')
+
+class UpdateServiceForm(FlaskForm):
+    service_name = StringField('Service Name')
+    banner_subheading = StringField('Banner Subheading')
+    homepage_description = TextAreaField('Homepage Description', validators=[Optional()])
+    homepage_image_url = StringField('Homepage Image URL', validators=[URL(message="Please enter a valid URL for the homepage image.")])
+    feature_one_description = CKEditorField('Feature One Description')
+    feature_one_image_url = StringField('Feature One Image URL', validators=[URL(message="Please enter a valid URL for the feature one image/video.")])
+    feature_two_description = CKEditorField('Feature Two Description')
+    feature_two_image_url = StringField('Feature Two Image URL', validators=[URL(message="Please enter a valid URL for the feature two image/video.")])
+    submit = SubmitField('Save Changes')
+
+
+class HomePageInfoForm(FlaskForm):
+    name = StringField('Company Name', validators=[DataRequired(message="Please enter the company name.")])
+    heading = StringField('Heading', validators=[DataRequired(message="Please enter the heading.")])
+    subheading = StringField('Subheading', validators=[DataRequired(message="Please enter the subheading.")])
+    img_url = StringField('Image URL', validators=[DataRequired(message="Please enter the image URL."), URL(message="Please enter a valid URL.")])
+    submit = SubmitField('Save Changes')
+
+class AddServicesForm(FlaskForm):
+    service_name = StringField('Service Name', validators=[DataRequired(message="Please enter the service name.")])
+    homepage_description = TextAreaField('Homepage Description')
+    homepage_image_url = StringField('Homepage Image URL', validators=[DataRequired(message="Please enter the homepage image URL.")])
+    banner_subheading = StringField('Banner Subheading', validators=[DataRequired(message="Please enter the banner subheading.")])
+    feature_one_description = CKEditorField('Feature One Description', validators=[DataRequired(message="Please enter the feature one description.")])
+    feature_one_image_url = StringField('Feature One Image URL', validators=[DataRequired(message="Please enter the feature one image/video..")])
+    feature_two_description = CKEditorField('Feature Two Description', validators=[DataRequired(message="Please enter the feature two description.")])
+    feature_two_image_url = StringField('Feature Two Image URL', validators=[DataRequired(message="Please enter the feature two image/video..")])
+    submit = SubmitField('Submit')
+
 
 
 

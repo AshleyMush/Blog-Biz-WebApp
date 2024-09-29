@@ -2,7 +2,7 @@
 from flask import g, request, redirect, url_for, abort
 from functools import wraps
 from flask_login import login_required, current_user
-from flask import flash, redirect, url_for
+from flask import flash, redirect, url_for,make_response
 
 def admin_required(f):
     @wraps(f)
@@ -32,4 +32,15 @@ def roles_required(*roles):
             return f(*args, **kwargs)
         return decorated_function
     return decorator
+
+
+def nocache(view):
+    @wraps(view)
+    def no_cache(*args, **kwargs):
+        response = make_response(view(*args, **kwargs))
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        return response
+    return no_cache
 

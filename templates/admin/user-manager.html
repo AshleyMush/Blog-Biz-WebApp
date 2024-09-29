@@ -75,7 +75,7 @@
                                 </a>
 
                                 {% if user.role != 'Admin' %}
-                                <a href="#" class="btn btn-danger btn-circle">
+                                <a href="{{url_for('admin_bp.delete_user',user_id=user.id)}}" class="btn btn-danger btn-circle">
                                     <i class="fas fa-trash"></i>
                                 </a>
                                 {% endif %}

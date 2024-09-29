@@ -136,45 +136,65 @@
                     <h6 class="m-0 font-weight-bold text-primary">Profile</h6>
                 </div>
                 <div class="card-body">
+                    <!-- Email Editing Form -->
                     <div class="me-4">
                         <hr class="sidebar-divider" />
                         <h7 class="text-muted">Login Information</h7>
-                        <form id="emailForm">
+                        <form id="emailForm" method="POST" action="{{ url_for('user_bp.update_email') }}">
+                            <!-- CSRF token -->
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <div class="form-group">
                                 <label for="emailInput">Email</label>
-                                <input type="email" class="form-control" id="emailInput" value="{{current_user.email}}"
-                                    readonly>
+                                <input type="email" class="form-control" id="emailInput" name="email"
+                                    value="{{ current_user.email }}" readonly>
                             </div>
-                            <button type="button" class="btn btn-primary mt-2" id="editButton">Edit</button>
-                            <button type="submit" class="btn btn-success mt-2 d-none" id="saveButton">Save</button>
+                            <button type="button" class="btn btn-primary mt-2" id="editEmailButton">Edit</button>
+                            <button type="submit" class="btn btn-success mt-2 d-none" id="saveEmailButton">Save</button>
                             <button type="button" class="btn btn-secondary mt-2 d-none"
-                                id="cancelButton">Cancel</button>
+                                id="cancelEmailButton">Cancel</button>
                         </form>
                     </div>
-                    <script>
-                        document.getElementById('editButton').addEventListener('click', function () {
-                            document.getElementById('emailInput').removeAttribute('readonly');
-                            document.getElementById('editButton').classList.add('d-none');
-                            document.getElementById('saveButton').classList.remove('d-none');
-                            document.getElementById('cancelButton').classList.remove('d-none');
-                        });
+                    <!-- Phone Number Editing Form -->
+                    <div class="me-4 mt-4">
+                        <form id="phoneForm" method="POST" action="{{ url_for('user_bp.update_phone_number') }}">
+                            <!-- CSRF token -->
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <div class="form-group">
+                                <label for="phoneInput">Phone Number</label>
+                                <input type="tel" class="form-control" id="phoneInput" name="phone_number"
+                                    value="{{ current_user.phone_number }}" readonly>
+                            </div>
+                            <button type="button" class="btn btn-primary mt-2" id="editPhoneButton">Edit</button>
+                            <button type="submit" class="btn btn-success mt-2 d-none" id="savePhoneButton">Save</button>
+                            <button type="button" class="btn btn-secondary mt-2 d-none" id="cancelPhoneButton">Cancel</button>
+                        </form>
+                    </div>
+                    <!-- Change Password Section -->
+                    <div class="mt-4">
+                        <h7 class="text-muted">Change Password</h7>
+                        <form id="passwordForm" method="POST" action="{{ url_for('user_bp.change_password') }}">
+                            <!-- CSRF token -->
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <div class="form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <input type="password" class="form-control" id="currentPassword" name="current_password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" class="form-control" id="newPassword" name="new_password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmNewPassword">Confirm New Password</label>
+                                <input type="password" class="form-control" id="confirmNewPassword" name="confirm_new_password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-2">Change Password</button>
+                        </form>
+                    </div>
 
-                        document.getElementById('cancelButton').addEventListener('click', function () {
-                            document.getElementById('emailInput').setAttribute('readonly', 'readonly');
-                            document.getElementById('editButton').classList.remove('d-none');
-                            document.getElementById('saveButton').classList.add('d-none');
-                            document.getElementById('cancelButton').classList.add('d-none');
-                        });
 
-                        document.getElementById('emailForm').addEventListener('submit', function (event) {
-                            event.preventDefault();
-                            // Add your form submission logic here
-                            document.getElementById('emailInput').setAttribute('readonly', 'readonly');
-                            document.getElementById('editButton').classList.remove('d-none');
-                            document.getElementById('saveButton').classList.add('d-none');
-                            document.getElementById('cancelButton').classList.add('d-none');
-                        });
-                    </script>
+
+
+
                 </div>
             </div>
 
@@ -214,7 +234,7 @@
         <div class="text-center">
             <h2 class="fw-bolder">Contributions</h2>
             <p class="lead fw-normal text-muted mb-5">
-                Publishes and Posts by {{user.first_name}}
+                Publishes and Posts by {{current_user.first_name}}
             </p>
         </div>
     </div>
@@ -260,4 +280,44 @@
 {% endif %}
 <!-- End of Posts by Contributor-->
 
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+  // Email Editing
+    document.getElementById('editEmailButton').addEventListener('click', function () {
+        document.getElementById('emailInput').removeAttribute('readonly');
+        document.getElementById('editEmailButton').classList.add('d-none');
+        document.getElementById('saveEmailButton').classList.remove('d-none');
+        document.getElementById('cancelEmailButton').classList.remove('d-none');
+    });
+
+    document.getElementById('cancelEmailButton').addEventListener('click', function () {
+        document.getElementById('emailInput').setAttribute('readonly', 'readonly');
+        document.getElementById('editEmailButton').classList.remove('d-none');
+        document.getElementById('saveEmailButton').classList.add('d-none');
+        document.getElementById('cancelEmailButton').classList.add('d-none');
+        // Reset the email to its original value
+        document.getElementById('emailInput').value = "{{ current_user.email }}";
+    });
+    // Phone Number Editing
+        document.getElementById('editPhoneButton').addEventListener('click', function () {
+            document.getElementById('phoneInput').removeAttribute('readonly');
+            document.getElementById('editPhoneButton').classList.add('d-none');
+            document.getElementById('savePhoneButton').classList.remove('d-none');
+            document.getElementById('cancelPhoneButton').classList.remove('d-none');
+        });
+
+        document.getElementById('cancelPhoneButton').addEventListener('click', function () {
+            document.getElementById('phoneInput').setAttribute('readonly', 'readonly');
+            document.getElementById('editPhoneButton').classList.remove('d-none');
+            document.getElementById('savePhoneButton').classList.add('d-none');
+            document.getElementById('cancelPhoneButton').classList.add('d-none');
+            // Reset the phone number to its original value
+            document.getElementById('phoneInput').value = "{{ current_user.phone_number }}";
+        });
+
+
+</script>
 {% endblock %}

@@ -1,5 +1,6 @@
 # utils/email_utils.py
-from flask import render_template, flash
+from flask import render_template, flash,url_for, current_app
+from itsdangerous import URLSafeTimedSerializer
 import smtplib
 from email.mime.text import MIMEText
 import os
@@ -66,3 +67,52 @@ def send_admin_email(name, subject, email, message, service='gmail'):
             connection.sendmail(from_addr=email, to_addrs=ADMIN_EMAIL_ADDRESS, msg=msg.as_string())
     except Exception as e:
         flash('Error sending admin notification. Please try again later.', 'danger')
+
+
+def generate_reset_token(email):
+    """
+    This function generates a password reset token using SECRET_KEY.
+    :param email:
+    :return:
+    """
+    s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+    return s.dumps(email, salt='password-reset-salt')
+
+
+
+def send_password_reset_email(email, service='gmail'):
+    """
+    Sends a password reset email to the user.
+    """
+    # Generate token
+    token = generate_reset_token(email)
+
+    # Construct reset URL
+    reset_url = url_for('auth_bp.reset_password', token=token, _external=True)
+
+    # Render email content
+    email_content = render_template('email/password_reset_email.html', reset_url=reset_url)
+
+    msg = MIMEText(email_content, 'html')
+    msg['From'] = ADMIN_EMAIL_ADDRESS
+    msg['To'] = email
+    msg['Subject'] = "Password Reset Request"
+    msg['Reply-To'] = ADMIN_EMAIL_ADDRESS
+
+    smtp_settings = {
+        'gmail': ('smtp.gmail.com', 587),
+        'yahoo': ('smtp.mail.yahoo.com', 587),
+        'outlook': ('smtp.office365.com', 587)
+    }
+
+    smtp_server, smtp_port = smtp_settings.get(service, smtp_settings['gmail'])
+
+    try:
+        with smtplib.SMTP(smtp_server, smtp_port) as connection:
+            connection.starttls()
+            connection.login(ADMIN_EMAIL_ADDRESS, ADMIN_EMAIL_PW)
+            connection.sendmail(ADMIN_EMAIL_ADDRESS, email, msg.as_string())
+    except Exception as e:
+        flash('Error sending password reset email. Please try again later.', 'danger')
+        current_app.logger.error(f'Error sending password reset email: {e}')
+

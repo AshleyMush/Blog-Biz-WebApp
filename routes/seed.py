@@ -17,7 +17,7 @@ def seed_project_data():
             password= hash_and_salt_password(os.environ.get("sys-admin-pw")),
             first_name= os.environ.get("sys-admin-name"),
             last_name= os.environ.get("sys-admin-last-name"),
-            number = os.environ.get("sys-admin-number"),
+            phone_number = os.environ.get("sys-admin-number"),
             role=os.environ.get("role")
         )
         db.session.add(system_admin)

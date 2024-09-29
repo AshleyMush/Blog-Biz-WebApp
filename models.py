@@ -53,7 +53,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(250), nullable=False)
     first_name = db.Column(db.String(250), nullable=False)
     last_name = db.Column(db.String(250), nullable=False)
-    number = db.Column(db.String(250), nullable=True)
+    phone_number = db.Column(db.String(20), nullable=True)
     role = db.Column(db.String(50), nullable=False, default='User')  # Roles: 'Admin','Contributor','Moderator' ,  'User'
 
 

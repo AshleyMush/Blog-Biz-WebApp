@@ -1,11 +1,8 @@
-from flask import Flask,  render_template,jsonify, flash, request, redirect, url_for
+from flask import Flask, jsonify, request
 from flask_bootstrap import Bootstrap5
-from flask_login import login_user, current_user, logout_user, LoginManager
+from flask_login import LoginManager
 from flask_ckeditor import CKEditor
-from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
-from forms import CallbackForm, ContactAdminForm
-import os
-import logging
+from models import db, User, Services, FAQs, AboutPageContent, Jobs,CareerPageContent
 from controllers.auth import auth_bp
 from controllers.admin import admin_bp
 from controllers.blog import blog_bp
@@ -13,19 +10,17 @@ from controllers.user import user_bp
 from controllers.main import main_bp
 from controllers.contributor import contributor_bp
 from routes.seed import seed_project_data, seed_bp
-from routes.decorators import roles_required
-from utils.email_utils import send_confirmation_email, send_admin_email
-
-from datetime import datetime
-
-
-
-
+from utils.decorators import roles_required
+from flask_wtf.csrf import CSRFProtect
+from config import Config
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get("SECRET_APP_KEY")
+app.config.from_object(Config)
+
 ckeditor = CKEditor(app)
 Bootstrap5(app)
+csrf = CSRFProtect(app)
+
 
 
 # ____________ Register the blueprints_________
@@ -42,7 +37,7 @@ app.register_blueprint(main_bp)
 
 
 # -----------------Configure DB-------------------------
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///Agency.db"
+
 db.init_app(app)
 
 

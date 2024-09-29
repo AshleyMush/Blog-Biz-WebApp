@@ -1,13 +1,12 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
-from flask_login import login_required
-from routes.decorators import roles_required
-from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, \
-    Jobs, CareerPageContent
+from flask import render_template, redirect, url_for, flash, request, session
+from flask_login import current_user
+from utils.decorators import roles_required
+from models import db, ContactDetails, ContactPageContent, User, Services, AboutPageContent, HomePage
 from forms import ChangeUserRoleForm,ContactInfo, ContactPageForm,  AddServicesForm, UpdateServiceForm, \
-    HomePageInfoForm, \
-    AboutUsForm
+    HomePageInfoForm, UpdateEmailForm,ChangePasswordForm, UpdatePhoneForm,AboutUsForm
+from utils.decorators import  nocache
+    
 from . import admin_bp
-
 
 
 # TODO: Create approve User to be contributor routes
@@ -15,8 +14,96 @@ from . import admin_bp
 
 @admin_bp.route("/dashboard", methods=['POST', 'GET'])
 @roles_required('Admin')
-def admin_dashboard():
-    return render_template('/admin/dashboard.html')
+@nocache
+def profile():
+    email_form = UpdateEmailForm()
+    phone_form = UpdatePhoneForm()
+    password_form = ChangePasswordForm()
+
+    email_form.email.data = current_user.email
+    phone_form.phone_number.data = current_user.phone_number
+    return render_template('website/profile.html', email_form=email_form, phone_form=phone_form,
+                           password_form=password_form)
+
+
+
+
+#
+# @admin_bp.route('/change-password', methods=['POST'])
+# @roles_required('Admin')
+# def change_password():
+#     form = ChangePasswordForm()
+#     if form.validate_on_submit():
+#         current_password = form.current_password.data
+#         new_password = form.new_password.data
+#
+#         if not check_password_hash(current_user.password, current_password):
+#             flash('Current password is incorrect.', 'danger')
+#             return redirect(url_for('user_bp.profile'))
+#
+#         # Update the user's password
+#         current_user.password = generate_password_hash(new_password)
+#         db.session.commit()
+#         flash('Your password has been updated.', 'success')
+#     else:
+#         # Handle form validation errors
+#         for field, errors in form.errors.items():
+#             for error in errors:
+#                 flash(f"{getattr(form, field).label.text}: {error}", 'danger')
+#     if current_user.role == 'User':
+#         return redirect(url_for('user_bp.profile'))
+#     elif current_user.role == 'Contributor':
+#         return redirect(url_for('contributor_bp.profile'))
+#     else:
+#         return redirect(url_for('admin_bp.profile'))
+#
+#
+# @admin_bp.route('/update-phone-number', methods=['POST'])
+# @roles_required('Admin')
+# def update_phone_number():
+#     form = UpdatePhoneForm()
+#     if form.validate_on_submit():
+#         phone_number = form.phone_number.data
+#         current_user.phone_number = phone_number
+#         db.session.commit()
+#         flash('Phone number updated successfully.', 'success')
+#     else:
+#         # Handle form validation errors
+#         for field, errors in form.errors.items():
+#             for error in errors:
+#                 flash(f"{getattr(form, field).label.text}: {error}", 'danger')
+#     if current_user.role == 'User':
+#         return redirect(url_for('user_bp.profile'))
+#     elif current_user.role == 'Contributor':
+#         return redirect(url_for('contributor_bp.profile'))
+#     else:
+#         return redirect(url_for('admin_bp.profile'))
+#
+#
+# @admin_bp.route('/update-email', methods=['POST'])
+# @roles_required( 'Admin')
+# def update_email():
+#     """
+#     This function updates the All user's email address.
+#     :return:
+#     """
+#     form = UpdateEmailForm()
+#     if form.validate_on_submit():
+#         new_email = form.email.data
+#         current_user.email = new_email
+#         db.session.commit()
+#         flash('Email updated successfully.', 'success')
+#     else:
+#         for field, errors in form.errors.items():
+#             for error in errors:
+#                 flash(f"{getattr(form, field).label.text}: {error}", 'danger')
+#
+#     if current_user.role == 'User':
+#         return redirect(url_for('user_bp.profile'))
+#     elif current_user.role == 'Contributor':
+#         return redirect(url_for('contributor_bp.profile'))
+#     else:
+#         return redirect(url_for('admin_bp.profile'))
 
 # ----------------- User manager----------------- #
 @admin_bp.route('/get-all-users', methods=['GET'])

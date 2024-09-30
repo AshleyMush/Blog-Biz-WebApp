@@ -61,27 +61,19 @@
         <!-- Navbar -->
 
         {% if current_user.is_authenticated %}
-        {% if current_user.role == 'Admin' %}
 
-        <!--Admin Navbar -->
+        <!--Profile Navbar -->
         {% include '/admin/admin-navbar.html' %}
 
 
 
-        {% elif current_user.role == 'Contributor' %}
-        <!--Contributor Navbar -->
-        {% include '/blog/blogNavBar.html' %}
 
-
-        {% else %}
-        <!--User Navbar -->
 
 
 
 
         {% include '/blog/blogNavBar.html' %}
 
-        {% endif %}
         {% endif %}
         <!-- End of Navbar -->
 
@@ -170,70 +162,66 @@
       </div>
     </div>
   </div>
-{% block scripts %}
 
-  <!-- Bootstrap core JS-->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
-
-  <!-- Bootstrap core JavaScript-->
-  <script src="/static/admin dashboard static/Admin dashboard startboostrap/vendor/jquery/jquery.min.js"></script>
-  <script
-    src="/static/admin dashboard static/Admin dashboard startboostrap/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Core plugin JavaScript-->
-  <script
-    src="/static/admin dashboard static/Admin dashboard startboostrap/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-  <!-- Custom scripts for all pages-->
-  <script src="/static/admin dashboard static/Admin dashboard startboostrap/js/sb-admin-2.min.js"></script>
-
-  <!-- Page level plugins -->
-  <script src="/static/admin dashboard static/Admin dashboard startboostrap/vendor/chart.js/Chart.min.js"></script>
-
-  <!-- Page level custom scripts -->
-  <script src="/static/admin dashboard static/Admin dashboard startboostrap/js/demo/chart-area-demo.js"></script>
-  <script src="/static/admin dashboard static/Admin dashboard startboostrap/js/demo/chart-pie-demo.js"></script>
-
-  <!-- Bootstrap core JS-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"></script>
-
-<!-- Bootstrap core JavaScript-->
+<!-- Admin Dashboard Scripts (Include in admin templates) -->
+<!-- jQuery -->
 <script src="/static/admin dashboard static/Admin dashboard startboostrap/vendor/jquery/jquery.min.js"></script>
+<!-- Bootstrap Core JavaScript (Bootstrap 4) -->
 <script
-      src="/static/admin dashboard static/Admin dashboard startboostrap/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
+  src="/static/admin dashboard static/Admin dashboard startboostrap/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery Easing Plugin -->
 <script
-      src="/static/admin dashboard static/Admin dashboard startboostrap/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Custom scripts for all pages-->
+  src="/static/admin dashboard static/Admin dashboard startboostrap/vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Custom scripts for all pages -->
 <script src="/static/admin dashboard static/Admin dashboard startboostrap/js/sb-admin-2.min.js"></script>
-
-<!-- Page level plugins -->
+<!-- Page level plugins (if needed) -->
 <script src="/static/admin dashboard static/Admin dashboard startboostrap/vendor/chart.js/Chart.min.js"></script>
-
-<!-- Page level custom scripts -->
+<!-- Page level custom scripts (if needed) -->
 <script src="/static/admin dashboard static/Admin dashboard startboostrap/js/demo/chart-area-demo.js"></script>
 <script src="/static/admin dashboard static/Admin dashboard startboostrap/js/demo/chart-pie-demo.js"></script>
 
-
-
-
-
-<!-- Bootstrap core JS for website-->
+<!-- Main Website Scripts (Include in main website templates) -->
+<!-- Bootstrap core JS (Bootstrap 5) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"></script>
-<!-- Core theme JS-->
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<!-- Custom scripts for the main website -->
 <script src="/static/care template  1 static/js/scripts.js"></script>
+<script>
+  // Email Editing
+  document.getElementById('editEmailButton').addEventListener('click', function () {
+    document.getElementById('emailInput').removeAttribute('readonly');
+    document.getElementById('editEmailButton').classList.add('d-none');
+    document.getElementById('saveEmailButton').classList.remove('d-none');
+    document.getElementById('cancelEmailButton').classList.remove('d-none');
+  });
 
-{% endblock %}
+  document.getElementById('cancelEmailButton').addEventListener('click', function () {
+    document.getElementById('emailInput').setAttribute('readonly', 'readonly');
+    document.getElementById('editEmailButton').classList.remove('d-none');
+    document.getElementById('saveEmailButton').classList.add('d-none');
+    document.getElementById('cancelEmailButton').classList.add('d-none');
+    // Reset the email to its original value
+    document.getElementById('emailInput').value = "{{ current_user.email }}";
+  });
+  // Phone Number Editing
+  document.getElementById('editPhoneButton').addEventListener('click', function () {
+    document.getElementById('phoneInput').removeAttribute('readonly');
+    document.getElementById('editPhoneButton').classList.add('d-none');
+    document.getElementById('savePhoneButton').classList.remove('d-none');
+    document.getElementById('cancelPhoneButton').classList.remove('d-none');
+  });
+
+  document.getElementById('cancelPhoneButton').addEventListener('click', function () {
+    document.getElementById('phoneInput').setAttribute('readonly', 'readonly');
+    document.getElementById('editPhoneButton').classList.remove('d-none');
+    document.getElementById('savePhoneButton').classList.add('d-none');
+    document.getElementById('cancelPhoneButton').classList.add('d-none');
+    // Reset the phone number to its original value
+    document.getElementById('phoneInput').value = "{{ current_user.phone_number }}";
+  });
+
+
+</script>
 
 
 </body>

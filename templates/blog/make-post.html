@@ -1,5 +1,88 @@
 {% extends '/admin/base.html' %}
 
+{% block title %}Make Post{% endblock %}
 
+{% block content %}
+{% extends '/admin/base.html' %}
+
+
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">
+        Managing {{user.first_name}} {{user.last_name}}'s Profile
+    </h1>
+    <div class="row">
+        <!-- Role Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Role
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{user.role}}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            {% if user.role == 'Admin' %}
+                            <i class="fa-solid fa-ranking-star fa-2x text-gray-300"></i>
+
+                            {% elif user.role == 'Contributor' %}
+                            <i class="fa-solid fa-pen-nib fa-2x text-gray-300"></i>
+
+                            {% else %}
+                            <i class="fa-solid fa-user fa-2x text-gray-300"></i>
+
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+
+        {% if not user.role=='User' %}
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Posts
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">100</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+   <!-- Comments Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Comments
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 {% endblock %}

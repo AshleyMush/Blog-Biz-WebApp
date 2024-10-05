@@ -9,6 +9,7 @@
 
 
     {% block content %}
+    {% if post %}
             <!-- Page Content-->
             <section class="py-5">
                 <div class="container px-5 my-5">
@@ -17,7 +18,7 @@
                             <div class="d-flex align-items-center mt-lg-5 mb-4">
                                 <img class="img-fluid rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
                                 <div class="ms-3">
-                                    <div class="fw-bold">Valerie Luna</div>
+                                    <div class="fw-bold">{{post.author.first_name}} {{post.author.last_name}}</div>
                                     <div class="text-muted">News, Business</div>
                                 </div>
                             </div>
@@ -28,69 +29,82 @@
                                 <!-- Post header-->
                                 <header class="mb-4">
                                     <!-- Post title-->
-                                    <h1 class="fw-bolder mb-1">Welcome to Blog Post!</h1>
+                                    <h1 class="fw-bolder mb-1">{{post.title}}</h1>
                                     <!-- Post meta content-->
-                                    <div class="text-muted fst-italic mb-2">January 1, 2023</div>
+                                    <div class="text-muted fst-italic mb-2">{{post.date}}</div>
                                     <!-- Post categories-->
                                     <a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
                                     <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a>
                                 </header>
                                 <!-- Preview image figure-->
-                                <figure class="mb-4"><img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." /></figure>
+                                <figure class="mb-4"><img class="img-fluid rounded" src="{{post.img_url}}" alt="..." width="900" height="400" /></figure>
                                 <!-- Post content-->
                                 <section class="mb-5">
-                                    <p class="fs-5 mb-4">Science is an enterprise that should be cherished as an activity of the free human mind. Because it transforms who we are, how we live, and it gives us an understanding of our place in the universe.</p>
-                                    <p class="fs-5 mb-4">The universe is large and old, and the ingredients for life as we know it are everywhere, so there's no reason to think that Earth would be unique in that regard. Whether of not the life became intelligent is a different question, and we'll see if we find that.</p>
-                                    <p class="fs-5 mb-4">If you get asteroids about a kilometer in size, those are large enough and carry enough energy into our system to disrupt transportation, communication, the food chains, and that can be a really bad day on Earth.</p>
-                                    <h2 class="fw-bolder mb-4 mt-5">I have odd cosmic thoughts every day</h2>
-                                    <p class="fs-5 mb-4">For me, the most fascinating interface is Twitter. I have odd cosmic thoughts every day and I realized I could hold them to myself or share them with people who might be interested.</p>
-                                    <p class="fs-5 mb-4">Venus has a runaway greenhouse effect. I kind of want to know what happened there because we're twirling knobs here on Earth without knowing the consequences of it. Mars once had running water. It's bone dry today. Something bad happened there as well.</p>
+                                    {{post.body | safe}}
                                 </section>
                             </article>
-                            <!-- Comments section-->
-                            <section>
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <!-- Comment form-->
-                                        <form class="mb-4"><textarea class="form-control" rows="3" placeholder="Join the discussion and leave a comment!"></textarea></form>
-                                        <!-- Comment with nested comments-->
-                                        <div class="d-flex mb-4">
-                                            <!-- Parent comment-->
-                                            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                            <div class="ms-3">
-                                                <div class="fw-bold">Commenter Name</div>
-                                                If you're going to lead a space frontier, it has to be government; it'll never be private enterprise. Because the space frontier is dangerous, and it's expensive, and it has unquantified risks.
-                                                <!-- Child comment 1-->
-                                                <div class="d-flex mt-4">
-                                                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                                    <div class="ms-3">
-                                                        <div class="fw-bold">Commenter Name</div>
-                                                        And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
-                                                    </div>
-                                                </div>
-                                                <!-- Child comment 2-->
-                                                <div class="d-flex mt-4">
-                                                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                                    <div class="ms-3">
-                                                        <div class="fw-bold">Commenter Name</div>
-                                                        When you put money directly to a problem, it makes a good headline.
-                                                    </div>
+                            <!-- Comments Section -->
+                            <section class="py-5">
+                                <div class="container px-5 my-5">
+                                    <h3 class="fw-bolder mb-4">Comments</h3>
+                            
+                                    {% if comments %}
+                                    <ul class="list-unstyled">
+                                        {% for comment in comments %}
+                                        <li class="mb-4">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <img src="https://dummyimage.com/40x40/ced4da/6c757d" class="rounded-circle me-3" alt="User Avatar">
+                                                <div>
+                                                    <h6 class="fw-bold mb-0">{{ comment.comment_author.first_name }} {{
+                                                        comment.comment_author.last_name }}</h6>
+                                                    <small class="text-muted">{{ comment.date }}</small>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <!-- Single comment-->
-                                        <div class="d-flex">
-                                            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                            <div class="ms-3">
-                                                <div class="fw-bold">Commenter Name</div>
-                                                When I look at the universe and all the ways the universe wants to kill us, I find it hard to reconcile that with statements of beneficence.
+                                            <p class="mb-0">{{ comment.text }}</p>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% else %}
+                                    <p>No comments yet. Be the first to comment!</p>
+                                    {% endif %}
+                            
+                                    <!-- Add Comment Form -->
+                                    <div class="mt-5">
+                                        <h4>Add a Comment</h4>
+                                        <form method="POST">
+                                            {{ form.hidden_tag() }}
+                            
+                                            <div class="mb-3">
+                                                {{ form.comment.label(class="form-label") }}
+                                                {{ form.comment(class="form-control", rows="4") }}
+                                                {% for error in form.comment.errors %}
+                                                <div class="text-danger">{{ error }}</div>
+                                                {% endfor %}
                                             </div>
-                                        </div>
+                            
+                                            <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
+                                        </form>
                                     </div>
                                 </div>
                             </section>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
+
+            {% else %}
+            <section class="py-5">
+                <div class="container px-5 my-5">
+                    <div class="row gx-5 justify-content-center">
+                        <div class="col-lg-6">
+                            <h2 class="fw-bolder mb-5 text-center">Posts availabe yet. Please check agan another time</h2>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+            {% endblock %}
+
+            {% block footer %}
       {% endblock %}

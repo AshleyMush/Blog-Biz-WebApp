@@ -28,7 +28,7 @@ def profile():
 
 
 @user_bp.route('/contact-us', methods=['GET', 'POST'])
-@roles_required('User')
+@roles_required('User', 'Contributor')
 def contact_admin():
     """
     Handles the contact form submission and sends emails.
@@ -37,24 +37,32 @@ def contact_admin():
     contacts = ContactDetails.query.all()
     form = ContactAdminForm()
 
+    name = f"{current_user.first_name} {current_user.last_name}"
+    email = current_user.email
+    if current_user.phone_number:
+        number = current_user.phone_number
+    else:
+        number = None
+    subject = form.subject.data
+    message = form.message.data
+
     if form.validate_on_submit():
-        name = f"{current_user.first_name} {current_user.last_name}"
-        email = current_user.email
-        number = current_user.number or 'Not Provided'
-        subject = form.subject.data
-        message = form.message.data
+        name =name
+        email = email
+        number = number
+
+        subject = subject
+        message = message
 
         # Save the form data to the database
         new_message = Inbox(
             name=name,
             email=email,
-            number=number,
             subject=subject,
             message=message
         )
         db.session.add(new_message)
 
-        print(name, email, number, subject, message)
 
         # Send emails
         try:
@@ -72,10 +80,14 @@ def contact_admin():
             logging.error(f"Error sending email: {e}", exc_info=True)
             flash('Error sending message. Please try again later.', 'danger')
 
-        return redirect(url_for('user_bp.contact_admin'))
+        if current_user.role == 'User':
+            return redirect(url_for('user_bp.contact_admin'))
+        else:
+            return redirect(url_for('contributor_bp.contact_admin'))
+
 
     return render_template(
-        'website/contact.html',
+        'blog/contact-admin.html',
         form=form,
         contact_page_data=contact_page_data,
         contacts=contacts

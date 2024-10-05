@@ -11,43 +11,69 @@
 
     {% block content %}
             <!-- Page Content-->
+{% if latest_post %} <!--If there is a post-->
             <section class="py-5">
                 <div class="container px-5">
-                    <h1 class="fw-bolder fs-5 mb-4">Company Blog</h1>
+                    <h1 class="fw-bolder fs-5 mb-4">Latest stories</h1>
                     <div class="card border-0 shadow rounded-3 overflow-hidden">
                         <div class="card-body p-0">
                             <div class="row gx-0">
                                 <div class="col-lg-6 col-xl-5 py-lg-5">
                                     <div class="p-4 p-md-5">
                                         <div class="badge bg-primary bg-gradient rounded-pill mb-2">News</div>
-                                        <div class="h2 fw-bolder">Article heading goes here</div>
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique delectus ab doloremque, qui doloribus ea officiis...</p>
-                                        <a class="stretched-link text-decoration-none" href="#!">
+                                        <div class="h2 fw-bolder">{{latest_post.title}}</div>
+                                        <p>{{latest_post.subtitle}}</p>
+                                        <a class="stretched-link text-decoration-none" href="{{url_for('blog_bp.view_post', post_id=latest_post.id)}}">
                                             Read more
                                             <i class="bi bi-arrow-right"></i>
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-6 col-xl-7"><div class="bg-featured-blog" style="background-image: url('https://dummyimage.com/700x350/343a40/6c757d')"></div></div>
+                                <div class="col-lg-6 col-xl-7"><div class="bg-featured-blog" style="background-image: url('{{latest_post.img_url}}')"></div></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
+{%else%}
+            <section class="py-5">
+                <div class="container px-5">
+                    <h1 class="fw-bolder fs-5 mb-4">Latest stories</h1>
+                    <div class="card border-0 shadow rounded-3 overflow-hidden">
+                        <div class="card-body p-0">
+                            <div class="row gx-0">
+                                <div class="col-lg-6 col-xl-5 py-lg-5">
+                                    <div class="p-4 p-md-5">
+                                        <div class="badge bg-primary bg-gradient rounded-pill mb-2">News</div>
+                                        <div class="h2 fw-bolder">No posts yet</div>
+                                        <p>There are no posts yet. Check back later for updates.</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-xl-7"><div class="bg-featured-blog" style="background-image: url('https://dummyimage.com/600x350/adb5bd/495057')"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+{%endif%}
+
+
+
+
             <section class="py-5 bg-light">
                 <div class="container px-5">
                     <div class="row gx-5">
                         <div class="col-xl-8">
-                            <h2 class="fw-bolder fs-5 mb-4">News</h2>
+                            <h2 class="fw-bolder fs-5 mb-4">Latest Stories</h2>
                             <!-- News item-->
                             <div class="mb-4">
                                 <div class="small text-muted">May 12, 2023</div>
-                                <a class="link-dark" href="#!"><h3>Start Bootstrap releases Bootstrap 5 updates for templates and themes</h3></a>
+                                <a class="link-dark" href="#!"><h3>Absolutely nothing to see here mate, sorry about that</h3></a>
                             </div>
                             <!-- News item-->
                             <div class="mb-5">
                                 <div class="small text-muted">May 5, 2023</div>
-                                <a class="link-dark" href="#!"><h3>Bootstrap 5 has officially landed</h3></a>
+                                <a class="link-dark" href="#!"><h3>I'm sure if you come back another time there will be awesome content here</h3></a>
                             </div>
                             <!-- News item-->
                             <div class="mb-5">

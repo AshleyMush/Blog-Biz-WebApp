@@ -8,13 +8,15 @@ from flask import Flask,  render_template,jsonify, flash, request, redirect, url
 from flask_bootstrap import Bootstrap5
 from flask_login import login_user, current_user, logout_user, LoginManager
 from flask_ckeditor import CKEditor
-from models import db, ContactDetails, Inbox, ContactPageContent, User, Services, FAQs, AboutPageContent, HomePage, Jobs,CareerPageContent
+from models.business import db, ContactDetails, ContactPageContent, Services, FAQs, AboutPageContent, HomePage,CareerPageContent
+from models.user import User, Inbox
 from forms import CallbackForm, ContactForm
 from utils.email_utils import send_confirmation_email, send_admin_email
 from . import main_bp
 from datetime import datetime
 
 
+# TODO: Keep the / route for the homepage
 @main_bp.route('/')
 def home():
     current_year = datetime.now().year
@@ -114,3 +116,7 @@ def about_us():
 
 
     return render_template('/website/about.html', about_content=about_content)
+
+
+
+

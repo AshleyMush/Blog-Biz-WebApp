@@ -32,48 +32,7 @@
                 <li class="nav-item"><a class="nav-link" href="#">Something 2</a></li>
 
 
-                {% if not current_user.is_authenticated: %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('auth_bp.login')}}">
-                        Log in
-                    </a>
-                </li>
-                <!-- Add registration below-->
-                {% else: %}
-                    {% if current_user.role == 'Admin' %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{url_for('admin_bp.admin_dashboard')}}">
-                            <i class="bi bi-person-vcard-fill"></i>
-                            <span>Dashboard</span>
-                    
-                        </a>
-                    </li>
-                    
-                    
-                    
-                    {% elif current_user.role == 'Contributor' %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{url_for('contributor_bp.profile')}}">
-                            <i class="fa-duotone fa-solid fa-user"></i>
-                            <span>Contributor Profile</span>
-                    
-                        </a>
-                    </li>
-                    
-                    
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{url_for('user_bp.profile')}}">
-                                <i class="fa-duotone fa-solid fa-user"></i>
-                                <span>Profile</span>
-                        
-                            </a>
-                        </li>
-                    
-                    
-                    {% endif %}
-                            
-                {% endif %}
+                
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdownBlog" href="#" role="button"
@@ -82,10 +41,52 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
                         <li><a class="dropdown-item" href="{{url_for('blog_bp.blog_home')}}">Blog Home</a></li>
-                        <li><a class="dropdown-item" href="{{url_for('blog_bp.blog_post')}}">Blog Post</a></li>
+                        <li><a class="dropdown-item" href="#">Blog Post</a></li>
                         <li><a class="dropdown-item" href="{{url_for('blog_bp.blog_preview')}}">Blog Preview</a></li>
                     </ul>
                 </li>
+                {% if not current_user.is_authenticated: %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('auth_bp.login')}}">
+                        Log in
+                    </a>
+                </li>
+                <!-- Add registration below-->
+                {% else: %}
+                {% if current_user.role == 'Admin' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('admin_bp.profile')}}">
+                        <i class="bi bi-person-vcard-fill"></i>
+                        <span>Dashboard</span>
+                
+                    </a>
+                </li>
+                
+                
+                
+                {% elif current_user.role == 'Contributor' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('contributor_bp.profile')}}">
+                        <i class="fa-duotone fa-solid fa-user"></i>
+                        <span>Profile</span>
+                
+                    </a>
+                </li>
+                
+                
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('user_bp.profile')}}">
+                        <i class="fa-duotone fa-solid fa-user"></i>
+                        <span>Profile</span>
+                
+                    </a>
+                </li>
+                
+                
+                {% endif %}
+                
+                {% endif %}
 
                 <!--
                         <li class="nav-item dropdown">

@@ -1,10 +1,12 @@
 from flask import render_template, redirect, url_for, flash, request, session
 from flask_login import current_user
 from utils.decorators import roles_required
-from models import db, ContactDetails, ContactPageContent, User, Services, AboutPageContent, HomePage
+from models import db,BlogPost , ContactDetails, ContactPageContent, User, Services, AboutPageContent, HomePage
 from forms import ChangeUserRoleForm,ContactInfo, ContactPageForm,  AddServicesForm, UpdateServiceForm, \
-    HomePageInfoForm, UpdateEmailForm,ChangePasswordForm, UpdatePhoneForm,AboutUsForm
+    HomePageInfoForm, UpdateEmailForm,ChangePasswordForm, UpdatePhoneForm,AboutUsForm, CreatePostForm
 from utils.decorators import  nocache
+from datetime import date
+from utils.email_utils import send_approval_message, send_demotion_message
     
 from . import admin_bp
 
@@ -118,18 +120,31 @@ def get_users():
 
 @admin_bp.route('/edit-user/<int:user_id>', methods=['GET','POST'])
 @roles_required('Admin')
-def edit_user(user_id):
+def manage_user(user_id):
     user = User.query.get_or_404(user_id)
+
     form = ChangeUserRoleForm()
     if request.method == 'POST':
         new_role = request.form.get('new_role')
         if new_role in ['User', 'Contributor']:
-            user.role = new_role
-            db.session.commit()
-            flash(f"User role updated to {new_role}.", 'success')
+            if user.role == new_role:
+                flash(f"No Changes made because {user.first_name} is already a {new_role}.", 'info')
+            else:
+                user.role = new_role
+
+                if new_role == 'Contributor':
+                    send_approval_message(name=user.first_name, email=user.email, subject='Contributor Approval for')
+                    db.session.commit()
+                    flash(f"{user.first_name}'s role has been updated to {new_role}.", 'success')
+
+                else:
+                    db.session.commit()
+                    send_demotion_message(name=user.first_name, email=user.email, subject='Current Role Update')
+                    flash(f"{user.first_name}'s role has been updated to {new_role}.", 'success')
+
         else:
             flash('Invalid role selected.', 'danger')
-        return redirect(url_for('admin_bp.edit_user', user_id=user.id))
+        return redirect(url_for('admin_bp.manage_user', user_id=user.id))
     return render_template('admin/edit-user.html', user=user, form=form)
 
 

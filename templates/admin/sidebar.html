@@ -1,33 +1,22 @@
-<ul
-  class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
-  id="accordionSidebar"
->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
   <!-- Sidebar - Brand -->
   {% if current_user.is_authenticated %} {% if current_user.role == 'Admin' %}
-  <a
-    class="sidebar-brand d-flex align-items-center justify-content-center"
-    href="{{url_for('admin_bp.profile')}}"
-  >
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{url_for('admin_bp.profile')}}">
     <div class="sidebar-brand-icon rotate-n-15">
       <i class="fas fa-laugh-wink"></i>
     </div>
     <div class="sidebar-brand-text mx-3">Admin Dashboard</div>
   </a>
   {% elif current_user.role == 'Contributor' %}
-  <a
-    class="sidebar-brand d-flex align-items-center justify-content-center"
-    href="{{url_for('contributor_bp.profile')}}"
-  >
+  <a class="sidebar-brand d-flex align-items-center justify-content-center"
+    href="{{url_for('contributor_bp.profile')}}">
     <div class="sidebar-brand-icon rotate-n-15">
       <i class="fas fa-laugh-wink"></i>
     </div>
     <div class="sidebar-brand-text mx-3">Contributor Dashboard</div>
   </a>
   {% else %}
-  <a
-    class="sidebar-brand d-flex align-items-center justify-content-center"
-    href="{{url_for('user_bp.profile')}}"
-  >
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{url_for('user_bp.profile')}}">
     <div class="sidebar-brand-icon rotate-n-15">
       <i class="fas fa-laugh-wink"></i>
     </div>
@@ -46,10 +35,7 @@
       <span>Profile</span>
     </a>
     {% elif current_user.role == 'Contributor' %}
-    <a
-      class="nav-link"
-      href="{{ url_for('contributor_bp.profile') }}"
-    >
+    <a class="nav-link" href="{{ url_for('contributor_bp.profile') }}">
       <i class="fas fa-fw fa-tachometer-alt"></i>
       <span>Dashboard</span>
     </a>
@@ -83,71 +69,72 @@
   <li class="nav-item">
     <a class="nav-link" href="{{url_for('admin_bp.get_users')}}">
       <i class="fa-solid fa-users-gear"></i> <span>Manage Users</span>
-      </a>
+    </a>
   </li>
 
+  <!--Customise pages-->
   <li class="nav-item">
-    <a
-      class="nav-link collapsed"
-      href="#"
-      data-toggle="collapse"
-      data-target="#collapseUtilities"
-      aria-expanded="true"
-      aria-controls="collapseUtilities"
-    >
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCustomise" aria-expanded="true"
+      aria-controls="collapseCustomise">
       <i class="fas fa-fw fa-wrench"></i>
       <span>Customise</span>
     </a>
-    <div
-      id="collapseUtilities"
-      class="collapse"
-      aria-labelledby="headingUtilities"
-      data-parent="#accordionSidebar"
-    >
+    <div id="collapseCustomise" class="collapse" aria-labelledby="headingCustomise" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <h6 class="collapse-header">modify content</h6>
-        <a class="collapse-item" href="{{url_for('admin_bp.get_home_content')}}"
-          >Home page</a
-        >
-        <a class="collapse-item" href="{{ url_for('admin_bp.services') }}"
-          >Services</a
-        >
-        <a
-          class="collapse-item"
-          href="{{url_for('admin_bp.customize_contact_page')}}"
-          >Contact Info</a
-        >
-        <a
-          class="collapse-item"
-          href="{{url_for('admin_bp.get_about_content')}}"
-          >About Us</a
-        >
+        <a class="collapse-item" href="{{url_for('admin_bp.get_home_content')}}">Home page</a>
+        <a class="collapse-item" href="{{ url_for('admin_bp.services') }}">Services</a>
+        <a class="collapse-item" href="{{url_for('admin_bp.customize_contact_page')}}">Contact Info</a>
+        <a class="collapse-item" href="{{url_for('admin_bp.get_about_content')}}">About Us</a>
         <a class="collapse-item" href="utilities-other.html">Careers</a>
       </div>
     </div>
   </li>
 
-{% endif %}
+  {% endif %}
 
- 
+<!--Blog content-->
+<li class="nav-item">
+  <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBlogPosts" aria-expanded="true"
+    aria-controls="collapseBlogPosts">
+    <i class="fa-solid fa-book"></i>
+    <span>Blog Posts</span>
+  </a>
+  <div id="collapseBlogPosts" class="collapse" aria-labelledby="headingBlogPosts" data-parent="#accordionSidebar">
+    <div class="bg-white py-2 collapse-inner rounded">
+      <h6 class="collapse-header">Blog related Content</h6>
+      {% if current_user.role == 'Admin' %}
+      <a class="collapse-item" href="{{url_for('blog_bp.get_posts')}}">Post</a>
+      <a class="collapse-item" href="#">Saved Posts</a>
+      <a class="collapse-item" href="#">Liked Posts</a>
+      <a class="collapse-item" href="#">Comments</a>
+
+      {% elif current_user.role == 'Contributor' %}
+      <a class="collapse-item" href="{{url_for('blog_bp.get_posts')}}">Post</a>
+      <a class="collapse-item" href="#">Saved Posts</a>
+      <a class="collapse-item" href="#">Liked Posts</a>
+      <a class="collapse-item" href="#">Comments</a>
+      {% else %}
+      <a class="collapse-item" href="#">Saved Posts</a>
+      <a class="collapse-item" href="#">Liked Posts</a>
+      <a class="collapse-item" href="#">Comments</a>
+
+      {% endif %}
+
+
+    </div>
+  </div>
+</li>
+
+
+<!--Heath tool content-->
   <li class="nav-item">
-    <a
-      class="nav-link collapsed"
-      href="#"
-      data-toggle="collapse"
-      data-target="#collapseTwo"
-      aria-expanded="true"
-      aria-controls="collapseTwo"
-    >
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
+      aria-controls="collapseTwo">
       <i class="fa-solid fa-hand-holding-medical"></i>
       <span>Health Tools</span>
     </a>
-    <div
-      id="collapseTwo"
-      class="collapse"
-      aria-labelledby="headingTwo"
-      data-parent="#accordionSidebar"
-    >
+    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <h6 class="collapse-header">Exclusive Member tools</h6>
         <a class="collapse-item" href="#">BMI Calculator</a>
@@ -157,36 +144,7 @@
     </div>
   </li>
 
-  <li class="nav-item">
-    <a
-      class="nav-link collapsed"
-      href="#"
-      data-toggle="collapse"
-      data-target="#collapseUtilities"
-      aria-expanded="true"
-      aria-controls="collapseUtilities"
-    >
-      <i class="fa-solid fa-book"></i>
-      <span>Blog Posts</span>
-    </a>
-    <div
-      id="collapseUtilities"
-      class="collapse"
-      aria-labelledby="headingUtilities"
-      data-parent="#accordionSidebar"
-    >
-      <div class="bg-white py-2 collapse-inner rounded">
-        <h6 class="collapse-header">Blog related Content</h6>
-        {% if current_user.role != 'User' %}
-        <a class="collapse-item" href="#">Post</a>
-        {% endif %}
-        
-        <a class="collapse-item" href="#">Saved Posts</a>
-        <a class="collapse-item" href="#">Liked Posts</a>
-        <a class="collapse-item" href="#">Comments</a>
-      </div>
-    </div>
-  </li>
+  
 
   {% endif %}
 
@@ -213,23 +171,12 @@
 
   {% if current_user.is_authenticated %} {% if current_user.role == 'Admin' %}
   <li class="nav-item active">
-    <a
-      class="nav-link"
-      href="#"
-      data-toggle="collapse"
-      data-target="#collapsePages"
-      aria-expanded="true"
-      aria-controls="collapsePages"
-    >
+    <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
+      aria-controls="collapsePages">
       <i class="fas fa-fw fa-folder"></i>
       <span>Pages</span>
     </a>
-    <div
-      id="collapsePages"
-      class="collapse show"
-      aria-labelledby="headingPages"
-      data-parent="#accordionSidebar"
-    >
+    <div id="collapsePages" class="collapse show" aria-labelledby="headingPages" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <h6 class="collapse-header">Visible Screens:</h6>
         <!--Todo Add links to pages-->
@@ -247,23 +194,12 @@
 
   {% elif current_user.role == 'Contributor' %}
   <li class="nav-item active">
-    <a
-      class="nav-link"
-      href="#"
-      data-toggle="collapse"
-      data-target="#collapsePages"
-      aria-expanded="true"
-      aria-controls="collapsePages"
-    >
+    <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
+      aria-controls="collapsePages">
       <i class="fas fa-fw fa-folder"></i>
       <span>Pages</span>
     </a>
-    <div
-      id="collapsePages"
-      class="collapse show"
-      aria-labelledby="headingPages"
-      data-parent="#accordionSidebar"
-    >
+    <div id="collapsePages" class="collapse show" aria-labelledby="headingPages" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <h6 class="collapse-header">Visible Screens:</h6>
         <!--Todo Add links to pages-->
@@ -286,35 +222,26 @@
   <li class="nav-item">
     <a class="nav-link" href="charts.html">
       <i class="fas fa-fw fa-chart-area"></i>
-      <span>Charts</span></a
-    >
+      <span>Charts</span></a>
   </li>
 
   {% elif current_user.role == 'Contributor' %}
   <li class="nav-item">
     <a class="nav-link" href="charts.html">
       <i class="fas fa-fw fa-chart-area"></i>
-      <span>Charts</span></a
-    >
+      <span>Charts</span></a>
   </li>
 
   {% else %}
   <li class="nav-item">
     <a class="nav-link" href="{{url_for('user_bp.contact_admin')}}">
       <i class="fa-solid fa-envelope"></i>
-      <span>Get in Touch</span></a
-    >
+      <span>Get in Touch</span></a>
   </li>
 
   {% endif %} {% endif %}
 
-  <!-- Nav Item - Logout -->
-  <li class="nav-item">
-    <a class="nav-link" href="{{url_for('auth_bp.logout')}}">
-      <i class="bi bi-box-arrow-left" height="16" width="16"></i>
-      <span>Log out</span></a
-    >
-  </li>
+
 
   <!-- Divider -->
   <hr class="sidebar-divider d-none d-md-block" />
@@ -324,6 +251,3 @@
     <button class="rounded-circle border-0" id="sidebarToggle"></button>
   </div>
 </ul>
-
-
-

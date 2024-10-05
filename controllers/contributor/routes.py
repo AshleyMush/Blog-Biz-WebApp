@@ -1,11 +1,12 @@
 from flask import render_template, redirect, url_for, flash
-from flask_login import current_user
+from flask_login import current_user, login_required
 from utils.decorators import  roles_required
-from models import db, ContactDetails, Inbox, ContactPageContent
-from forms import ContactAdminForm, UpdateEmailForm,ChangePasswordForm, UpdatePhoneForm
+from models import db, User, BlogPost,Inbox, ContactPageContent, ContactDetails
+from forms import ContactAdminForm, UpdateEmailForm,ChangePasswordForm, UpdatePhoneForm, CreatePostForm
 from utils.email_utils import send_confirmation_email, send_admin_email
 from utils.encryption import generate_password_hash, check_password_hash
 from utils.decorators import  nocache
+from datetime import date
 import logging
 from . import contributor_bp
 
@@ -13,6 +14,7 @@ from . import contributor_bp
 
 @contributor_bp.route('/profile', methods=[ 'GET','POST'])
 @roles_required('Contributor')
+@login_required
 @nocache
 def profile():
     email_form = UpdateEmailForm()
@@ -27,6 +29,7 @@ def profile():
 
 @contributor_bp.route('/contact-us', methods=['GET', 'POST'])
 @roles_required('Contributor')
+@login_required
 def contact_admin():
     """
     Handles the contact form submission and sends emails.
@@ -82,6 +85,7 @@ def contact_admin():
 
 @contributor_bp.route('/change-password', methods=['POST'])
 @roles_required('Contributor')
+@login_required
 def change_password():
     form = ChangePasswordForm()
     if form.validate_on_submit():
@@ -110,6 +114,7 @@ def change_password():
 
 @contributor_bp.route('/update-phone-number', methods=['POST'])
 @roles_required('Contributor')
+@login_required
 def update_phone_number():
     form = UpdatePhoneForm()
     if form.validate_on_submit():
@@ -132,6 +137,7 @@ def update_phone_number():
 
 @contributor_bp.route('/update-email', methods=['POST'])
 @roles_required('User', 'Contributor', 'Admin')
+@login_required
 def update_email():
     """
     This function updates the All user's email address.
@@ -155,24 +161,18 @@ def update_email():
     else:
         return redirect(url_for('admin_bp.profile'))
 
+# ----------------- Blog Routes -----------------
 
-@contributor_bp.route("/new-post", methods=["GET", "POST"])
-def add_new_post():
-    form = CreatePostForm()
-    if form.validate_on_submit():
-        new_post = BlogPost(
-            title=form.title.data,
-            subtitle=form.subtitle.data,
-            categories = form.categories.data,
-            body=form.body.data,
-            img_url=form.img_url.data,
-            author=current_user,
-            date=date.today().strftime("%B %d, %Y")
-        )
-        db.session.add(new_post)
-        db.session.commit()
-        return redirect(url_for("get_all_posts"))
-    return render_template("make-post.html", form=form)
+@contributor_bp.route("/view-blog-posts", methods=["GET"])
+def get_posts():
+    posts = BlogPost.query.all()
+    num_of_posts = len(posts)
+    print(f"{num_of_posts} num_of_posts")
+    return render_template("/blog/blog-profile.html", posts=posts, sum_of_posts=num_of_posts)
+
+
+
+
 
 
 

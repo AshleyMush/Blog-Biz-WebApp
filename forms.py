@@ -6,6 +6,12 @@ import re
 from flask import flash
 
 
+
+
+class CommentForm(FlaskForm):
+    comment = TextAreaField('Comment', validators=[DataRequired()])
+    submit = SubmitField('Post Comment')
+
 class RegisterForm(FlaskForm):
     first_name = StringField("First Name", validators=[DataRequired()])
     last_name = StringField("Last Name", validators=[DataRequired()])
@@ -31,6 +37,12 @@ class LoginForm(FlaskForm):
 
 
 
+class CreatePostForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired(message="Please enter the title.")])
+    subtitle = StringField('Subtitle', validators=[DataRequired( message="Please enter the subtitle.")])
+    img_url = StringField('Image URL', validators=[DataRequired(message="Please enter the image url"), URL()])
+    body = CKEditorField('Body', validators=[DataRequired(message="Please enter the body content.")])
+    submit = SubmitField('Submit')
 
 
 

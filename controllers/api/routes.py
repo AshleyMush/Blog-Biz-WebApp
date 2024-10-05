@@ -1,3 +1,4 @@
+from flask import Flask,  render_template,jsonify, flash, request, redirect, url_for
 from flask import Blueprint, request, jsonify
 from models import db, Contacts, User, Services, FAQs, AboutPageContent, HomePage, Jobs,JobPageContent
 
@@ -128,3 +129,24 @@ def get_contact_info_api():
     contact_page_dict = [contact.to_dict() for contact in contact_page]
     contacts_dict = [contact.to_dict() for contact in contacts]
     return jsonify(contacts_dict, contact_page_dict)
+
+
+@app.route('/get-about-content')
+def get_about():
+    """
+    This function gets all the about page content from the database
+    :return:
+    """
+    about_content = AboutPageContent.query.all()
+    about_content_dict = [about.to_dict() for about in about_content]
+    return jsonify(about_content_dict)
+
+
+@app.route('/api/about-us', methods=['GET'])
+def get_about_us():
+    """
+    This function gets the about us page content from the database
+    :return:
+    """
+    about_content = AboutPageContent.query.first()
+    return jsonify(about_content.to_dict())

@@ -58,7 +58,7 @@ def login():
 
         else:
             flash('Invalid email or password', 'danger')
-            return render_template("/admin/login.html", form=form)
+            return render_template("/auth/login.html", form=form)
 
     return render_template("/auth/login.html", form=form)
 
@@ -72,8 +72,9 @@ def logout():
     This function logs out the user and redirects them to the BLOG page.
     :return:
     """
-    logout_user()
     session.clear()
+    logout_user()
+
     return redirect(url_for('blog_bp.blog_home'))
 
 @auth_bp.route('/logout-main')
@@ -82,8 +83,9 @@ def logout_main():
     This function logs out the user and redirects them to the  business home page.
     :return:
     """
-    logout_user()
     session.clear()
+    logout_user()
+
     return redirect(url_for('main_bp.home'))
 
 
@@ -91,8 +93,25 @@ def logout_main():
 
 @auth_bp.route('/register', methods=["GET", "POST"])
 def register():
+
     form = RegisterForm()
+
+    # Check if any users exist in the database
+    user_count = User.query.count()
+    if user_count == 0:
+        role = 'Admin'  # First user becomes Admin
+    else:
+        role = 'User'  # Subsequent users are Contributors or Users
+
     if form.validate_on_submit() and form.data:
+        result = db.session.execute(db.select(User).where(User.email == form.email.data))
+        user = result.scalar()
+        if user:
+            flash('Email already exists, Login instead', 'danger')
+            return redirect(url_for('auth_bp.login'))
+
+
+
         # Hash the password with salt
         hashed_password = hash_and_salt_password(form.password.data)
         # Create new user
@@ -101,20 +120,21 @@ def register():
             first_name=form.first_name.data,
             last_name=form.last_name.data,
             password=hashed_password,  # Use the hashed password string
-            role="User"
+            role=role
         )
 
         # Add and commit the user to the database
         db.session.add(new_user)
         flash('Registered successfully', 'success')
         db.session.commit()
-
-
-
         # Log in the user
         login_user(new_user)
+        if new_user.role == "Admin":
+            return redirect(url_for('admin_bp.profile'))
+        else:
 
-        return redirect(url_for("user_bp.profile"))
+
+            return redirect(url_for("user_bp.profile"))
 
     else:
         if form.errors:

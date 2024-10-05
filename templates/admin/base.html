@@ -63,7 +63,7 @@
         {% if current_user.is_authenticated %}
 
         <!--Profile Navbar -->
-        {% include '/admin/admin-navbar.html' %}
+        {% include '/admin/navbar.html' %}
 
 
 
@@ -72,7 +72,6 @@
 
 
 
-        {% include '/blog/blogNavBar.html' %}
 
         {% endif %}
         <!-- End of Navbar -->
@@ -98,27 +97,11 @@
       <!-- Footer-->
 
       {% if current_user.is_authenticated %}
-      {% if current_user.role == 'Admin' %}
+            {% include '/website/footer 1.html' %}
 
-      <!--Admin Footer -->
-      {% include '/website/footer 1.html' %}
-
-
-
-      {% elif current_user.role == 'Contributor' %}
-      <!--Contributor Footer -->
-      <!-- Footer -->
-      {% include '/website/footer 3.html' %}
+     
       <!-- End of Footer -->
 
-
-      {% else %}
-      <!--User Footer -->
-      <!-- Footer -->
-      {% include '/website/footer 3.html' %}
-      <!-- End of Footer -->
-
-      {% endif %}
       {% endif %}
       <!-- End of Footer -->
 
@@ -157,7 +140,7 @@
           <button class="btn btn-secondary" type="button" data-dismiss="modal">
             Cancel
           </button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
+          <a class="btn btn-primary" href="{{url_for('auth_bp.logout')}}">Logout</a>
         </div>
       </div>
     </div>

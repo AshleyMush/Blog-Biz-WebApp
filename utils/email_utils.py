@@ -4,6 +4,8 @@ from itsdangerous import URLSafeTimedSerializer
 import smtplib
 from email.mime.text import MIMEText
 import os
+from datetime import datetime
+
 
 ADMIN_EMAIL_ADDRESS = os.environ.get("EMAIL_KEY")
 ADMIN_EMAIL_PW = os.environ.get("PASSWORD_KEY")
@@ -14,6 +16,7 @@ def send_confirmation_email(name, email, subject, service='gmail'):
     """
     Sends a confirmation email to the user.
     """
+    current_year = datetime.now().year
     email_content = render_template('email/user_email.html', name=name)
 
     msg = MIMEText(email_content, 'html')
@@ -44,7 +47,8 @@ def send_admin_email(name, subject, email, message, service='gmail'):
     """
     Sends an email to the admin with the contact form details.
     """
-    email_content = render_template('email/admin_email.html', name=name, subject=subject, email=email, message=message)
+    current_year = datetime.now().year
+    email_content = render_template('email/admin_email.html', name=name, subject=subject, email=email,current_year=current_year, message=message)
 
     msg = MIMEText(email_content, 'html')
     msg['From'] = email
@@ -116,3 +120,64 @@ def send_password_reset_email(email, service='gmail'):
         flash('Error sending password reset email. Please try again later.', 'danger')
         current_app.logger.error(f'Error sending password reset email: {e}')
 
+
+
+def send_approval_message(name, email, subject, service='gmail'):
+    """
+    Sends a confirmation email to the user.
+    """
+    current_year = datetime.now().year
+    email_content = render_template('email/contributor_approval_email.html',current_year=current_year, name=name)
+
+    msg = MIMEText(email_content, 'html')
+    msg['From'] = ADMIN_EMAIL_ADDRESS
+    msg['To'] = email
+    msg['Subject'] = f"{subject} {name}"
+    msg['Reply-To'] = ADMIN_EMAIL_ADDRESS
+
+    smtp_settings = {
+        'gmail': ('smtp.gmail.com', 587),
+        'yahoo': ('smtp.mail.yahoo.com', 587),
+        'outlook': ('smtp.office365.com', 587)
+    }
+
+    smtp_server, smtp_port = smtp_settings.get(service, smtp_settings['gmail'])
+
+    try:
+        with smtplib.SMTP(smtp_server, smtp_port) as connection:
+            connection.starttls()
+            connection.login(ADMIN_EMAIL_ADDRESS, ADMIN_EMAIL_PW)
+            connection.sendmail(ADMIN_EMAIL_ADDRESS, email, msg.as_string())
+    except Exception as e:
+        flash('Error sending confirmation email. Please try again later.', 'danger')
+
+
+def send_demotion_message(name, email, subject, service='gmail'):
+    """
+    Sends a confirmation email to the user.
+    """
+    current_year = datetime.now().year
+
+    email_content = render_template('email/letter_of_regret_email.html',current_year=current_year, name=name)
+
+    msg = MIMEText(email_content, 'html')
+    msg['From'] = ADMIN_EMAIL_ADDRESS
+    msg['To'] = email
+    msg['Subject'] = f"{subject}"
+    msg['Reply-To'] = ADMIN_EMAIL_ADDRESS
+
+    smtp_settings = {
+        'gmail': ('smtp.gmail.com', 587),
+        'yahoo': ('smtp.mail.yahoo.com', 587),
+        'outlook': ('smtp.office365.com', 587)
+    }
+
+    smtp_server, smtp_port = smtp_settings.get(service, smtp_settings['gmail'])
+
+    try:
+        with smtplib.SMTP(smtp_server, smtp_port) as connection:
+            connection.starttls()
+            connection.login(ADMIN_EMAIL_ADDRESS, ADMIN_EMAIL_PW)
+            connection.sendmail(ADMIN_EMAIL_ADDRESS, email, msg.as_string())
+    except Exception as e:
+        flash('Error sending confirmation email. Please try again later.', 'danger')

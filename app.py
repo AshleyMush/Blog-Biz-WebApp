@@ -51,10 +51,12 @@ app.register_blueprint(blog_bp)
 
 
 
-# Initialize Flask-Migrate
-migrate = Migrate(app, db)
+# # Initialize Flask-Migrate
+# migrate = Migrate(app, db)
 
 
+with app.app_context():
+    db.create_all()
 
 
 
@@ -62,4 +64,4 @@ migrate = Migrate(app, db)
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5002)
+    app.run(debug=False, port=5002)

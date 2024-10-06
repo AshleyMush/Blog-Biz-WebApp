@@ -55,8 +55,6 @@ app.register_blueprint(blog_bp)
 migrate = Migrate(app, db)
 
 
-with app.app_context():
-    db.create_all()
 
 
 

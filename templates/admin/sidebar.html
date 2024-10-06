@@ -7,6 +7,10 @@
     </div>
     <div class="sidebar-brand-text mx-3">Admin Dashboard</div>
   </a>
+
+
+
+
   {% elif current_user.role == 'Contributor' %}
   <a class="sidebar-brand d-flex align-items-center justify-content-center"
     href="{{url_for('contributor_bp.profile')}}">
@@ -37,7 +41,7 @@
     {% elif current_user.role == 'Contributor' %}
     <a class="nav-link" href="{{ url_for('contributor_bp.profile') }}">
       <i class="fas fa-fw fa-tachometer-alt"></i>
-      <span>Dashboard</span>
+      <span>Profile</span>
     </a>
     {% else %}
     <a class="nav-link" href="{{ url_for('user_bp.profile') }}">
@@ -73,7 +77,7 @@
   </li>
 
   <!--Customise pages-->
-  <li class="nav-item">
+ <!-- <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCustomise" aria-expanded="true"
       aria-controls="collapseCustomise">
       <i class="fas fa-fw fa-wrench"></i>
@@ -90,10 +94,14 @@
       </div>
     </div>
   </li>
+  -->
 
   {% endif %}
 
 <!--Blog content-->
+
+      
+{% if current_user.role == 'Admin' %}
 <li class="nav-item">
   <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBlogPosts" aria-expanded="true"
     aria-controls="collapseBlogPosts">
@@ -102,30 +110,36 @@
   </a>
   <div id="collapseBlogPosts" class="collapse" aria-labelledby="headingBlogPosts" data-parent="#accordionSidebar">
     <div class="bg-white py-2 collapse-inner rounded">
-      <h6 class="collapse-header">Blog related Content</h6>
-      {% if current_user.role == 'Admin' %}
-      <a class="collapse-item" href="{{url_for('blog_bp.get_posts')}}">Post</a>
-      <a class="collapse-item" href="#">Saved Posts</a>
-      <a class="collapse-item" href="#">Liked Posts</a>
-      <a class="collapse-item" href="#">Comments</a>
+<h6 class="collapse-header">Blog related Content</h6>
+<a class="collapse-item" href="{{ url_for('blog_bp.get_posts') }}">My Post</a>
+<a class="collapse-item" href="{{ url_for('admin_bp.manage_categories') }}">Manage Post Categories</a>
+<a class="collapse-item" href="{{url_for('admin_bp.manage_posts')}}">Manage All Posts</a>
+  </div>
+  </div>
+  </li>
+
 
       {% elif current_user.role == 'Contributor' %}
-      <a class="collapse-item" href="{{url_for('blog_bp.get_posts')}}">Post</a>
-      <a class="collapse-item" href="#">Saved Posts</a>
-      <a class="collapse-item" href="#">Liked Posts</a>
-      <a class="collapse-item" href="#">Comments</a>
-      {% else %}
-      <a class="collapse-item" href="#">Saved Posts</a>
-      <a class="collapse-item" href="#">Liked Posts</a>
-      <a class="collapse-item" href="#">Comments</a>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBlogPosts" aria-expanded="true"
+          aria-controls="collapseBlogPosts">
+          <i class="fa-solid fa-book"></i>
+          <span>Blog Posts</span>
+        </a>
+        <div id="collapseBlogPosts" class="collapse" aria-labelledby="headingBlogPosts" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+      <h6 class="collapse-header">Blog related Content</h6>
+      <a class="collapse-item" href="{{url_for('blog_bp.get_posts')}}">My Posts</a>
+        </div>
+        </div>
+        </li>
 
+      {% else %}
+     
       {% endif %}
 
 
-    </div>
-  </div>
-</li>
-
+  
 
 <!--Heath tool content-->
   <li class="nav-item">
@@ -137,9 +151,9 @@
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <h6 class="collapse-header">Exclusive Member tools</h6>
-        <a class="collapse-item" href="#">BMI Calculator</a>
-        <a class="collapse-item" href="#">Food Calculator</a>
-        <a class="collapse-item" href="#">Exercise Calculator</a>
+        <a class="collapse-item" href="{{url_for('user_bp.bmi_calculator')}}">BMI Calculator</a>
+        <!--<a class="collapse-item" href="#">Food Calculator</a>
+        <a class="collapse-item" href="#">Exercise Calculator</a>-->
       </div>
     </div>
   </li>
@@ -170,6 +184,7 @@
   <!-- Nav Item - Pages Collapse Menu -->
 
   {% if current_user.is_authenticated %} {% if current_user.role == 'Admin' %}
+ <!--
   <li class="nav-item active">
     <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
       aria-controls="collapsePages">
@@ -179,8 +194,6 @@
     <div id="collapsePages" class="collapse show" aria-labelledby="headingPages" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <h6 class="collapse-header">Visible Screens:</h6>
-        <!--Todo Add links to pages-->
-        <!--Available pages (edit or delete section - will redirect to form for entry)-->
         <a class="collapse-item" href="#">Services</a>
         <a class="collapse-item" href="#">About Us</a>
         <a class="collapse-item" href="#">Contact Us</a>
@@ -190,10 +203,10 @@
         <a class="collapse-item" href="#">Home Page</a>
       </div>
     </div>
-  </li>
+  </li>-->
 
   {% elif current_user.role == 'Contributor' %}
-  <li class="nav-item active">
+  <!--<li class="nav-item active">
     <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
       aria-controls="collapsePages">
       <i class="fas fa-fw fa-folder"></i>
@@ -202,8 +215,7 @@
     <div id="collapsePages" class="collapse show" aria-labelledby="headingPages" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <h6 class="collapse-header">Visible Screens:</h6>
-        <!--Todo Add links to pages-->
-        <!--Available pages (edit or delete section - will redirect to form for entry)-->
+      
         <a class="collapse-item" href="#">Services</a>
         <a class="collapse-item" href="#">About Us</a>
         <a class="collapse-item" href="#">Contact Us</a>
@@ -213,24 +225,20 @@
         <a class="collapse-item" href="#">Home Page</a>
       </div>
     </div>
-  </li>
+  </li>-->
 
   {% else %} {% endif %} {% endif %}
 
   <!-- Nav Item - Charts -->
   {% if current_user.is_authenticated %} {% if current_user.role == 'Admin' %}
-  <li class="nav-item">
+<!-- <li class="nav-item">
     <a class="nav-link" href="charts.html">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Charts</span></a>
   </li>
+  -->
 
-  {% elif current_user.role == 'Contributor' %}
-  <li class="nav-item">
-    <a class="nav-link" href="charts.html">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>Charts</span></a>
-  </li>
+
 
   {% else %}
   <li class="nav-item">

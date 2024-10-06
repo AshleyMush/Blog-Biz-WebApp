@@ -1,0 +1,81 @@
+<!-- templates/blog/list_categories.html -->
+
+{% extends '/admin/base.html' %}
+
+{% block title %}List Categories{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Category Manager</h1>
+<div class="container mt-5 mb-3">
+ 
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
+            {% for error in form.name.errors %}
+            <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
+    </form>
+</div>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Category Table</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Action</th>
+
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Category</th>
+                            <th>Action</th>
+
+
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        {% if categories %}
+                        {% for category in categories %}
+                        <tr>
+                            <td>
+                                <div class="badge bg-primary bg-gradient rounded-pill mb-2">{{ category.name }}</div>
+
+                            </td>
+                            <td class="gap-2">
+                               
+                                <a href="{{url_for('admin_bp.delete_category', category_id=category.id)}}" class="btn btn-danger btn-circle">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="2">No categories available.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+

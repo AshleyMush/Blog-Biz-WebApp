@@ -65,14 +65,16 @@
                                 <div class="fst-italic text-muted">{{current_user.role}}</div>
                             </div>
                         </div>
+                        {% if current_user.about%}
+                        <p></p>
+                        {{current_user.about}}
+                        </p>
+                        {% else %}
+                        <p>You have not yet entered information about yourself on your profile 😢.</p>
+                        {% endif %}
                     </div>
-                    <p>
-                        Add some quality, svg illustrations to your project courtesy of
-                        <a target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a constantly updated
-                        collection of beautiful svg images that you
-                        can use completely free and without attribution!
-                    </p>
-                    <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on unDraw →</a>
+
+
                 </div>
             </div>
 
@@ -82,17 +84,22 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
-                        Posts and Contributions
+                        Profile Completion
                     </h6>
                 </div>
                 <div class="card-body">
-                    <h4 class="small font-weight-bold">
+
+
+                    <!-- <h4 class="small font-weight-bold">
                         Server Migration <span class="float-right">20%</span>
                     </h4>
                     <div class="progress mb-4">
                         <div class="progress-bar bg-danger" role="progressbar" style="width: 20%" aria-valuenow="20"
                             aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
+                    -->
+
+                    <!--
                     <h4 class="small font-weight-bold">
                         Sales Tracking <span class="float-right">40%</span>
                     </h4>
@@ -100,20 +107,10 @@
                         <div class="progress-bar bg-warning" role="progressbar" style="width: 40%" aria-valuenow="40"
                             aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                    <h4 class="small font-weight-bold">
-                        Customer Database <span class="float-right">60%</span>
-                    </h4>
-                    <div class="progress mb-4">
-                        <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60"
-                            aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <h4 class="small font-weight-bold">
-                        Payout Details <span class="float-right">80%</span>
-                    </h4>
-                    <div class="progress mb-4">
-                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80"
-                            aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
+                    -->
+
+
+                    {% if current_user.phone_number and current_user.about %}
                     <h4 class="small font-weight-bold">
                         Account Setup <span class="float-right">Complete!</span>
                     </h4>
@@ -121,6 +118,23 @@
                         <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100"
                             aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
+                    {% elif current_user.phone_number or current_user.about %}
+                    <h4 class="small font-weight-bold">
+                        Account Setup <span class="float-right">80%</span>
+                    </h4>
+                    <div class="progress mb-4">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80"
+                            aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    {% else %}
+                    <h4 class="small font-weight-bold">
+                        Account Setup <span class="float-right">60%</span>
+                    </h4>
+                    <div class="progress mb-4">
+                        <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60"
+                            aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
 
@@ -136,37 +150,57 @@
                     <h6 class="m-0 font-weight-bold text-primary">Profile</h6>
                 </div>
                 <div class="card-body">
+                    <!--About Me Form-->
+                    <div class="me-4">
+                        <hr class="sidebar-divider" />
+                        <h7 class="text-muted">Tell people a bit yourself.</h7>
+                        <form id="aboutForm" method="POST" action="{{ url_for('user_bp.about_me') }}">
+                            <!-- CSRF token -->
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <div class="form-group">
+                                <label for="aboutInput">About Me</label>
+                                <textarea class="form-control" id="aboutInput" name="about" rows="3"
+                                    readonly>{{ current_user.about }}</textarea>
+                            </div>
+                            <button type="button" class="btn btn-primary mt-2" id="editAboutButton">Edit</button>
+                            <button type="submit" class="btn btn-success mt-2 d-none" id="saveAboutButton">Save</button>
+                            <button type="button" class="btn btn-secondary mt-2 d-none"
+                                id="cancelAboutButton">Cancel</button>
+                        </form>
+                    </div>
+
+
+
+
                     <!-- Email Editing Form -->
                     <div class="me-4">
                         <hr class="sidebar-divider" />
                         <h7 class="text-muted">Login Information</h7>
                         <form id="emailForm" method="POST" action="{{ url_for('user_bp.update_email') }}">
-                            <!-- CSRF token -->
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            {{ email_form.hidden_tag() }}
                             <div class="form-group">
-                                <label for="emailInput">Email</label>
-                                <input type="email" class="form-control" id="emailInput" name="email"
-                                    value="{{ current_user.email }}" readonly>
+                                {{ email_form.email.label(class="form-label") }}
+                                {{ email_form.email(class="form-control", id="emailInput", readonly=True) }}
                             </div>
                             <button type="button" class="btn btn-primary mt-2" id="editEmailButton">Edit</button>
-                            <button type="submit" class="btn btn-success mt-2 d-none" id="saveEmailButton">Save</button>
+                            {{ email_form.submit(class="btn btn-success mt-2 d-none", id="saveEmailButton") }}
                             <button type="button" class="btn btn-secondary mt-2 d-none"
                                 id="cancelEmailButton">Cancel</button>
                         </form>
                     </div>
                     <!-- Phone Number Editing Form -->
                     <div class="me-4 mt-4">
-                        <form id="phoneForm" method="POST" action="{{ url_for('user_bp.update_phone_number') }}">
-                            <!-- CSRF token -->
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <form id="phoneForm" method="POST" action="{{ url_for('user_bp.update_phone_number') }}"
+                            class="needs-validation" novalidate>
+                            {{ phone_form.hidden_tag() }}
                             <div class="form-group">
-                                <label for="phoneInput">Phone Number</label>
-                                <input type="tel" class="form-control" id="phoneInput" name="phone_number"
-                                    value="{{ current_user.phone_number }}" readonly>
+                                {{ phone_form.phone_number.label(class="form-label") }}
+                                {{ phone_form.phone_number(class="form-control", id="phoneInput", readonly=True) }}
                             </div>
                             <button type="button" class="btn btn-primary mt-2" id="editPhoneButton">Edit</button>
-                            <button type="submit" class="btn btn-success mt-2 d-none" id="savePhoneButton">Save</button>
-                            <button type="button" class="btn btn-secondary mt-2 d-none" id="cancelPhoneButton">Cancel</button>
+                            {{ phone_form.submit(class="btn btn-success mt-2 d-none", id="savePhoneButton") }}
+                            <button type="button" class="btn btn-secondary mt-2 d-none"
+                                id="cancelPhoneButton">Cancel</button>
                         </form>
                     </div>
                     <!-- Change Password Section -->
@@ -177,15 +211,19 @@
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <div class="form-group">
                                 <label for="currentPassword">Current Password</label>
-                                <input type="password" class="form-control" placeholder="Enter Your Current Password Here" id="currentPassword" name="current_password" required>
+                                <input type="password" class="form-control"
+                                    placeholder="Enter Your Current Password Here" id="currentPassword"
+                                    name="current_password" required>
                             </div>
                             <div class="form-group">
                                 <label for="newPassword">New Password</label>
-                                <input type="password" class="form-control" id="newPassword" name="new_password" required>
+                                <input type="password" class="form-control" id="newPassword" name="new_password"
+                                    required>
                             </div>
                             <div class="form-group">
                                 <label for="confirmNewPassword">Confirm New Password</label>
-                                <input type="password" class="form-control" id="confirmNewPassword" name="confirm_new_password" required>
+                                <input type="password" class="form-control" id="confirmNewPassword"
+                                    name="confirm_new_password" required>
                             </div>
                             <button type="submit" class="btn btn-primary mt-2">Change Password</button>
                         </form>
@@ -212,9 +250,7 @@
                 <!-- Card Content - Collapse -->
                 <div class="collapse" id="collapseCardExample" style="">
                     <div class="card-body">
-                        This is a collapsable card example using Bootstrap's built in
-                        collapse functionality. <strong>Click on the card header</strong> to
-                        see the card body collapse and expand!
+                       To logout, click on the logout button which wll appear after you click your picture on the top right corner of the page.
                     </div>
                 </div>
             </div>
@@ -227,59 +263,6 @@
     </div>
 </div>
 
-<!-- Posts by Contributor-->
-{% if not current_user.role=='User' %}
-<div class="row gx-5 justify-content-center">
-    <div class="col-lg-8 col-xl-6">
-        <div class="text-center">
-            <h2 class="fw-bolder">Contributions</h2>
-            <p class="lead fw-normal text-muted mb-5">
-                Publishes and Posts by {{current_user.first_name}}
-            </p>
-        </div>
-    </div>
-</div>
-<div class="row gx-5">
-    <div class="col-lg-4 mb-5">
-        <div class="card h-100 shadow border-0">
-            <img class="card-img-top" src="https://dummyimage.com/600x350/ced4da/6c757d" alt="..." />
-            <div class="card-body p-4">
-                <div class="badge bg-primary bg-gradient rounded-pill mb-2">News</div>
-                <a class="text-decoration-none link-dark stretched-link" href="#!">
-                    <h5 class="card-title mb-3">Blog post title</h5>
-                </a>
-                <p class="card-text mb-0">
-                    Some quick example text to build on the card title and make up the
-                    bulk of the card's content.
-                </p>
-            </div>
-            <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
-                <div class="d-flex align-items-end justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
-                        <div class="small">
-                            <div class="d-flex align-items-center justify-content-between w-100">
-                                <div class="me-4">
-                                    <div class="fw-bold">Kelly Rowan</div>
-                                    <div class="text-muted">March 12, 2023 · 6 min read</div>
-                                </div>
-                                <a href="#" class="btn btn-danger btn-icon-split">
-                                    <span class="icon text-white-50">
-                                        <i class="fas fa-trash"></i>
-                                    </span>
-                                    <span class="text">Split Button Danger</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-<!-- End of Posts by Contributor-->
+
 
 {% endblock %}
-
-

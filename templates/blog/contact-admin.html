@@ -1,0 +1,47 @@
+{% extends '/admin/base.html' %}
+
+{% block title %}Get in touch{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container px-5">
+    <!-- Contact form-->
+    <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
+      <div class="row gx-5 justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+          <form id="contactForm" method="POST" action="{{ url_for('user_bp.contact_admin') }}">
+            {{ form.hidden_tag() }}
+
+            <!-- Subject Select Input -->
+            <div class="form-floating mb-3">
+              {{ form.subject(class_="form-select", id="subject") }}
+              <label for="subject">Subject</label>
+              {% if form.subject.errors %}
+              <div class="invalid-feedback">
+                {{ form.subject.errors[0] }}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Message input-->
+            <div class="form-floating mb-3">
+              {{ form.message(class_="form-control", id="message", style="height: 10rem") }}
+              <label for="message">Message</label>
+              {% if form.message.errors %}
+              <div class="invalid-feedback">
+                {{ form.message.errors[0] }}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Submit Button-->
+            <div class="d-grid">
+              {{ form.submit(class_="btn btn-primary btn-lg", id="submitButton") }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

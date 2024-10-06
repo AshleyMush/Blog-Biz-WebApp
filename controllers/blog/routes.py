@@ -1,8 +1,8 @@
 # Route for blog
 from forms import RegisterForm, LoginForm
 from flask_login import login_user, current_user, logout_user, login_required
-from models import db, User, BlogPost, Comment
-from models.blog import DraftPost
+from models import db, User, BlogPost, Comment, post_categories
+from models.blog import DraftPost,Category
 from flask import Blueprint, render_template, redirect, url_for, flash, jsonify
 from utils.encryption import hash_and_salt_password, check_password_hash
 from . import blog_bp
@@ -10,6 +10,8 @@ from datetime import datetime, date
 from forms import ContactAdminForm, UpdateEmailForm,ChangePasswordForm, UpdatePhoneForm, CreatePostForm
 from utils.decorators import roles_required
 from forms import CommentForm
+from sqlalchemy.sql import func  # Import func for random ordering
+
 
 
 
@@ -19,32 +21,30 @@ def blog_home():
     current_year = datetime.now().year
     all_posts = BlogPost.query.all()
 
+    categories = Category.query.all()
     latest_post = BlogPost.query.order_by(BlogPost.id.desc()).first()
 
-    return render_template("/blog/blog-home.html", posts =all_posts, current_year=current_year, latest_post=latest_post)
+    # Fetch recommended posts: exclude the latest post
+    # Order randomly and limit to 2
+    recommended_posts = BlogPost.query.filter(
+        BlogPost.id != latest_post.id
+    ).order_by(func.random()).limit(2).all()
+
+    latest_posts = BlogPost.query.order_by(BlogPost.id.desc()).limit(3).all()
+
+    # Fetch latest posts per author
+    subquery = db.session.query(
+        BlogPost.author_id,
+        func.max(BlogPost.date).label('max_date')
+    ).group_by(BlogPost.author_id).subquery()
+
+    latest_posts_per_author = BlogPost.query.join(
+        subquery,
+        (BlogPost.author_id == subquery.c.author_id) & (BlogPost.date == subquery.c.max_date)
+    ).all()
 
 
-# Draft Post Route
-# @blog_bp.route('/draft-post', methods=["GET", "POST"])
-# @login_required
-# @roles_required("Contributor", "Admin")  # Only Contributors and Admins can create drafts
-# def draft_post():
-#     form = CreatePostForm()
-#     if form.validate_on_submit():
-#         draft = DraftPost(
-#             title=form.title.data,
-#             subtitle=form.subtitle.data,
-#             # categories = form.categories.data,  # Uncomment if categories are implemented
-#             body=form.body.data,
-#             img_url=form.img_url.data,
-#             author=current_user,
-#             date=date.today().strftime("%B %d, %Y")
-#         )
-#         db.session.add(draft)
-#         db.session.commit()
-#         flash("Draft saved successfully.", "success")
-#         return redirect(url_for("blog_bp.get_drafts"))
-#     return render_template("/blog/make-draft.html", form=form)
+    return render_template("/blog/blog-home.html", categories=categories,latest_posts=latest_posts, latest_posts_per_author=latest_posts_per_author,posts =all_posts, current_year=current_year, latest_post=latest_post, recommended_posts=recommended_posts)
 
 
 
@@ -53,6 +53,7 @@ def blog_home():
 def view_post(post_id):
     current_year = datetime.now().year
     selected_post = BlogPost.query.get_or_404(post_id)
+    categories = Category.query.all()
 
     # --Comment feature
     form = CommentForm()
@@ -70,7 +71,7 @@ def view_post(post_id):
             db.session.add(new_comment)
             db.session.commit()
             flash("Comment added successfully.", "success")
-            return redirect(url_for("blog_bp.view_post", post_id=post_id))
+            return redirect(url_for("blog_bp.view_post", categories=categories,post_id=post_id))
 
     # Retrieve existing comments for the post
     comments = selected_post.comments
@@ -80,10 +81,62 @@ def view_post(post_id):
         current_year=current_year,
         post=selected_post,
         form=form,
-        comments=comments
+        comments=comments,
+        categories=categories
     )
 
 
+@blog_bp.route('/category/<int:category_id>', methods=["GET"])
+def view_category(category_id):
+    current_year = datetime.now().year
+    category = Category.query.get_or_404(category_id)
+    categories = Category.query.all()
+
+    # Fetch all posts in the selected category, ordered by date descending
+    posts_in_category = BlogPost.query.join(
+        post_categories,
+        BlogPost.id == post_categories.c.post_id
+    ).filter(
+        post_categories.c.category_id == category_id
+    ).order_by(BlogPost.date.desc()).all()
+
+    # Fetch the latest post (for recommended posts exclusion)
+    latest_post = BlogPost.query.order_by(BlogPost.date.desc()).first()
+
+    # Fetch recommended posts: exclude the latest post and posts in this category
+    if latest_post:
+        # Exclude the latest post and posts in the current category
+        recommended_posts = BlogPost.query.filter(
+            BlogPost.id != latest_post.id,
+            ~BlogPost.categories.any(id=category_id)
+        ).order_by(func.random()).limit(2).all()
+    else:
+        # If there is no latest post, recommend any two posts not in the current category
+        recommended_posts = BlogPost.query.filter(
+            ~BlogPost.categories.any(id=category_id)
+        ).order_by(func.random()).limit(2).all()
+
+    # Fetch latest posts per author
+    subquery = db.session.query(
+        BlogPost.author_id,
+        func.max(BlogPost.date).label('max_date')
+    ).group_by(BlogPost.author_id).subquery()
+
+    latest_posts_per_author = BlogPost.query.join(
+        subquery,
+        (BlogPost.author_id == subquery.c.author_id) & (BlogPost.date == subquery.c.max_date)
+    ).all()
+
+    return render_template(
+        "blog/view_category.html",
+        category=category,
+        posts_in_category=posts_in_category,
+        current_year=current_year,
+        latest_post=latest_post,
+        recommended_posts=recommended_posts,
+        latest_posts_per_author=latest_posts_per_author,
+        categories=categories
+    )
 
 @blog_bp.route('/preview', methods=["GET", "POST"])
 def blog_preview():
@@ -105,14 +158,16 @@ def add_new_post():
     """
     form = CreatePostForm()
     if form.validate_on_submit():
+        selected_categories = Category.query.filter(Category.id.in_(form.categories.data)).all()
+
         new_post = BlogPost(
             title=form.title.data,
             subtitle=form.subtitle.data,
-            #categories = form.categories.data,
             body=form.body.data,
             img_url=form.img_url.data,
             author=current_user,
-            date=date.today().strftime("%B %d, %Y")
+            date=date.today().strftime("%B %d, %Y"),
+            categories=selected_categories  # Assign categories
         )
         db.session.add(new_post)
         db.session.commit()
@@ -167,8 +222,11 @@ def edit_post(post_id):
     """
     post = BlogPost.query.get_or_404(post_id)
     form = CreatePostForm()
+    form = CreatePostForm(obj=post)
+
 
     if form.validate_on_submit():
+        post.date = date.today().strftime("%B %d, %Y")
         if form.title.data:
             post.title = form.title.data
         if form.subtitle.data:
@@ -178,8 +236,12 @@ def edit_post(post_id):
         if form.body.data:
             post.body = form.body.data
 
+
+        # Update the categories
+        post.categories = Category.query.filter(Category.id.in_(form.categories.data)).all()
+
         db.session.commit()
-        flash("Post updated successfully.")
+        flash("Post updated successfully.", 'success')
         return redirect(url_for("blog_bp.get_posts"))
 
     # Pre-fill the form with the existing post data
@@ -187,6 +249,8 @@ def edit_post(post_id):
     form.subtitle.data = post.subtitle
     form.img_url.data = post.img_url
     form.body.data = post.body
+    form.categories.data = [category.id for category in post.categories]
+
 
     return render_template("/blog/edit-post.html", form=form, post=post)
 

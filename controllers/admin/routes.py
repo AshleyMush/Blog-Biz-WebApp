@@ -1,12 +1,13 @@
 from flask import render_template, redirect, url_for, flash, request, session
-from flask_login import current_user
+from flask_login import current_user, login_required
 from utils.decorators import roles_required
 from models import db,BlogPost , ContactDetails, ContactPageContent, User, Services, AboutPageContent, HomePage
 from forms import ChangeUserRoleForm,ContactInfo, ContactPageForm,  AddServicesForm, UpdateServiceForm, \
-    HomePageInfoForm, UpdateEmailForm,ChangePasswordForm, UpdatePhoneForm,AboutUsForm, CreatePostForm
+    HomePageInfoForm, UpdateEmailForm,ChangePasswordForm, UpdatePhoneForm,AboutUsForm, CreatePostForm, CategoryForm
 from utils.decorators import  nocache
 from datetime import date
 from utils.email_utils import send_approval_message, send_demotion_message
+from models.blog import Category
     
 from . import admin_bp
 
@@ -28,84 +29,54 @@ def profile():
                            password_form=password_form)
 
 
+# ---- Post Management Routes ---- #
+@admin_bp.route('/manage-categories', methods=['GET', 'POST'])
+@roles_required('Admin')
+@login_required
+def manage_categories():
+    form = CategoryForm()
+    categories = Category.query.order_by(Category.name).all()
+
+    if form.validate_on_submit():
+        new_category = Category(name=form.name.data.strip())
+        db.session.add(new_category)
+        db.session.commit()
+        flash(f"Category '{new_category.name}' created successfully.", 'success')
+        categories = Category.query.order_by(Category.name).all()
+
+    return render_template('blog/manage_categories.html', form=form, categories=categories)
+
+@admin_bp.route('/delete-category/<int:category_id>', methods=['GET', 'DELETE'])
+@roles_required('Admin')
+@login_required
+def delete_category(category_id):
+    category = Category.query.get_or_404(category_id)
+    db.session.delete(category)
+    db.session.commit()
+    flash(f"Category '{category.name}' deleted successfully.", 'success')
+    return redirect(url_for('admin_bp.manage_categories'))
 
 
-#
-# @admin_bp.route('/change-password', methods=['POST'])
-# @roles_required('Admin')
-# def change_password():
-#     form = ChangePasswordForm()
-#     if form.validate_on_submit():
-#         current_password = form.current_password.data
-#         new_password = form.new_password.data
-#
-#         if not check_password_hash(current_user.password, current_password):
-#             flash('Current password is incorrect.', 'danger')
-#             return redirect(url_for('user_bp.profile'))
-#
-#         # Update the user's password
-#         current_user.password = generate_password_hash(new_password)
-#         db.session.commit()
-#         flash('Your password has been updated.', 'success')
-#     else:
-#         # Handle form validation errors
-#         for field, errors in form.errors.items():
-#             for error in errors:
-#                 flash(f"{getattr(form, field).label.text}: {error}", 'danger')
-#     if current_user.role == 'User':
-#         return redirect(url_for('user_bp.profile'))
-#     elif current_user.role == 'Contributor':
-#         return redirect(url_for('contributor_bp.profile'))
-#     else:
-#         return redirect(url_for('admin_bp.profile'))
-#
-#
-# @admin_bp.route('/update-phone-number', methods=['POST'])
-# @roles_required('Admin')
-# def update_phone_number():
-#     form = UpdatePhoneForm()
-#     if form.validate_on_submit():
-#         phone_number = form.phone_number.data
-#         current_user.phone_number = phone_number
-#         db.session.commit()
-#         flash('Phone number updated successfully.', 'success')
-#     else:
-#         # Handle form validation errors
-#         for field, errors in form.errors.items():
-#             for error in errors:
-#                 flash(f"{getattr(form, field).label.text}: {error}", 'danger')
-#     if current_user.role == 'User':
-#         return redirect(url_for('user_bp.profile'))
-#     elif current_user.role == 'Contributor':
-#         return redirect(url_for('contributor_bp.profile'))
-#     else:
-#         return redirect(url_for('admin_bp.profile'))
-#
-#
-# @admin_bp.route('/update-email', methods=['POST'])
-# @roles_required( 'Admin')
-# def update_email():
-#     """
-#     This function updates the All user's email address.
-#     :return:
-#     """
-#     form = UpdateEmailForm()
-#     if form.validate_on_submit():
-#         new_email = form.email.data
-#         current_user.email = new_email
-#         db.session.commit()
-#         flash('Email updated successfully.', 'success')
-#     else:
-#         for field, errors in form.errors.items():
-#             for error in errors:
-#                 flash(f"{getattr(form, field).label.text}: {error}", 'danger')
-#
-#     if current_user.role == 'User':
-#         return redirect(url_for('user_bp.profile'))
-#     elif current_user.role == 'Contributor':
-#         return redirect(url_for('contributor_bp.profile'))
-#     else:
-#         return redirect(url_for('admin_bp.profile'))
+@admin_bp.route('/manage-posts', methods=['GET'])
+@roles_required('Admin')
+@login_required
+def manage_posts():
+    all_posts = BlogPost.query.all()
+    latest_post = BlogPost.query.order_by(BlogPost.id.desc()).first()
+    return render_template('blog/manage_posts.html', all_posts=all_posts, latest_post=latest_post)
+
+
+@admin_bp.route('/delete-post/<int:post_id>', methods=['GET', 'DELETE'])
+@roles_required('Admin')
+@login_required
+def delete_post(post_id):
+    post = BlogPost.query.get_or_404(post_id)
+    db.session.delete(post)
+    db.session.commit()
+    flash(f"Post '{post.title}' deleted successfully.", 'success')
+    return redirect(url_for('admin_bp.manage_posts'))
+
+
 
 # ----------------- User manager----------------- #
 @admin_bp.route('/get-all-users', methods=['GET'])

@@ -63,7 +63,7 @@
         {% if current_user.is_authenticated %}
 
         <!--Profile Navbar -->
-        {% include '/admin/navbar.html' %}
+        {% include '/admin/navbar-beta.html' %}
 
 
 
@@ -202,6 +202,24 @@
     // Reset the phone number to its original value
     document.getElementById('phoneInput').value = "{{ current_user.phone_number }}";
   });
+
+
+
+
+                        document.getElementById('editAboutButton').addEventListener('click', function() {
+                            document.getElementById('aboutInput').removeAttribute('readonly');
+                            document.getElementById('saveAboutButton').classList.remove('d-none');
+                            document.getElementById('cancelAboutButton').classList.remove('d-none');
+                            this.classList.add('d-none');
+                        });
+
+                        document.getElementById('cancelAboutButton').addEventListener('click', function() {
+                            document.getElementById('aboutInput').setAttribute('readonly', true);
+                            document.getElementById('saveAboutButton').classList.add('d-none');
+                            document.getElementById('editAboutButton').classList.remove('d-none');
+                            this.classList.add('d-none');
+                        });
+
 
 
 </script>

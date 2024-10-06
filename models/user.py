@@ -2,17 +2,19 @@
 
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column
 from . import db
 
 class User(db.Model, UserMixin):
     __tablename__ = "UserDetails"
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(150), unique=True, nullable=False)
-    password = db.Column(db.String(256), nullable=False)
-    first_name = db.Column(db.String(150), nullable=False)
-    last_name = db.Column(db.String(150), nullable=False)
-    phone_number = db.Column(db.String(20), nullable=True)
-    role = db.Column(db.String(50), nullable=False, default='User')  # Roles: 'Admin','Contributor','User'
+    id : Mapped[int] = mapped_column(primary_key=True)
+    email : Mapped[str] = mapped_column(nullable=False)
+    password : Mapped[str] = mapped_column(nullable=False)
+    first_name: Mapped[str] = mapped_column(nullable=False)
+    last_name : Mapped[str] = mapped_column(nullable=False)
+    phone_number : Mapped[str] = mapped_column(nullable=True)
+    about : Mapped[str] = mapped_column(nullable=True)
+    role : Mapped[str] = mapped_column(nullable=False, default='User') # Roles: 'Admin','Contributor','User'
 
     #---- Relationships
     posts = relationship("BlogPost", back_populates="author")
@@ -21,18 +23,22 @@ class User(db.Model, UserMixin):
     comments = relationship("Comment", back_populates="comment_author")
     messages = relationship("Message", back_populates="message_author")
 
+    # Relationship to BMIEntries
+    bmi_entries = relationship("BMIEntry", back_populates="user", cascade="all, delete-orphan")
+
+
     def __repr__(self):
         return f'<User {self.email}>'
 
 
 class Inbox(db.Model, UserMixin):
     __tablename__ = "Inbox"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(150), nullable=False)
-    email = db.Column(db.String(150), nullable=False)
-    subject = db.Column(db.String(150), nullable=False)
-    message = db.Column(db.Text, nullable=False)
-    date = db.Column(db.String(50), nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name : Mapped[str] = mapped_column(nullable=False)
+    email  : Mapped[str] = mapped_column(nullable=False)
+    subject : Mapped[str] = mapped_column(nullable=False, unique=False)
+    message : Mapped[str] = mapped_column(nullable=False, unique=False)
+    date : Mapped[str] = mapped_column(nullable=False, unique=False)
 
     def __repr__(self):
         return f'<Inbox {self.email}>'

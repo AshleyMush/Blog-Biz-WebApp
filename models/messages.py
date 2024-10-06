@@ -1,13 +1,14 @@
 # Description: Comments model for the database
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column
 from . import db
 
 class Message(db.Model, UserMixin):
     __tablename__ = "messages"
-    id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.Text, nullable=False)
-    date = db.Column(db.String(50), nullable=False)
+    id : Mapped[int] = mapped_column(primary_key=True)
+    text : Mapped[str] = mapped_column(nullable=False)
+    date : Mapped[str] = mapped_column(nullable=False)
 
     # Foreign Key referencing UserDetails.id
     author_id = db.Column(db.Integer, db.ForeignKey("UserDetails.id"))

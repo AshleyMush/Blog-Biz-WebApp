@@ -1,6 +1,9 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container px-5">
-        <a class="navbar-brand" href="{{url_for('blog_bp.blog_home')}}">Health Navigator</a>
+        <a class="navbar-brand" href="{{url_for('blog_bp.blog_home')}}">
+            <i class="fa-sharp-duotone fa-solid fa-plus" style="font-size: 30px; color: white;"></i>
+            Health Navigator
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
                 class="navbar-toggler-icon"></span></button>
@@ -9,14 +12,17 @@
 
                 <!--TODO Add  if config['MAIN_FEATURES_ENABLED'] to this feature and route it to blog_bp %}-->
                 <!-- Include main function menu items  ⛔-->
+                {% if categories%}
+                {% for category in categories %}
+                <li class="nav-item"><a class="nav-link" href="{{url_for('blog_bp.view_category', category_id=category.id)}}">{{category.name}}</a></li>
+                {%endfor%}
 
-                <li class="nav-item"><a class="nav-link" href="#">Well Being</a></li>
-
-                <li class="nav-item"><a class="nav-link" href="#">Medication</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Conditions</a></li>
+                {%else%}
+                <li class="nav-item"><a class="nav-link" href="#">Something </a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Something 2</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdownBlog" href="#" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownBlog" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
                         Topics
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
@@ -27,24 +33,12 @@
                         <!--endfor -->
                     </ul>
                 </li>
-                <!--End TODO ⛔-->
-                <li class="nav-item"><a class="nav-link" href="#">Something </a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Something 2</a></li>
+                {%endif%}
 
+             
 
                 
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdownBlog" href="#" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Blog
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
-                        <li><a class="dropdown-item" href="{{url_for('blog_bp.blog_home')}}">Blog Home</a></li>
-                        <li><a class="dropdown-item" href="#">Blog Post</a></li>
-                        <li><a class="dropdown-item" href="{{url_for('blog_bp.blog_preview')}}">Blog Preview</a></li>
-                    </ul>
-                </li>
                 {% if not current_user.is_authenticated: %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{url_for('auth_bp.login')}}">

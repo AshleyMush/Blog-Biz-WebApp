@@ -47,14 +47,8 @@ def login():
         if user and check_password_hash(user.password, password):
             flash('Logged in successfully', 'success')
             login_user(user, remember=form.remember_me.data)  # Uses remember_me checkbox value
-            if user.role == "Admin":
-                return redirect(url_for('admin_bp.profile'))
-            elif user.role == "Contributor":
-                return redirect(url_for('contributor_bp.profile'))
-            elif user.role == "Moderator":
-                return redirect(url_for('moderator_profile'))
-            else:
-                return redirect(url_for('user_bp.profile'))
+
+            return redirect(url_for('user_bp.profile'))
 
         else:
             flash('Invalid email or password', 'danger')

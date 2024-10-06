@@ -2,12 +2,14 @@
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
 from . import db
+from sqlalchemy.orm import Mapped, mapped_column
+
 
 class Comment(db.Model, UserMixin):
     __tablename__ = "comments"
-    id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.Text, nullable=False)
-    date = db.Column(db.String(50), nullable=False)
+    id : Mapped[int] = mapped_column(primary_key=True)
+    text : Mapped[str] = mapped_column(nullable=False)
+    date : Mapped[str] = mapped_column(nullable=False)
 
     # Foreign Key referencing UserDetails.id
     author_id = db.Column(db.Integer, db.ForeignKey("UserDetails.id"), nullable=False)

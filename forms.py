@@ -1,9 +1,69 @@
 from flask_wtf import FlaskForm
 from flask_ckeditor import CKEditorField
-from wtforms import StringField, SubmitField,SelectField, TextAreaField, PasswordField, BooleanField
-from wtforms.validators import DataRequired, URL, Email, Length, ValidationError, InputRequired, Optional, EqualTo
+from wtforms import StringField,DecimalField, SubmitField,SelectField, TextAreaField, PasswordField, BooleanField
+from wtforms.validators import DataRequired,NumberRange, URL, Email, Length, ValidationError, InputRequired, Optional, EqualTo
 import re
 from flask import flash
+from models.blog import Category
+from wtforms import SelectMultipleField
+from wtforms.widgets import ListWidget, CheckboxInput
+from utils.validators import PhoneNumberValidator
+
+
+class recommendForm(FlaskForm):
+    recommend = BooleanField('Recommend')
+    submit = SubmitField('Save Changes')
+
+
+class BMIForm(FlaskForm):
+    height = DecimalField(
+        'Height (meters)',
+        validators=[
+            DataRequired(message="Height is required."),
+            NumberRange(min=0.0, max=5.5, message="Height must be between 0.0 and 5.5 meters.")
+        ],
+        places=2
+    )
+    weight = DecimalField(
+        'Weight (kilograms)',
+        validators=[
+            DataRequired(message="Weight is required."),
+            NumberRange(min=10, max=300, message="Weight must be between 10 and 300 kilograms.")
+        ],
+        places=1
+    )
+    submit = SubmitField('Calculate BMI')
+
+
+class AboutMeForm(FlaskForm):
+    about = TextAreaField('About Me', validators=[DataRequired(), Length(max=1000)])
+    submit = SubmitField('Save')
+
+class MultiCheckboxField(SelectMultipleField):
+    widget = ListWidget(prefix_label=False)
+    option_widget = CheckboxInput()
+
+class CreatePostForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired(message="Please enter the title.")])
+    subtitle = StringField('Subtitle', validators=[DataRequired(message="Please enter the subtitle.")])
+    img_url = StringField('Image URL', validators=[DataRequired(message="Please enter the image url"), URL()])
+    body = CKEditorField('Body', validators=[DataRequired(message="Please enter the body content.")])
+    categories = MultiCheckboxField('Categories', coerce=int)
+    submit = SubmitField('Submit')
+
+    def __init__(self, *args, **kwargs):
+        super(CreatePostForm, self).__init__(*args, **kwargs)
+        self.categories.choices = [(category.id, category.name) for category in Category.query.order_by('name')]
+
+
+class CategoryForm(FlaskForm):
+    name = StringField('Category Name', validators=[DataRequired(), Length(max=100)])
+    submit = SubmitField('Create Category')
+
+    def validate_name(self, name):
+        category = Category.query.filter_by(name=name.data.strip()).first()
+        if category:
+            raise ValidationError('This category already exists.')
 
 
 
@@ -37,12 +97,7 @@ class LoginForm(FlaskForm):
 
 
 
-class CreatePostForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired(message="Please enter the title.")])
-    subtitle = StringField('Subtitle', validators=[DataRequired( message="Please enter the subtitle.")])
-    img_url = StringField('Image URL', validators=[DataRequired(message="Please enter the image url"), URL()])
-    body = CKEditorField('Body', validators=[DataRequired(message="Please enter the body content.")])
-    submit = SubmitField('Submit')
+
 
 
 
@@ -204,7 +259,13 @@ class UpdateEmailForm(FlaskForm):
     submit = SubmitField('Save')
 
 class UpdatePhoneForm(FlaskForm):
-    phone_number = StringField('Phone Number', validators=[DataRequired()])
+    phone_number = StringField(
+        'Phone Number',
+        validators=[
+            DataRequired(message="Phone number is required."),
+            PhoneNumberValidator  # Use the custom validator
+        ]
+    )
     submit = SubmitField('Save')
 
 

@@ -89,7 +89,7 @@ def register():
 
     form = RegisterForm()
 
-    # Check if any users exist in the database
+    # Check if any users exist in the database.
     user_count = User.query.count()
     if user_count == 0:
         role = 'Admin'  # First user becomes Admin

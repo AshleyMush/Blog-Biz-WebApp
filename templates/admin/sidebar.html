@@ -173,7 +173,7 @@
 
   {% elif current_user.role == 'Contributor' %}
   <!-- Heading -->
-  <div class="sidebar-heading">Addons</div>
+
 
   {% else %}
   <!-- Heading -->
@@ -227,10 +227,12 @@
     </div>
   </li>-->
 
+
+  
   {% else %} {% endif %} {% endif %}
 
   <!-- Nav Item - Charts -->
-  {% if current_user.is_authenticated %} {% if current_user.role == 'Admin' %}
+ 
 <!-- <li class="nav-item">
     <a class="nav-link" href="charts.html">
       <i class="fas fa-fw fa-chart-area"></i>
@@ -239,15 +241,23 @@
   -->
 
 
-
-  {% else %}
+{% if current_user.is_authenticated %} {% if current_user.role != 'Admin' %}
+ 
   <li class="nav-item">
     <a class="nav-link" href="{{url_for('user_bp.contact_admin')}}">
       <i class="fa-solid fa-envelope"></i>
       <span>Get in Touch</span></a>
   </li>
-
   {% endif %} {% endif %}
+
+    <li class="nav-item">
+      <a class="nav-link" href="{{url_for('blog_bp.blog_home')}}">
+        <i class="fa-solid fa-house"></i>
+        <span>Home Page</span></a>
+    </li>
+
+   
+
 
 
 

@@ -20,33 +20,44 @@ from sqlalchemy.sql import func  # Import func for random ordering
 def blog_home():
     current_year = datetime.now().year
     all_posts = BlogPost.query.all()
-
     categories = Category.query.all()
     latest_post = BlogPost.query.order_by(BlogPost.id.desc()).first()
 
-    # Fetch recommended posts: exclude the latest post
-    # Order randomly and limit to 2
-    recommended_posts = BlogPost.query.filter(
-        BlogPost.id != latest_post.id
-    ).order_by(func.random()).limit(2).all()
+    # Initialize recommended_posts and latest_posts_per_author
+    recommended_posts = []
+    latest_posts_per_author = []
 
+    if latest_post:
+        # Fetch recommended posts: exclude the latest post
+        # Order randomly and limit to 2
+        recommended_posts = BlogPost.query.filter(
+            BlogPost.id != latest_post.id
+        ).order_by(func.random()).limit(2).all()
+
+        # Fetch latest posts per author
+        subquery = db.session.query(
+            BlogPost.author_id,
+            func.max(BlogPost.date_created).label('max_date')  # Assuming 'date_created' is the correct field
+        ).group_by(BlogPost.author_id).subquery()
+
+        latest_posts_per_author = BlogPost.query.join(
+            subquery,
+            (BlogPost.author_id == subquery.c.author_id) & (BlogPost.date_created == subquery.c.max_date)
+        ).all()
+
+    # Fetch the latest 3 posts regardless of the latest_post
     latest_posts = BlogPost.query.order_by(BlogPost.id.desc()).limit(3).all()
 
-    # Fetch latest posts per author
-    subquery = db.session.query(
-        BlogPost.author_id,
-        func.max(BlogPost.date).label('max_date')
-    ).group_by(BlogPost.author_id).subquery()
-
-    latest_posts_per_author = BlogPost.query.join(
-        subquery,
-        (BlogPost.author_id == subquery.c.author_id) & (BlogPost.date == subquery.c.max_date)
-    ).all()
-
-
-    return render_template("/blog/blog-home.html", categories=categories,latest_posts=latest_posts, latest_posts_per_author=latest_posts_per_author,posts =all_posts, current_year=current_year, latest_post=latest_post, recommended_posts=recommended_posts)
-
-
+    return render_template(
+        "/blog/blog-home.html",
+        categories=categories,
+        latest_posts=latest_posts,
+        latest_posts_per_author=latest_posts_per_author,
+        posts=all_posts,
+        current_year=current_year,
+        latest_post=latest_post,
+        recommended_posts=recommended_posts
+    )
 
 # View published post
 @blog_bp.route('/post/<int:post_id>', methods=["GET", "POST"])

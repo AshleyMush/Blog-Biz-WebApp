@@ -74,7 +74,7 @@ def view_post(post_id):
             return redirect(url_for("auth_bp.login"))
         else:
             new_comment = Comment(
-                text=form.comment.data,  # Correct field access
+                text=form.comment.data,  #  Correct field access
                 comment_author=current_user,
                 date=datetime.now().strftime("%B %d, %Y"),
                 parent_post=selected_post

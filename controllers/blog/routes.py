@@ -37,12 +37,12 @@ def blog_home():
         # Fetch latest posts per author
         subquery = db.session.query(
             BlogPost.author_id,
-            func.max(BlogPost.date_created).label('max_date')  # Assuming 'date_created' is the correct field
+            func.max(BlogPost.date).label('max_date')  # Assuming 'date' is the correct field
         ).group_by(BlogPost.author_id).subquery()
 
         latest_posts_per_author = BlogPost.query.join(
             subquery,
-            (BlogPost.author_id == subquery.c.author_id) & (BlogPost.date_created == subquery.c.max_date)
+            (BlogPost.author_id == subquery.c.author_id) & (BlogPost.date == subquery.c.max_date)
         ).all()
 
     # Fetch the latest 3 posts regardless of the latest_post

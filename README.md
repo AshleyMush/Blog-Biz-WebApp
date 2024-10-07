@@ -5,81 +5,65 @@ This repository contains the source code and resources for the HealthCare Agency
 ## Directory Structure
 
 ```
-To update your [`README.md`](command:_github.copilot.openRelativePath?%5B%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2Fd%3A%2FUni%20stuff%2FSoftware%20projects%2FHealthCare-Agency-Website-Project%2FREADME.md%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%2C%22f3e85839-c8fd-4c96-9050-5e5ba44028dc%22%5D "d:\Uni stuff\Software projects\HealthCare-Agency-Website-Project\README.md") to reflect the current files in your project, you need to include the new files and directories. Here is the updated [`README.md`](command:_github.copilot.openRelativePath?%5B%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2Fd%3A%2FUni%20stuff%2FSoftware%20projects%2FHealthCare-Agency-Website-Project%2FREADME.md%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%2C%22f3e85839-c8fd-4c96-9050-5e5ba44028dc%22%5D "d:\Uni stuff\Software projects\HealthCare-Agency-Website-Project\README.md"):
+
 
 ```markdown
 This repository contains the source code and resources for the HealthCare Agency Website Project. Below is an overview of the directory structure and the functionalities of each file and folder.
-
 ## Directory Structure
 
 ```
-/d:/Uni stuff/Software projects/HealthCare-Agency-Website-Project/
-├── templates/
-│   ├── email/
-│   │   ├── admin_email.html
-│   │   ├── user_email.html
-│   ├── admin/
-│   │   ├── admin_dashboard.html
-│   │   ├── login.html
-│   │   ├── register.html
-│   │   ├── reset_password.html
-│   │   ├── sidebar.html
-│   │   ├── base.html
-│   │   ├── footer.html
-│   │   ├── header.html
-│   │   ├── hero.html
-│   │   ├── flash-messages.html
-│   │   ├── dashboard.html
-│   │   ├── edit-service.html
-│   └── website/
-│       ├── blog.html
-│       ├── index.html
-│       ├── about.html
-│       ├── services.html
-│       ├── base.html
-│       ├── blog-post.html
-│       ├── contact.html
-│       ├── profile.html
-│       ├── hero2.html
-│       ├── footer.html
-│       ├── header.html
-├── routes/
-│   ├── admin_routes.py
-│   ├── auth_routes.py
-│   ├── contributor_routes.py
-│   ├── blog_routes.py
-│   ├── user_routes.py
-│   ├── services_routes.py
-├── utils/
-│   ├── email_utils.py
-│   ├── encryption.py
-├── models/
-│   ├── blog.py
-│   ├── user.py
-├── forms/
-│   ├── update_phone_form.py
-├── assets/
-│   ├── css/
-│   ├── images/
-│   └── js/
-├── instance/
-│   ├── Agency.db
-├── migrations/
-│   ├── env.py
-│   ├── README
-│   ├── script.py.mako
-│   └── versions/
-│       ├── 2cd62d57a2e9_add_recommended_field_to_blogpost.py
-│       ├── 0c47e7bd58a4_initial_migration.py
-├── app.py
-├── README.md
+D:.
 ├── .gitignore
-├── requirements.txt
-├── Procfile
-├── models.py
-├── encryption.py
+├── app.py
+├── config.py
 ├── forms.py
 ├── LICENSE
+├── Procfile
+├── README.md
+├── requirements.txt
+├── controllers
+│   ├── admin
+│   │   └── routes.py
+│   ├── api
+│   │   └── routes.py
+│   ├── auth
+│   │   └── routes.py
+│   ├── blog
+│   │   ├── comment_engine.py
+│   │   └── routes.py
+│   ├── contributor
+│   │   └── routes.py
+│   ├── main
+│   │   └── routes.py
+│   └── user
+│       └── routes.py
+├── instance
+│   └── Agency.db
+├── models
+│   ├── blog.py
+│   ├── bmi_entry.py
+│   ├── business.py
+│   ├── comments.py
+│   ├── messages.py
+│   ├── user.py
+├── static
+│   ├── admin dashboard static
+│   │   ├── Admin dashboard startboostrap
+│   │   │   ├── css
+│   │   │   │   ├── sb-admin-2.css
+│   │   │   │   └── sb-admin-2.min.css
+│   │   │   ├── img
+│   │   │   │   ├── undraw_posting_photo.svg
+│   │   │   ├── js
+│   │   │   │   ├── sb-admin-2.js
+│   │   │   ├── vendor
+│   │   │       ├── bootstrap
+│   │   │       │   ├── js
+│   │   │       │   │   ├── bootstrap.bundle.js
+│   │   │       │   │   ├── bootstrap.bundle.min.js
+│   │   │       │   │   ├── bootstrap.js
+│   │   │       │   │   ├── bootstrap.min.js
+s
 ```
 
 ### templates/

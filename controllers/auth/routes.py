@@ -35,7 +35,6 @@ def login():
         else:
             return redirect(url_for('user_bp.profile'))
 
-
     form = LoginForm()
     if form.validate_on_submit():
         email = form.email.data
@@ -104,8 +103,6 @@ def register():
             flash('Email already exists, Login instead', 'danger')
             return redirect(url_for('auth_bp.login'))
 
-
-
         # Hash the password with salt
         hashed_password = hash_and_salt_password(form.password.data)
         # Create new user
@@ -126,7 +123,6 @@ def register():
         if new_user.role == "Admin":
             return redirect(url_for('admin_bp.profile'))
         else:
-
 
             return redirect(url_for("user_bp.profile"))
 

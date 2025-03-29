@@ -15,6 +15,8 @@ from . import db
 
 class HomePage(db.Model, UserMixin):
     __tablename__ = "home_page"
+    __table_args__ = {'schema': 'blog'}
+
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(nullable=False)
     heading: Mapped[str] = mapped_column(nullable=False)
@@ -28,6 +30,8 @@ class HomePage(db.Model, UserMixin):
 
 class FAQs(db.Model, UserMixin):
     __tablename__ = "faqs"
+    __table_args__ = {'schema': 'blog'}
+
     id: Mapped[int] = mapped_column(primary_key=True)
     question: Mapped[str] = mapped_column(nullable=False)
     answer: Mapped[str] = mapped_column(nullable=False)
@@ -42,6 +46,10 @@ class Services(db.Model):
     This class represents the services table.
     """
     __tablename__ = "services"
+    __table_args__ = {'schema': 'blog'}
+
+
+
     id: Mapped[int] = mapped_column(primary_key=True)
     service_name: Mapped[str] = mapped_column(nullable=True)
     homepage_description: Mapped[str] = mapped_column(nullable=True)  # Rich text content

@@ -6,6 +6,9 @@ from . import db
 
 class Message(db.Model, UserMixin):
     __tablename__ = "messages"
+    __table_args__ = {'schema': 'blog'}
+
+
     id : Mapped[int] = mapped_column(primary_key=True)
     text : Mapped[str] = mapped_column(nullable=False)
     date : Mapped[str] = mapped_column(nullable=False)

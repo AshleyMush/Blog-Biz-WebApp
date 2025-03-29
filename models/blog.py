@@ -18,6 +18,8 @@ post_categories = Table(
 
 class DraftPost(db.Model):
     __tablename__ = 'drafts'
+    __table_args__ = {'schema': 'blog'}
+
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(nullable=False)
     subtitle: Mapped[str] = mapped_column(nullable=True)
@@ -41,6 +43,8 @@ class DraftPost(db.Model):
 
 class BlogPost(db.Model):
     __tablename__ = 'BlogPost'
+    __table_args__ = {'schema': 'blog'}
+
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(nullable=False)
     subtitle: Mapped[str] = mapped_column(nullable=True)
@@ -69,6 +73,8 @@ class BlogPost(db.Model):
 
 class Category(db.Model):
     __tablename__ = 'Category'
+    __table_args__ = {'schema': 'blog'}
+
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(nullable=False, unique=True)
 

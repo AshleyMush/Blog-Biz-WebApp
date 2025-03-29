@@ -7,6 +7,8 @@ from . import db
 
 class BMIEntry(db.Model):
     __tablename__ = 'BMIEntries'
+    __table_args__ = {'schema': 'blog'}
+
     id: Mapped[int] = mapped_column(primary_key=True)
     bmi: Mapped[float] = mapped_column(nullable=False)
     classification: Mapped[str] = mapped_column(nullable=False)

@@ -7,6 +7,9 @@ from . import db
 
 class User(db.Model, UserMixin):
     __tablename__ = "UserDetails"
+    __table_args__ = {'schema': 'blog'}
+
+
     id : Mapped[int] = mapped_column(primary_key=True)
     email : Mapped[str] = mapped_column(nullable=False)
     password : Mapped[str] = mapped_column(nullable=False)
@@ -33,6 +36,9 @@ class User(db.Model, UserMixin):
 
 class Inbox(db.Model, UserMixin):
     __tablename__ = "Inbox"
+    __table_args__ = {'schema': 'blog'}
+
+
     id: Mapped[int] = mapped_column(primary_key=True)
     name : Mapped[str] = mapped_column(nullable=False)
     email  : Mapped[str] = mapped_column(nullable=False)

@@ -7,6 +7,10 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 class Comment(db.Model, UserMixin):
     __tablename__ = "comments"
+    __table_args__ = {'schema': 'blog'}
+
+
+
     id : Mapped[int] = mapped_column(primary_key=True)
     text : Mapped[str] = mapped_column(nullable=False)
     date : Mapped[str] = mapped_column(nullable=False)

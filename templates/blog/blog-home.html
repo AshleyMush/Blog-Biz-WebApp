@@ -111,8 +111,10 @@
                 {% for post in latest_posts %}
                 <div class="mb-4">
                     <div class="small text-muted">{{post.date}}</div>
-                    <a class="link-dark" href="{{ url_for('blog_bp.view_post', post_id=post.id) }}">
-                        <h3>{{post.title}}</h3>
+                    <a class="text-decoration-none text-dark fw-semibold" href="{{ url_for('blog_bp.view_post', post_id=post.id) }}">
+    <h3 class="mb-2 hover-underline">{{ post.title }}</h3>
+</a>
+
                     </a>
                 </div>
                 {% endfor %}
@@ -124,30 +126,18 @@
                 </div>
             </div>
             <div class="col-xl-4">
-                <div class="card border-0 h-100">
-                    <div class="card-body p-4">
-                        <div class="d-flex h-100 align-items-center justify-content-center">
-                            <div class="text-center">
-                                <div class="h6 fw-bolder">Contact</div>
-                                <p class="text-muted mb-4">
-                                    For press inquiries, email us at
-                                    <br />
-                                    <a href="mailto:tanaka.mush@gmail.com">tanaka.mush@gmail.com</a>
-                                </p>
-                                <div class="h6 fw-bolder">Follow us</div>
-                                <!--<a class="fs-5 px-2 link-dark" href="#!"><i class="bi-twitter"></i></a> -->
-                                <a class="fs-5 px-2 link-dark" href="https://www.instagram.com/ashleybytes/"><i
-                                        class="bi-instagram"></i></a>
-                                <a class="fs-5 px-2 link-dark" href="www.linkedin.com/in/ashley-m-8917781b5
+<div class="card border-0 h-100 bg-white shadow-sm">
+    <div class="card-body p-4 d-flex flex-column justify-content-center align-items-center text-center">
+        <h6 class="fw-bold mb-3">Advertise Here</h6>
+        <img src="https://images.unsplash.com/photo-1533069027836-fa937181a8ce?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+             class="img-fluid mb-3 rounded"
+             alt="Ad banner">
+        <p class="text-muted mb-0">
+            Advertise here and reach a tech-savvy audience interested in software, startups, and community projects.
+        </p>
+    </div>
+</div>
 
-"><i class="bi-linkedin"></i></a>
-                                <a class="fs-5 px-2 link-dark" href="https://www.youtube.com/@AshleyMush"><i
-                                        class="bi-youtube"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </section>
@@ -157,10 +147,11 @@
         <div class="row gx-5 justify-content-center">
             <div class="col-lg-8 col-xl-6">
                 <div class="text-center">
-                    <h2 class="fw-bolder">Expert ad patient contibutors posts</h2>
-                    <p class="lead fw-normal text-muted mb-5">These posts are written by our experts and contributors,
-                        sharing their knowledge and experiences to provide valuable insights and information. Stay tuned
-                        for more updates and stories from our dedicated team.</p>
+                    <h2 class="fw-bolder">Featured Posts</h2>
+                    <p class="lead fw-normal text-muted mb-5">
+        Dive into insights, tutorials, and reflections from developers, creators, and thinkers in our community.
+        Whether it's tech, startup journeys, or creative projects, our contributors bring fresh and practical content with every post.
+    </p>
                 </div>
             </div>
         </div>

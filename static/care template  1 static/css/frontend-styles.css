@@ -10846,3 +10846,8 @@ html {
   background-repeat: no-repeat;
   min-height: 15rem;
 }
+
+.hover-underline:hover {
+    text-decoration: underline;
+    color: #0d6efd; /* Bootstrap primary color */
+}

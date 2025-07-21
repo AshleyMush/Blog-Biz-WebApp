@@ -7,7 +7,6 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 class Comment(db.Model, UserMixin):
     __tablename__ = "comments"
-    __table_args__ = {'schema': 'blog'}
 
 
 
@@ -21,6 +20,7 @@ class Comment(db.Model, UserMixin):
 
     # Foreign Key referencing BlogPost.id
     post_id = db.Column(db.Integer, db.ForeignKey("BlogPost.id"), nullable=False)
+
     parent_post = relationship("BlogPost", back_populates="comments")
 
 

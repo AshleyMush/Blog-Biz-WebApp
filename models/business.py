@@ -15,7 +15,6 @@ from . import db
 
 class HomePage(db.Model, UserMixin):
     __tablename__ = "home_page"
-    __table_args__ = {'schema': 'blog'}
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(nullable=False)
@@ -30,7 +29,6 @@ class HomePage(db.Model, UserMixin):
 
 class FAQs(db.Model, UserMixin):
     __tablename__ = "faqs"
-    __table_args__ = {'schema': 'blog'}
 
     id: Mapped[int] = mapped_column(primary_key=True)
     question: Mapped[str] = mapped_column(nullable=False)
@@ -46,7 +44,6 @@ class Services(db.Model):
     This class represents the services table.
     """
     __tablename__ = "services"
-    __table_args__ = {'schema': 'blog'}
 
 
 
@@ -70,6 +67,7 @@ class Services(db.Model):
 
 class ContactDetails(db.Model, UserMixin):
     __tablename__ = "contact_details"
+
     # Contact information
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(unique=True, nullable=True)
@@ -89,6 +87,7 @@ class ContactDetails(db.Model, UserMixin):
 
 class ContactPageContent(db.Model, UserMixin):
     __tablename__ = "contact_page"
+
     id: Mapped[int] = mapped_column(primary_key=True)
     page_name: Mapped[str] = mapped_column(nullable=True)
     img_url: Mapped[str] = mapped_column(nullable=True)
@@ -110,6 +109,8 @@ class ContactPageContent(db.Model, UserMixin):
 
 class AboutPageContent(db.Model, UserMixin):
     __tablename__ = "about_page"
+
+
     id: Mapped[int] = mapped_column(primary_key=True)
     img_url: Mapped[str] = mapped_column(nullable=True)
     banner_subheading: Mapped[str] = mapped_column(nullable=True)
@@ -123,6 +124,7 @@ class AboutPageContent(db.Model, UserMixin):
 
 class Jobs(db.Model, UserMixin):
     __tablename__ = "Jobs"
+
     id: Mapped[int] = mapped_column(primary_key=True)
     job_name: Mapped[str] = mapped_column(nullable=False)
     job_card_img_url: Mapped[str] = mapped_column(nullable=False)
@@ -137,6 +139,7 @@ class Jobs(db.Model, UserMixin):
 
 class CareerPageContent(db.Model, UserMixin):
     __tablename__ = "Career page content"
+
     id: Mapped[int] = mapped_column(primary_key=True)
     page_name: Mapped[str] = mapped_column(nullable=False)
     banner_heading: Mapped[str] = mapped_column(nullable=False)

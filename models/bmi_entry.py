@@ -7,7 +7,7 @@ from . import db
 
 class BMIEntry(db.Model):
     __tablename__ = 'BMIEntries'
-    __table_args__ = {'schema': 'blog'}
+
 
     id: Mapped[int] = mapped_column(primary_key=True)
     bmi: Mapped[float] = mapped_column(nullable=False)
@@ -16,6 +16,7 @@ class BMIEntry(db.Model):
 
     # Foreign Key referencing UserDetails.id
     user_id: Mapped[int] = mapped_column(ForeignKey("UserDetails.id"), nullable=False)
+
     user = relationship("User", back_populates="bmi_entries")
 
     def __repr__(self):
